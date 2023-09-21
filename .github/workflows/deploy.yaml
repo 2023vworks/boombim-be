@@ -42,6 +42,9 @@ jobs:
     # self-hosted: 자체 설치 러너에서 작업 수행
     # label-go: 실행할 러너 라벨명 => 러너 설치시 지정하는 라벨명이다.
     runs-on: [self-hosted]
+    strategy:
+      matrix:
+        node-version: [18.x]
     timeout-minutes: 5 # 5분
     steps:
       # github actions 작업 브랜치로 checkout
