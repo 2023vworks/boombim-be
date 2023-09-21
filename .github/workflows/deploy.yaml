@@ -65,6 +65,5 @@ jobs:
       - name: Setting ENV and Run app
         run: |
           PRODUCTION_ENV=${{ secrets.PRODUCTION_ENV }}
-          echo $PRODUCTION_ENV > .env && source .env
-          pwd
+          echo $PRODUCTION_ENV | base64 --decode > .env && source .env
           node dist/src/main.js
