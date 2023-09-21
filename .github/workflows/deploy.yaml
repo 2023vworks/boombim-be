@@ -47,20 +47,16 @@ jobs:
     name: Deploy
     # self-hosted: 자체 설치 러너에서 작업 수행
     # label-go: 실행할 러너 라벨명 => 러너 설치시 지정하는 라벨명이다.
-    runs-on: [self-hosted, label-go]
+    runs-on: [self-hosted]
+    timeout-minutes: 5 # 5분
     steps:
       - name: Download Build Artifacts
         uses: actions/download-artifact@v2
         with:
           name: dist
 
-      - name: Copy Files to Runner
-        run: |
-          mkdir -p $HOME/dist
-          cp -r * $HOME/dist
-
       - name: Setting ENV and Run app
         run: |
           PRODUCTION_ENV=${{ secrets.PRODUCTION_ENV }}
           echo $PRODUCTION_ENV > .env && source .env && rm .env
-          node $HOME/dist/src/main
+          node dist/src/main
