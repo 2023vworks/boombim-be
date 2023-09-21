@@ -67,4 +67,4 @@ jobs:
           PRODUCTION_ENV=${{ secrets.PRODUCTION_ENV }}
           echo $PRODUCTION_ENV | base64 --decode > .env
           export $(grep -E "^[^#]+=" .env)
-          node dist/src/main.js
+          nohup node dist/src/main.js &
