@@ -54,8 +54,13 @@ jobs:
         with:
           name: dist
 
+      - name: Copy Files to Runner
+        run: |
+          mkdir -p $HOME/dist
+          cp -r * $HOME/dist
+
       - name: Setting ENV and Run app
         run: |
           PRODUCTION_ENV=${{ secrets.PRODUCTION_ENV }}
           echo $PRODUCTION_ENV > .env && source .env && rm .env
-          node dist/src/main
+          node $HOME/dist/src/main
