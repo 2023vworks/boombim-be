@@ -35,11 +35,17 @@ jobs:
           npm ci
           npm run build
 
+      - name: Copy build file and node_modules
+        run: |
+          mkdir app
+          cp -r ./dist ./app/dist
+          cp -r ./node_modules ./app/node_modules
+
       - name: Archive Build Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: dist
-          path: dist
+          name: app
+          path: app
 
   # 배포 Job
   deploy:
@@ -53,10 +59,10 @@ jobs:
       - name: Download Build Artifacts
         uses: actions/download-artifact@v2
         with:
-          name: dist
+          name: app
 
       - name: Setting ENV and Run app
         run: |
           PRODUCTION_ENV=${{ secrets.PRODUCTION_ENV }}
           echo $PRODUCTION_ENV > .env && source .env && rm .env
-          node dist/src/main
+          node $HOME/actions-runner/_work/heat-it-be/heat-it-be/app/dist/src/main
