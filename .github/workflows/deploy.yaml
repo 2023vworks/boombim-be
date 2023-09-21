@@ -1,0 +1,61 @@
+name: CD Docker
+
+# 이벤트 트리거
+on:
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+
+# 환경변수 설정
+env:
+  VERSION: ${{ github.sha }}
+
+# 빌드 Job
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+      # github actions 작업 브랜치로 checkout
+      - name: Checkout actions Repository
+        uses: actions/checkout@v2
+      # node 버전 설정
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      # build 수행
+      - name: Install Dependencies and Build App
+        run: |
+          npm ci
+          npm run build
+
+      - name: Archive Build Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist
+
+  # 배포 Job
+  deploy:
+    needs: build # build 후에 실행되도록 정의
+    name: Deploy
+    # self-hosted: 자체 설치 러너에서 작업 수행
+    # label-go: 실행할 러너 라벨명 => 러너 설치시 지정하는 라벨명이다.
+    runs-on: [self-hosted, label-go]
+    steps:
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+
+      - name: Setting ENV and Run app
+        run: |
+          PRODUCTION_ENV=${{ secrets.PRODUCTION_ENV }}
+          echo $PRODUCTION_ENV > .env && source .env && rm .env
+          node dist/src/main
