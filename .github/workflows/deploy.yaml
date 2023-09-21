@@ -62,9 +62,11 @@ jobs:
           npm ci
           npm run build
 
+      # 백그라운드 실행만 설정, 요구사항에 따라 데몬 실행이 가능하게 수정해야 할 수도 있다.
       - name: Setting ENV and Run app
         run: |
           PRODUCTION_ENV=${{ secrets.PRODUCTION_ENV }}
           echo $PRODUCTION_ENV | base64 --decode > .env
           export $(grep -E "^[^#]+=" .env)
-          nohup node dist/src/main.js &
+          nohup node dist/src/main.js & echo $! > node_pid
+          disown $(cat node_pid)
