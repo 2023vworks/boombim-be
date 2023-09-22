@@ -1,18 +1,23 @@
-name: CD Docker
+name: CD self-hosted
 
 # 이벤트 트리거
 on:
   push:
     tags:
       - v[0-9]+.[0-9]+.[0-9]+
+  # GitHub Actions탭에서 수동실행 가능하도록 설정
+  workflow_dispatch:
 
+# 동시성 설정: 같은 그룹의 배포가 여러개 실행되면 가장 마지막에 실행된 배포외에는 취소 시킨다.
+concurrency:
+  group: production
+  cancel-in-progress: true
 # 환경변수 설정
 env:
   VERSION: ${{ github.sha }}
 
-# 빌드 Job
 jobs:
-  build:
+  build: # TODO: ci로 변경예정
     name: Build
     runs-on: ubuntu-latest
     strategy:
@@ -37,15 +42,15 @@ jobs:
 
   # 배포 Job
   deploy:
-    needs: build # build 후에 실행되도록 정의
+    needs: build
     name: Deploy
-    # self-hosted: 자체 설치 러너에서 작업 수행
-    # label-go: 실행할 러너 라벨명 => 러너 설치시 지정하는 라벨명이다.
+
+    # self-hosted: 물리서버에 설치된 러너에서 작업 수행
     runs-on: [self-hosted]
     strategy:
       matrix:
         node-version: [18.x]
-    timeout-minutes: 5 # 5분
+    timeout-minutes: 10 # 10분
     steps:
       # github actions 작업 브랜치로 checkout
       - name: Checkout actions Repository
@@ -62,8 +67,10 @@ jobs:
           npm ci
           npm run build
 
-      # 백그라운드 실행만 설정, 요구사항에 따라 데몬 실행이 가능하게 수정해야 할 수도 있다.
+      # 백그라운드 실행만 설정, 데몬 실행 x
       - name: Setting ENV and Run app
+        env:
+          RUNNER_TRACKING_ID: ''
         run: |
           PRODUCTION_ENV=${{ secrets.PRODUCTION_ENV }}
           echo $PRODUCTION_ENV | base64 --decode > .env
