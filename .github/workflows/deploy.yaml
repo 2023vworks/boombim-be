@@ -1,16 +1,17 @@
-name: CD self-hosted
+name: Boombim(Back-End) - Build and Deploy
 
-# 이벤트 트리거
 on:
   push:
     tags:
       - v[0-9]+.[0-9]+.[0-9]+
+      - v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+
   # GitHub Actions탭에서 수동실행 가능하도록 설정
   workflow_dispatch:
 
 # 동시성 설정: 같은 그룹의 배포가 여러개 실행되면 가장 마지막에 실행된 배포외에는 취소 시킨다.
+## [참고](https://docs.github.com/ko/actions/using-workflows/workflow-syntax-for-github-actions#example-using-concurrency-to-cancel-any-in-progress-job-or-run)
 concurrency:
-  group: production
+  group: ${{ github.ref }}
   cancel-in-progress: true
 # 환경변수 설정
 env:
@@ -19,10 +20,10 @@ env:
 jobs:
   build: # TODO: ci로 변경예정
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04 #self-hosted 동일한 os 사용
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [v18.14.2]
     steps:
       # github actions 작업 브랜치로 checkout
       - name: Checkout actions Repository
@@ -49,7 +50,7 @@ jobs:
     runs-on: [self-hosted]
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [v18.14.2]
     timeout-minutes: 10 # 10분
     steps:
       # github actions 작업 브랜치로 checkout
@@ -67,13 +68,28 @@ jobs:
           npm ci
           npm run build
 
+      - name: Stop old server (ignore error)
+        run: |
+          killall -9 node || true
+      - name: Remove old server in ~/soruce (ignore error)
+        run: |
+          rm -rf ~/source || true
+      - name: Copy new server to ~/soruce
+        run: |
+          mkdir -p ~/source
+          cp -R ./ ~/source
+
       # 백그라운드 실행만 설정, 데몬 실행 x
       - name: Setting ENV and Run app
         env:
-          RUNNER_TRACKING_ID: ''
+          # 고아프로세스를 죽이지 않는 설정이다.(보안상 위험하기 때문에 꼭 필요한 경우에만 사용한다.)
+          ## [참고](https://www.praetorian.com/blog/self-hosted-github-runners-are-backdoors/)
+          RUNNER_TRACKING_ID: 0 # or ''
         run: |
+          cd ~/source
           PRODUCTION_ENV=${{ secrets.PRODUCTION_ENV }}
           echo $PRODUCTION_ENV | base64 --decode > .env
-          export $(grep -E "^[^#]+=" .env)
-          nohup node dist/src/main.js >> app.log 2>&1 & echo $! > node_pid
+          export $(grep -E "^[^#]+=" .env) && rm .env
+          # 로그 임시로 ~/source 폴더에 저장
+          nohup node dist/src/main.js >> ~/source/app.log 2>&1 & echo $! > node_pid
           disown $(cat node_pid)
