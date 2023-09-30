@@ -1,0 +1,117 @@
+name: Boombim(Back-End) - Build and Deploy
+
+on:
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+      - v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+
+  # GitHub Actions탭에서 수동실행 가능하도록 설정
+  workflow_dispatch:
+
+# 동시성 설정: 같은 그룹의 배포가 여러개 실행되면 가장 마지막에 실행된 배포외에는 취소 시킨다.
+## [참고](https://docs.github.com/ko/actions/using-workflows/workflow-syntax-for-github-actions#example-using-concurrency-to-cancel-any-in-progress-job-or-run)
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+# 환경변수 설정
+env:
+  VERSION: ${{ github.sha }}
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-22.04 #self-hosted 동일한 os 사용
+    strategy:
+      matrix:
+        node-version: [v18.14.2]
+    steps:
+      # 1. 워크플로를 수행하기 위해 해당 브랜치로 checkout
+      - name: Checkout actions Repository
+        uses: actions/checkout@v2
+      # 2. node 버전 설정
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # 3. node_modules 캐시 설정
+      # docs: https://github.com/actions/cache
+      # outputs.cache-hit: 캐시가 존재하면 true, 존재하지 않으면 false
+      - name: Cache node_modules
+        id: cache
+        uses: actions/cache@v3
+        with:
+          # cache의 대상을 정한다.
+          path: '**/node_modules'
+          # 무효화의 기준이 되는 cache의 key를 정한다.
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          # key가 깨졌을때 복구하는 방법 명시, "${{ runner.os }}-node-" 와 일치하는 캐시를 가져와 사용한다.
+          restore-keys: ${{ runner.os }}-node-
+      # 일치하는 캐시가 없다면 의존성 설치
+
+      - name: Install Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Run Build App
+        run: npm run build
+
+  # 배포 Job
+  deploy:
+    needs: build
+    name: Deploy
+    # self-hosted: 물리서버에 설치된 자체 러너에서 작업 수행
+    runs-on: [self-hosted]
+    timeout-minutes: 10 # 10분
+    strategy:
+      matrix:
+        node-version: [v18.14.2]
+
+    steps:
+      - name: Checkout actions Repository
+        uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache node_modules
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
+
+      - name: Install Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Run Build App
+        run: npm run build
+
+      - name: Stop old server (ignore error)
+        run: |
+          killall -9 node || true
+      - name: Remove old server in ~/soruce (ignore error)
+        run: |
+          rm -rf ~/source || true
+      - name: Copy new server to ~/soruce
+        run: |
+          mkdir -p ~/source
+          cp -R ./ ~/source
+
+      # 백그라운드 실행 설정(데몬 실행 x)
+      - name: Setting ENV and Run app
+        env:
+          # 고아프로세스를 죽이지 않는 설정이다.(보안상 위험하기 때문에 꼭 필요한 경우에만 사용한다.)
+          ## [참고](https://www.praetorian.com/blog/self-hosted-github-runners-are-backdoors/)
+          RUNNER_TRACKING_ID: 0 # or ''
+        run: |
+          cd ~/source
+          PRODUCTION_ENV=${{ secrets.PRODUCTION_ENV }}
+          echo $PRODUCTION_ENV | base64 --decode > .env
+          export $(grep -E "^[^#]+=" .env) && rm .env
+          # 로그 임시로 ~/source 폴더에 저장
+          nohup node dist/src/main.js >> ~/source/app.log 2>&1 & echo $! > node_pid
+          disown $(cat node_pid)
