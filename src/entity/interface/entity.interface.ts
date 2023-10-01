@@ -269,27 +269,27 @@ export interface RegionInfo {
   /**
    * H(행정동) 또는 B(법정동)
    */
-  region_type: string;
+  regionType: string;
   /**
    * 전체 지역 명칭
    */
-  address_name: string;
+  addressName: string;
   /**
    * 지역 1Depth, 시도 단위 바다 영역은 존재하지 않음
    */
-  region_1depth_name: string;
+  region1DepthName: string;
   /**
    * 지역 2Depth, 구 단위 바다 영역은 존재하지 않음
    */
-  region_2depth_name: string;
+  region2DepthName: string;
   /**
    * 지역 3Depth, 동 단위 바다 영역은 존재하지 않음
    */
-  region_3depth_name: string;
+  region3DepthName: string;
   /**
-   * 지역 4Depth, 리 영역인 경우만 존재 region_type이 법정동이며;
+   * 지역 4Depth, 리 영역인 경우만 존재 regionType이 법정동이며;
    */
-  region_4depth_name: string;
+  region4DepthName: string;
   /**
    * region 코드
    */
