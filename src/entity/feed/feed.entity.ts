@@ -1,6 +1,13 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 
 import { BooleanValidator, IntValidator, StringValidator } from '@app/common';
 import { GeoMark } from '../geo';
@@ -176,6 +183,15 @@ export class Feed extends Timestamp {
   })
   recommendHistories: RecommendHistory[] | [];
 
+  /**
+   * 위치 정보
+   * - 연관관계 주인은 피드이다.
+   * @JoinColumn
+   */
+  @ApiHideProperty()
+  @Exclude()
+  @OneToOne(() => GeoMark)
+  @JoinColumn()
   geoMark: GeoMark;
 
   /* ========== 단순 연관관계 - 조회 가능 ==========*/

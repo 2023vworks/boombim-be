@@ -1,8 +1,8 @@
-import { Column, Entity, Point } from 'typeorm';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { Exclude, Expose } from 'class-transformer';
+import { Column, Entity, JoinColumn, OneToOne, Point } from 'typeorm';
 
 import { EnumValidator, NumberValidator } from '@app/common';
-import { ApiProperty } from '@nestjs/swagger';
-import { Exclude, Expose } from 'class-transformer';
 import { CoordType } from '../enum';
 import { Feed } from '../feed';
 import { Timestamp } from '../timestamp.entity';
@@ -78,20 +78,45 @@ export class GeoMark extends Timestamp {
 
   /**
    * 행정구역 정보
+   * - 연관관계 주인은 마커이다.
+   * @JoinColumn
    */
+  @ApiHideProperty()
+  @Exclude()
+  @OneToOne(() => RegionInfo, { cascade: true })
+  @JoinColumn()
   regionInfo: RegionInfo;
 
   /**
-   * 주소 정보
+   * 주소 정보(구)
+   * - 연관관계 주인은 마커이다.
+   * @JoinColumn
    */
+  @ApiHideProperty()
+  @Exclude()
+  @OneToOne(() => Address, { cascade: true })
+  @JoinColumn()
   address: Address;
 
   /**
    * 도로명 주소 정보
+   * - 연관관계 주인은 마커이다.
+   * - 도로명 주소는 없을 수도 있다.
+   * @JoinColumn
    */
+  @ApiHideProperty()
+  @Exclude()
+  @OneToOne(() => RoadAddress, { cascade: true, nullable: true })
+  @JoinColumn()
   roadAddress?: RoadAddress | null;
 
   /* ========== 연관관계 ==========*/
-  // 관계
+  /**
+   * 피드
+   * - 연관관계 주인은 피드이다.
+   */
+  @ApiHideProperty()
+  @Exclude()
+  @OneToOne(() => Feed)
   feed: Feed;
 }

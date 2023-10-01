@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
-import { Column, Entity } from 'typeorm';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { Exclude, Expose } from 'class-transformer';
+import { Column, Entity, OneToOne } from 'typeorm';
 
 import { StringValidator } from '@app/common';
 import { Timestamp } from '../timestamp.entity';
@@ -106,5 +106,12 @@ export class RoadAddress extends Timestamp {
   zoneNo: string;
 
   /* ========== 연관관계 ==========*/
+  /**
+   * 마커
+   * - 연관관계 주인은 마커이다.
+   */
+  @ApiHideProperty()
+  @Exclude()
+  @OneToOne(() => GeoMark)
   geoMark: GeoMark;
 }
