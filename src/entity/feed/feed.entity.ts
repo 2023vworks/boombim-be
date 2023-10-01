@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity } from 'typeorm';
-import { Expose } from 'class-transformer';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { Exclude, Expose } from 'class-transformer';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 import { BooleanValidator, IntValidator, StringValidator } from '@app/common';
 import { GeoMark } from '../geo';
@@ -153,10 +153,51 @@ export class Feed extends Timestamp {
   @Column('integer', { comment: '조회수', default: 0 })
   view: number;
 
-  /* ========== 연관관계 ==========*/
-  user: User;
-  geoMark: GeoMark;
+  /* ========== 연관관계 주인 ==========*/
+  /**
+   * 피드에 달린 댓글 리스트
+   */
+  @ApiHideProperty()
+  @Exclude()
+  @OneToMany(() => Comment, (comment) => comment.feed, {
+    nullable: true,
+    cascade: true,
+  })
   comments: Comment[] | [];
+
+  /**
+   * 피드에 추천, 비추천 내역
+   */
+  @ApiHideProperty()
+  @Exclude()
+  @OneToMany(() => RecommendHistory, (history) => history.feed, {
+    nullable: true,
+    cascade: true,
+  })
   recommendHistories: RecommendHistory[] | [];
+
+  geoMark: GeoMark;
+
+  /* ========== 단순 연관관계 - 조회 가능 ==========*/
+
+  /**
+   * 피드에 신고 내역
+   * - 피드가 지워저도 신고 내역은 남아있는다.
+   */
+  @ApiHideProperty()
+  @Exclude()
+  @OneToMany(() => ReportHistory, (history) => history.feed, {
+    nullable: true,
+  })
   reportHistories: ReportHistory[] | [];
+
+  /**
+   * 작성자
+   */
+  @ApiHideProperty()
+  @Exclude()
+  @ManyToOne(() => User, (user) => user.feeds, {
+    nullable: false,
+  })
+  user: User;
 }

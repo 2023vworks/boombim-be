@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
-import { Column, Entity } from 'typeorm';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { Exclude, Expose } from 'class-transformer';
+import { Column, Entity, ManyToOne } from 'typeorm';
 
 import { StringValidator } from '@app/common';
 import { Timestamp } from '../timestamp.entity';
@@ -24,6 +24,23 @@ export class ReportHistory extends Timestamp {
   reason: string;
 
   /* ========== 연관관계 ==========*/
-  feed: Feed; // 부모
+  /**
+   * 피드
+   * - 피드가 삭제되도 신고 내역은 남아있는다.
+   */
+  @ApiHideProperty()
+  @Exclude()
+  @ManyToOne(() => Feed, (feed) => feed.comments, {
+    nullable: false,
+    orphanedRowAction: 'nullify',
+    onDelete: 'SET NULL',
+  })
+  feed: Feed;
+
+  @ApiHideProperty()
+  @Exclude()
+  @ManyToOne(() => User, (user) => user.recommendHistories, {
+    nullable: false,
+  })
   user: User;
 }

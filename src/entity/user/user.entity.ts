@@ -4,7 +4,7 @@ import {
   ApiPropertyOptional,
 } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 import {
   DateValidator,
@@ -14,7 +14,7 @@ import {
   StringValidator,
 } from '@app/common';
 import { MbtiType } from '../enum';
-import { Comment, Feed } from '../feed';
+import { Comment, Feed, RecommendHistory, ReportHistory } from '../feed';
 import { Timestamp } from '../timestamp.entity';
 
 @Entity('user')
@@ -101,7 +101,49 @@ export class User extends Timestamp {
   })
   lastFeedWrittenAt?: Date | null;
 
-  /* ========== 연관관계 ==========*/
+  /* ========== 단순 연관관계 - 역방향 x ==========*/
+  /**
+   * 유저가 작성한 피드 내역
+   * - TODO: 유저가 삭제되면 피드도 삭제할까?
+   */
+  @ApiHideProperty()
+  @Exclude()
+  @OneToMany(() => Feed, (feed) => feed.user, {
+    nullable: true,
+    cascade: ['soft-remove'],
+  })
   feeds: Feed[] | [];
+
+  /**
+   * 유저가 작성한 댓글 내역
+   * - TODO: 유저가 삭제되면 댓글도 삭제할까?
+   */
+  @ApiHideProperty()
+  @Exclude()
+  @OneToMany(() => Comment, (comment) => comment.user, {
+    nullable: true,
+    cascade: ['soft-remove'],
+    // Note: 유저는 자신의 댓글 삭제에만 권한을 가진다, 연관관계 주인은 Feed이다.
+  })
   comments: Comment[] | [];
+
+  /**
+   * 유저 추천, 비추천 내역
+   */
+  @ApiHideProperty()
+  @Exclude()
+  @OneToMany(() => RecommendHistory, (history) => history.user, {
+    nullable: true,
+  })
+  recommendHistories: RecommendHistory[] | [];
+
+  /**
+   * 유저가 신고한 내역
+   */
+  @ApiHideProperty()
+  @Exclude()
+  @OneToMany(() => ReportHistory, (history) => history.user, {
+    nullable: true,
+  })
+  reportHistories: ReportHistory[] | [];
 }
