@@ -163,6 +163,26 @@ export interface Feed {
   user: User;
   geoMark: GeoMark;
   comments: Comment[] | [];
+  recommendHistories: RecommendHistory[] | [];
+  reportHistories: ReportHistory[] | [];
+}
+
+export interface Comment {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date;
+
+  /**
+   * 댓글 내용
+   * - 140자
+   * - 3byte * 140
+   */
+  content: string;
+
+  /* ========== 연관관계 ==========*/
+  user: User;
+  feed: Feed;
 }
 
 export interface RecommendHistory {
