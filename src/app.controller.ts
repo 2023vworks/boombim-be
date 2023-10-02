@@ -9,7 +9,7 @@ export class AppController {
 
   @Get()
   @ApiOkResponse({
-    description: successMessage.S200APP001,
+    description: successMessage.S200_APP_001,
   })
   getHello(): string {
     return this.appService.getHello();

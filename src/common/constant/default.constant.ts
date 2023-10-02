@@ -1,4 +1,5 @@
-export const DefalutAppName = 'Nestjs-API';
+export const DefalutAppName = 'Boombim';
+export const USER_ACCESS_TOKEN = 'USER_ACCESS_TOKEN';
 
 /**
  * class-transform의 plainToInstance 함수에 사용할 옵션 기본값
