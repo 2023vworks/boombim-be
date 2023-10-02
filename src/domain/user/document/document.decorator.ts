@@ -7,7 +7,7 @@ import {
 
 import { ApiAuthDocument, USER_ACCESS_TOKEN } from '@app/common';
 import { errorMessage, successMessage } from '@app/custom';
-import { GetUserResponseDTO, PostUsersResponseDTO } from '../dto';
+import { GetUserResponseDTO, PostUsersResponseDTO } from '../domain';
 import { UserController } from '../user.controller';
 
 type API_DOC_TYPE = keyof UserController;
