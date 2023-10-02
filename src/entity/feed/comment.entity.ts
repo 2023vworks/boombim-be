@@ -4,11 +4,11 @@ import { Column, Entity, ManyToOne } from 'typeorm';
 
 import { StringValidator } from '@app/common';
 import { Timestamp } from '../timestamp.entity';
-import { User } from '../user';
-import { Feed } from './feed.entity';
+import { UserEntity } from '../user';
+import { FeedEntity } from './feed.entity';
 
 @Entity('comment')
-export class Comment extends Timestamp {
+export class CommentEntity extends Timestamp {
   /**
    * 댓글 내용
    * - 140자
@@ -28,17 +28,17 @@ export class Comment extends Timestamp {
   /* ========== 연관관계 ==========*/
   @ApiHideProperty()
   @Exclude()
-  @ManyToOne(() => User, (user) => user.comments, {
+  @ManyToOne(() => UserEntity, (user) => user.comments, {
     nullable: false,
   })
-  user: User;
+  user: UserEntity;
 
   @ApiHideProperty()
   @Exclude()
-  @ManyToOne(() => Feed, (feed) => feed.comments, {
+  @ManyToOne(() => FeedEntity, (feed) => feed.comments, {
     nullable: false,
     onDelete: 'CASCADE',
     // Note: 연관관계 주인인 피드가 삭제되면 댓글도 삭제된다.
   })
-  feed: Feed;
+  feed: FeedEntity;
 }

@@ -1,5 +1,5 @@
 import { PickType } from '@nestjs/swagger';
 
-import { User } from '@app/entity';
+import { UserEntity } from '@app/entity';
 
-export class PostUsersRequestDTO extends PickType(User, ['mbtiType']) {}
+export class PostUsersRequestDTO extends PickType(UserEntity, ['mbtiType']) {}

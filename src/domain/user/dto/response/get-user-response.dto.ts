@@ -1,10 +1,10 @@
 import { PickType } from '@nestjs/swagger';
 
-import { User } from '@app/entity';
+import { UserEntity } from '@app/entity';
 
 import { defaultResponseProperties } from '@app/common';
 
-export class GetUserResponseDTO extends PickType(User, [
+export class GetUserResponseDTO extends PickType(UserEntity, [
   ...defaultResponseProperties,
   'mbtiType',
   'nickname',

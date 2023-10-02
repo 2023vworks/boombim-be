@@ -4,14 +4,14 @@ import { Exclude, Expose } from 'class-transformer';
 
 import { StringValidator } from '@app/common';
 import { Timestamp } from '../timestamp.entity';
-import { GeoMark } from './geo-mark.entity';
+import { GeoMarkEntity } from './geo-mark.entity';
 
 /**
  * 지번 주소 상세 정보
  * @docs https://developers.kakao.com/docs/latest/ko/local/dev-guide#coord-to-address-response-body-address
  */
 @Entity('address')
-export class Address extends Timestamp {
+export class AddressEntity extends Timestamp {
   /**
    * 전체 지번 주소
    */
@@ -94,6 +94,6 @@ export class Address extends Timestamp {
    */
   @ApiHideProperty()
   @Exclude()
-  @OneToOne(() => GeoMark)
-  geoMark: GeoMark;
+  @OneToOne(() => GeoMarkEntity)
+  geoMark: GeoMarkEntity;
 }

@@ -4,14 +4,14 @@ import { Column, Entity, OneToOne } from 'typeorm';
 
 import { StringValidator } from '@app/common';
 import { Timestamp } from '../timestamp.entity';
-import { GeoMark } from './geo-mark.entity';
+import { GeoMarkEntity } from './geo-mark.entity';
 
 /**
  * 도로명 주소 상세 정보
  * @docs https://developers.kakao.com/docs/latest/ko/local/dev-guide#coord-to-address-response-body-road-address
  */
 @Entity('road_address')
-export class RoadAddress extends Timestamp {
+export class RoadAddressEntity extends Timestamp {
   /**
    * 전체 도로명 주소
    */
@@ -112,6 +112,6 @@ export class RoadAddress extends Timestamp {
    */
   @ApiHideProperty()
   @Exclude()
-  @OneToOne(() => GeoMark)
-  geoMark: GeoMark;
+  @OneToOne(() => GeoMarkEntity)
+  geoMark: GeoMarkEntity;
 }

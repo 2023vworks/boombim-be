@@ -4,11 +4,11 @@ import { Column, Entity, ManyToOne } from 'typeorm';
 
 import { StringValidator } from '@app/common';
 import { Timestamp } from '../timestamp.entity';
-import { Feed } from './feed.entity';
-import { User } from '../user';
+import { FeedEntity } from './feed.entity';
+import { UserEntity } from '../user';
 
 @Entity('report_history')
-export class ReportHistory extends Timestamp {
+export class ReportHistoryEntity extends Timestamp {
   /**
    * 신고 사유
    */
@@ -30,17 +30,17 @@ export class ReportHistory extends Timestamp {
    */
   @ApiHideProperty()
   @Exclude()
-  @ManyToOne(() => Feed, (feed) => feed.comments, {
+  @ManyToOne(() => FeedEntity, (feed) => feed.comments, {
     nullable: false,
     orphanedRowAction: 'nullify',
     onDelete: 'SET NULL',
   })
-  feed: Feed;
+  feed: FeedEntity;
 
   @ApiHideProperty()
   @Exclude()
-  @ManyToOne(() => User, (user) => user.recommendHistories, {
+  @ManyToOne(() => UserEntity, (user) => user.recommendHistories, {
     nullable: false,
   })
-  user: User;
+  user: UserEntity;
 }
