@@ -9,6 +9,7 @@ import { PostUsersRequestDTO } from './domain/dto';
 export const UserRepositoryToken = Symbol('UserRepositoryToken');
 export interface UserRepository extends CustomRepository<UserEntity> {
   createUser(postDto: PostUsersRequestDTO): Promise<UserEntity>;
+  updateProperty(id: number, properties: Partial<UserEntity>): Promise<void>;
 }
 
 @Injectable()
@@ -24,6 +25,14 @@ export class UserRepositoryImpl
   }
 
   async createUser(postDto: PostUsersRequestDTO): Promise<UserEntity> {
-    throw new Error('Method not implemented.');
+    const user = this.create({ ...postDto });
+    return this.save(user);
+  }
+
+  async updateProperty(
+    id: number,
+    properties: Partial<UserEntity>,
+  ): Promise<void> {
+    await this.update(id, { ...properties });
   }
 }

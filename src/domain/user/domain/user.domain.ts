@@ -42,6 +42,10 @@ export class User extends BaseDomain<UserProps> {
     return this.props.lastFeedWrittenAt;
   }
 
+  renewFeedWritingCount() {
+    return this.feedWritingCount;
+  }
+
   private createNickname(): string {
     switch (this.id.toString().length) {
       case 1:

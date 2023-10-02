@@ -6,10 +6,15 @@ import {
   HttpCode,
   Inject,
   Post,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 
-import { ApiControllerDocument, DefalutAppName } from '@app/common';
+import {
+  ApiControllerDocument,
+  DefalutAppName,
+  GetUserInfoDecorator,
+} from '@app/common';
 import { DocumentHelper } from './document';
 import {
   GetUserResponseDTO,
@@ -17,6 +22,7 @@ import {
   PostUsersResponseDTO,
 } from './domain/dto';
 import { UserService, UserServiceToken } from './user.service';
+import { JwtGuard } from '../auth/guard';
 
 @ApiControllerDocument(`[${DefalutAppName}] users API`)
 @Controller('/users')
@@ -37,8 +43,11 @@ export class UserController {
   }
 
   @DocumentHelper('getUserMe')
+  @UseGuards(JwtGuard)
   @Get('/me')
-  async getUserMe(): Promise<GetUserResponseDTO> {
-    return this.userService.getUser(1);
+  async getUserMe(
+    @GetUserInfoDecorator('id') userId: number,
+  ): Promise<GetUserResponseDTO> {
+    return this.userService.getUser(userId);
   }
 }
