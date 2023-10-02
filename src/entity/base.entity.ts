@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-export class Timestamp {
+export class BaseEntity {
   @ApiProperty({ description: '엔티티 id', type: Number })
   @Expose()
   @PrimaryGeneratedColumn()

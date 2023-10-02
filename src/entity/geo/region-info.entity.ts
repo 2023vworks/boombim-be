@@ -3,16 +3,16 @@ import { Exclude, Expose } from 'class-transformer';
 import { Column, Entity, OneToOne } from 'typeorm';
 
 import { EnumValidator, StringValidator } from '@app/common';
+import { BaseEntity } from '../base.entity';
 import { RegionType } from '../enum';
-import { Timestamp } from '../timestamp.entity';
-import { GeoMark } from './geo-mark.entity';
+import { GeoMarkEntity } from './geo-mark.entity';
 
 /**
  * 좌표로 행정구역정보 받기
  * @docs https://developers.kakao.com/docs/latest/ko/local/dev-guide#coord-to-district-response-body-document
  */
 @Entity('region_info')
-export class RegionInfo extends Timestamp {
+export class RegionInfoEntity extends BaseEntity {
   /**
    * H(행정동) 또는 B(법정동)
    */
@@ -117,6 +117,6 @@ export class RegionInfo extends Timestamp {
    */
   @ApiHideProperty()
   @Exclude()
-  @OneToOne(() => GeoMark)
-  geoMark: GeoMark;
+  @OneToOne(() => GeoMarkEntity)
+  geoMark: GeoMarkEntity;
 }

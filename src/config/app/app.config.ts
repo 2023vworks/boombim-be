@@ -7,6 +7,7 @@ import {
   SwaggerConfig,
 } from '@app/config';
 import { BaseConfig } from './base.config';
+import { JwtConfig } from '../jwt';
 
 export class AppConfig extends BaseConfig {
   @StringValidator()
@@ -17,6 +18,9 @@ export class AppConfig extends BaseConfig {
 
   @InstanceValidator(CorsConfig)
   readonly cors: CorsConfig;
+
+  @InstanceValidator(JwtConfig)
+  readonly jwt: JwtConfig;
 
   @InstanceValidator(DatabaseConfig)
   readonly database: DatabaseConfig;

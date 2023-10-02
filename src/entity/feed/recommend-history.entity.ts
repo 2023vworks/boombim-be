@@ -3,13 +3,13 @@ import { Exclude, Expose } from 'class-transformer';
 import { Column, Entity, ManyToOne } from 'typeorm';
 
 import { EnumValidator } from '@app/common';
+import { BaseEntity } from '../base.entity';
 import { RecommendType } from '../enum';
-import { Timestamp } from '../timestamp.entity';
-import { User } from '../user';
-import { Feed } from './feed.entity';
+import { UserEntity } from '../user';
+import { FeedEntity } from './feed.entity';
 
 @Entity('recommend_history')
-export class RecommendHistory extends Timestamp {
+export class RecommendHistoryEntity extends BaseEntity {
   /**
    * 추천 타입
    * - 'Recommend' | 'Unrecommend'
@@ -26,17 +26,17 @@ export class RecommendHistory extends Timestamp {
   /* ========== 단순 연관관계 - 역방향 x ==========*/
   @ApiHideProperty()
   @Exclude()
-  @ManyToOne(() => Feed, (feed) => feed.comments, {
+  @ManyToOne(() => FeedEntity, (feed) => feed.comments, {
     nullable: false,
     onDelete: 'CASCADE',
     // Note: 연관관계 주인인 피드가 삭제되면 댓글도 삭제된다.
   })
-  feed: Feed; // 부모
+  feed: FeedEntity; // 부모
 
   @ApiHideProperty()
   @Exclude()
-  @ManyToOne(() => User, (user) => user.recommendHistories, {
+  @ManyToOne(() => UserEntity, (user) => user.recommendHistories, {
     nullable: false,
   })
-  user: User;
+  user: UserEntity;
 }

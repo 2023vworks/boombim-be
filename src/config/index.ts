@@ -4,3 +4,4 @@ export * from './database';
 export * from './swagger';
 export * from './winston';
 export * from './monitor';
+export * from './jwt';

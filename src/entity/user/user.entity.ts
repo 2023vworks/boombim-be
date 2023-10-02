@@ -13,12 +13,17 @@ import {
   IntValidator,
   StringValidator,
 } from '@app/common';
+import { BaseEntity } from '../base.entity';
 import { MbtiType } from '../enum';
-import { Comment, Feed, RecommendHistory, ReportHistory } from '../feed';
-import { Timestamp } from '../timestamp.entity';
+import {
+  CommentEntity,
+  FeedEntity,
+  RecommendHistoryEntity,
+  ReportHistoryEntity,
+} from '../feed';
 
 @Entity('user')
-export class User extends Timestamp {
+export class UserEntity extends BaseEntity {
   /**
    * MBTI 유형
    */
@@ -108,11 +113,11 @@ export class User extends Timestamp {
    */
   @ApiHideProperty()
   @Exclude()
-  @OneToMany(() => Feed, (feed) => feed.user, {
+  @OneToMany(() => FeedEntity, (feed) => feed.user, {
     nullable: true,
     cascade: ['soft-remove'],
   })
-  feeds: Feed[] | [];
+  feeds: FeedEntity[];
 
   /**
    * 유저가 작성한 댓글 내역
@@ -120,30 +125,30 @@ export class User extends Timestamp {
    */
   @ApiHideProperty()
   @Exclude()
-  @OneToMany(() => Comment, (comment) => comment.user, {
+  @OneToMany(() => CommentEntity, (comment) => comment.user, {
     nullable: true,
     cascade: ['soft-remove'],
     // Note: 유저는 자신의 댓글 삭제에만 권한을 가진다, 연관관계 주인은 Feed이다.
   })
-  comments: Comment[] | [];
+  comments: CommentEntity[];
 
   /**
    * 유저 추천, 비추천 내역
    */
   @ApiHideProperty()
   @Exclude()
-  @OneToMany(() => RecommendHistory, (history) => history.user, {
+  @OneToMany(() => RecommendHistoryEntity, (history) => history.user, {
     nullable: true,
   })
-  recommendHistories: RecommendHistory[] | [];
+  recommendHistories: RecommendHistoryEntity[];
 
   /**
    * 유저가 신고한 내역
    */
   @ApiHideProperty()
   @Exclude()
-  @OneToMany(() => ReportHistory, (history) => history.user, {
+  @OneToMany(() => ReportHistoryEntity, (history) => history.user, {
     nullable: true,
   })
-  reportHistories: ReportHistory[] | [];
+  reportHistories: ReportHistoryEntity[];
 }

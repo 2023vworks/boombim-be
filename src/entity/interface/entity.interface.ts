@@ -1,50 +1,18 @@
-/**
- * Mbti 타입
- */
-enum MbtiType {
-  ISTJ = 'ISTJ',
-  ISFJ = 'ISFJ',
-  INFJ = 'INFJ',
-  INTJ = 'INTJ',
-  ISTP = 'ISTP',
-  ISFP = 'ISFP',
-  INFP = 'INFP',
-  INTP = 'INTP',
-  ESTP = 'ESTP',
-  ESFP = 'ESFP',
-  ENFP = 'ENFP',
-  ENTP = 'ENTP',
-  ESTJ = 'ESTJ',
-  ESFJ = 'ESFJ',
-  ENFJ = 'ENFJ',
-  ENTJ = 'ENTJ',
-}
-/**
- * 추천 타입
- */
-enum RecommendType {
-  RECOMMEND = 'Recommend',
-  UNRECOMMEND = 'Unrecommend',
-}
-/**
- * 좌표계 타입
- */
-enum CoordType {
-  /** 위경도 좌표계 */
-  WGS84 = 'WGS84',
-  WCONGNAMUL = 'WCONGNAMUL',
-  CONGNAMUL = 'CONGNAMUL',
-  WGS84GEO = 'WGS84GEO',
-  WCONGNAMULGEO = 'WCONGNAMULGEO',
-  CONGNAMULGEO = 'CONGNAMULGEO',
-}
+import { CoordType, MbtiType, RecommendType } from '../enum';
 
-export interface User {
+type Point = {
+  type: 'Point';
+  coordinates: number[];
+};
+
+export interface Timestamp {
   id: number; // 고유한 값
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
+}
 
+export interface User extends Timestamp {
   /**
    * MBTI 유형
    */
@@ -84,16 +52,13 @@ export interface User {
   lastFeedWrittenAt?: Date | null;
 
   /* ========== 연관관계 ==========*/
-  feeds: Feed[] | [];
-  comments: Comment[] | [];
+  feeds: Feed[];
+  comments: Comment[];
+  recommendHistories: RecommendHistory[];
+  reportHistories: ReportHistory[];
 }
 
-export interface Feed {
-  id: number;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
-
+export interface Feed extends Timestamp {
   /**
    * 피드 활성도
    * - 1 ~ 5
@@ -162,17 +127,12 @@ export interface Feed {
   /* ========== 연관관계 ==========*/
   user: User;
   geoMark: GeoMark;
-  comments: Comment[] | [];
-  recommendHistories: RecommendHistory[] | [];
-  reportHistories: ReportHistory[] | [];
+  comments: Comment[];
+  recommendHistories: RecommendHistory[];
+  reportHistories: ReportHistory[];
 }
 
-export interface Comment {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
-
+export interface Comment extends Timestamp {
   /**
    * 댓글 내용
    * - 140자
@@ -185,12 +145,7 @@ export interface Comment {
   feed: Feed;
 }
 
-export interface RecommendHistory {
-  id: number;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
-
+export interface RecommendHistory extends Timestamp {
   /**
    * 추천 타입
    * - 'Recommend' | 'Unrecommend'
@@ -202,11 +157,7 @@ export interface RecommendHistory {
   user: User;
 }
 
-export interface ReportHistory {
-  id: number;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
+export interface ReportHistory extends Timestamp {
   /**
    * 신고 사유
    */
@@ -217,12 +168,7 @@ export interface ReportHistory {
   user: User;
 }
 
-export interface GeoMark {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
-
+export interface GeoMark extends Timestamp {
   /**
    * 경도
    * - Double
@@ -240,6 +186,22 @@ export interface GeoMark {
    * - default 'WGS84'
    */
   type: CoordType;
+
+  /**
+   * Postgis의 geometry 타입
+   * - point = POINT(x, y)
+   * - POINT()는 postgresql의 내장함수이다.
+   */
+  point: Point;
+
+  /**
+   * SRID 식별자
+   * - SRID는 "Spatial Reference ID"의 약자로, 공간 데이터를 정의하는 데 사용되는 고유한 식별자이다.
+   * - WGS84 기준으로 대한민국은 EPSG 코드는 4326이다.
+   * - WGS84 좌표계가 GPS가 사용하는 좌표계이다.
+   * - Postgrsql의 Geometry 함수에는 SRID를 사용해야 정확한 값이 나온다.
+   */
+  srid: 4326 | number;
 
   /**
    * 행정구역 정보
@@ -265,7 +227,7 @@ export interface GeoMark {
  * 좌표로 행정구역정보 받기
  * @docs https://developers.kakao.com/docs/latest/ko/local/dev-guide#coord-to-district-response-body-document
  */
-export interface RegionInfo {
+export interface RegionInfo extends Timestamp {
   /**
    * H(행정동) 또는 B(법정동)
    */
@@ -304,13 +266,15 @@ export interface RegionInfo {
    * - Double
    */
   y: number;
+
+  geoMark: GeoMark;
 }
 
 /**
  * 지번 주소 상세 정보
  * @docs https://developers.kakao.com/docs/latest/ko/local/dev-guide#coord-to-address-response-body-address
  */
-export interface Address {
+export interface Address extends Timestamp {
   /**
    * 전체 지번 주소
    */
@@ -351,19 +315,14 @@ export interface Address {
    */
   subAddressNo: string;
 
-  /**
-   * 우편번호(6자리)
-   * @deprecated
-   * @see [주소 검색 API의 우편번호 및 오탈자 응답 필드 제거 안내] https://devtalk.kakao.com/t/api-6/93000
-   */
-  deprecatedZipCode: string;
+  geoMark: GeoMark;
 }
 
 /**
  * 도로명 주소 상세 정보
  * @docs https://developers.kakao.com/docs/latest/ko/local/dev-guide#coord-to-address-response-body-road-address
  */
-export interface RoadAddress {
+export interface RoadAddress extends Timestamp {
   /**
    * 전체 도로명 주소
    */

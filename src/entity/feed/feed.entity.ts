@@ -10,15 +10,15 @@ import {
 } from 'typeorm';
 
 import { BooleanValidator, IntValidator, StringValidator } from '@app/common';
-import { GeoMark } from '../geo';
-import { Timestamp } from '../timestamp.entity';
-import { User } from '../user';
-import { Comment } from './comment.entity';
-import { RecommendHistory } from './recommend-history.entity';
-import { ReportHistory } from './report-history.entity';
+import { BaseEntity } from '../base.entity';
+import { GeoMarkEntity } from '../geo';
+import { UserEntity } from '../user';
+import { CommentEntity } from './comment.entity';
+import { RecommendHistoryEntity } from './recommend-history.entity';
+import { ReportHistoryEntity } from './report-history.entity';
 
 @Entity('feed')
-export class Feed extends Timestamp {
+export class FeedEntity extends BaseEntity {
   /**
    * 피드 활성도
    * - 1 ~ 5
@@ -71,7 +71,7 @@ export class Feed extends Timestamp {
     array: true,
     default: '{}',
   })
-  thumbnailImages: string[] | [];
+  thumbnailImages: string[];
 
   /**
    * 이미지 리스트
@@ -92,7 +92,7 @@ export class Feed extends Timestamp {
     array: true,
     default: '{}',
   })
-  images: string[] | [];
+  images: string[];
 
   /**
    * 해시태그 리스트
@@ -106,7 +106,7 @@ export class Feed extends Timestamp {
     array: true,
     default: '{}',
   })
-  hashTags: string[] | [];
+  hashTags: string[];
 
   /**
    * 피드 활성화 여부
@@ -166,22 +166,22 @@ export class Feed extends Timestamp {
    */
   @ApiHideProperty()
   @Exclude()
-  @OneToMany(() => Comment, (comment) => comment.feed, {
+  @OneToMany(() => CommentEntity, (comment) => comment.feed, {
     nullable: true,
     cascade: true,
   })
-  comments: Comment[] | [];
+  comments: CommentEntity[];
 
   /**
    * 피드에 추천, 비추천 내역
    */
   @ApiHideProperty()
   @Exclude()
-  @OneToMany(() => RecommendHistory, (history) => history.feed, {
+  @OneToMany(() => RecommendHistoryEntity, (history) => history.feed, {
     nullable: true,
     cascade: true,
   })
-  recommendHistories: RecommendHistory[] | [];
+  recommendHistories: RecommendHistoryEntity[];
 
   /**
    * 위치 정보
@@ -190,9 +190,9 @@ export class Feed extends Timestamp {
    */
   @ApiHideProperty()
   @Exclude()
-  @OneToOne(() => GeoMark)
+  @OneToOne(() => GeoMarkEntity)
   @JoinColumn()
-  geoMark: GeoMark;
+  geoMark: GeoMarkEntity;
 
   /* ========== 단순 연관관계 - 조회 가능 ==========*/
 
@@ -202,18 +202,18 @@ export class Feed extends Timestamp {
    */
   @ApiHideProperty()
   @Exclude()
-  @OneToMany(() => ReportHistory, (history) => history.feed, {
+  @OneToMany(() => ReportHistoryEntity, (history) => history.feed, {
     nullable: true,
   })
-  reportHistories: ReportHistory[] | [];
+  reportHistories: ReportHistoryEntity[];
 
   /**
    * 작성자
    */
   @ApiHideProperty()
   @Exclude()
-  @ManyToOne(() => User, (user) => user.feeds, {
+  @ManyToOne(() => UserEntity, (user) => user.feeds, {
     nullable: false,
   })
-  user: User;
+  user: UserEntity;
 }

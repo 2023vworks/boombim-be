@@ -3,15 +3,15 @@ import { Exclude, Expose } from 'class-transformer';
 import { Column, Entity, JoinColumn, OneToOne, Point } from 'typeorm';
 
 import { EnumValidator, NumberValidator } from '@app/common';
+import { BaseEntity } from '../base.entity';
 import { CoordType } from '../enum';
-import { Feed } from '../feed';
-import { Timestamp } from '../timestamp.entity';
-import { Address } from './address.entity';
-import { RegionInfo } from './region-info.entity';
-import { RoadAddress } from './road-address.entity';
+import { FeedEntity } from '../feed';
+import { AddressEntity } from './address.entity';
+import { RegionInfoEntity } from './region-info.entity';
+import { RoadAddressEntity } from './road-address.entity';
 
 @Entity('geo_mark')
-export class GeoMark extends Timestamp {
+export class GeoMarkEntity extends BaseEntity {
   /**
    * 경도(x좌표)
    * - Double
@@ -83,9 +83,9 @@ export class GeoMark extends Timestamp {
    */
   @ApiHideProperty()
   @Exclude()
-  @OneToOne(() => RegionInfo, { cascade: true })
+  @OneToOne(() => RegionInfoEntity, { cascade: true })
   @JoinColumn()
-  regionInfo: RegionInfo;
+  regionInfo: RegionInfoEntity;
 
   /**
    * 주소 정보(구)
@@ -94,9 +94,9 @@ export class GeoMark extends Timestamp {
    */
   @ApiHideProperty()
   @Exclude()
-  @OneToOne(() => Address, { cascade: true })
+  @OneToOne(() => AddressEntity, { cascade: true })
   @JoinColumn()
-  address: Address;
+  address: AddressEntity;
 
   /**
    * 도로명 주소 정보
@@ -106,9 +106,9 @@ export class GeoMark extends Timestamp {
    */
   @ApiHideProperty()
   @Exclude()
-  @OneToOne(() => RoadAddress, { cascade: true, nullable: true })
+  @OneToOne(() => RoadAddressEntity, { cascade: true, nullable: true })
   @JoinColumn()
-  roadAddress?: RoadAddress | null;
+  roadAddress?: RoadAddressEntity | null;
 
   /* ========== 연관관계 ==========*/
   /**
@@ -117,6 +117,6 @@ export class GeoMark extends Timestamp {
    */
   @ApiHideProperty()
   @Exclude()
-  @OneToOne(() => Feed)
-  feed: Feed;
+  @OneToOne(() => FeedEntity)
+  feed: FeedEntity;
 }
