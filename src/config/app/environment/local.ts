@@ -1,4 +1,4 @@
-import { DefalutAppName } from '@app/common';
+import { DefalutAppName, USER_ACCESS_TOKEN } from '@app/common';
 import { AppConfig } from '../app.config';
 
 export const LocalConfig: AppConfig = {
@@ -6,9 +6,16 @@ export const LocalConfig: AppConfig = {
   port: +(process.env.PORT ?? 3000),
   cors: { origin: process.env.CORS_ORIGIN ?? '*' },
 
+  jwt: {
+    secret: process.env.JWT_SECRET,
+    expiresIn: process.env.JWT_EXPIRES_IN,
+    issuer: process.env.JWT_ISSUER,
+    subject: process.env.JWT_SUBJECT,
+  },
+
   database: {
     type: 'postgres',
-    host: process.env.DATABASE_HOST, // 개발
+    host: process.env.DATABASE_HOST,
     port: +process.env.DATABASE_PORT,
     username: process.env.DATABASE_USER,
     password: process.env.DATABASE_PASSWORD,
@@ -24,9 +31,9 @@ export const LocalConfig: AppConfig = {
 
     /* DB 가용성에 따라 변경 해야한다. */
     maxQueryExecutionTime:
-      +process.env.DATABASE_MAX_QUERY_EXECUTION_TIME ?? 10000, // 10초
+      +process.env.DATABASE_MAX_QUERY_EXECUTION_TIME ?? 10000,
     extra: {
-      statement_timeout: +process.env.DATABASE_CONNECT_TIMEOUT ?? 60000, // 1분
+      statement_timeout: +process.env.DATABASE_CONNECT_TIMEOUT ?? 60000,
       min: +process.env.DATABASE_POOL_MIN_SIZE ?? 5,
       max: +process.env.DATABASE_POOL_MAX_SIZE ?? 10,
     },
@@ -40,7 +47,7 @@ export const LocalConfig: AppConfig = {
         version: process.env.SWAGGER_APIS_VERSION,
       },
       securityConfig: {
-        name: 'Access-Token',
+        name: USER_ACCESS_TOKEN,
         securityOptions: {
           type: 'http',
           scheme: 'bearer',
