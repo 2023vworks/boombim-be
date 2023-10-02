@@ -1,9 +1,9 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, OneToOne } from 'typeorm';
 import { Exclude, Expose } from 'class-transformer';
+import { Column, Entity, OneToOne } from 'typeorm';
 
 import { StringValidator } from '@app/common';
-import { Timestamp } from '../timestamp.entity';
+import { BaseEntity } from '../base.entity';
 import { GeoMarkEntity } from './geo-mark.entity';
 
 /**
@@ -11,7 +11,7 @@ import { GeoMarkEntity } from './geo-mark.entity';
  * @docs https://developers.kakao.com/docs/latest/ko/local/dev-guide#coord-to-address-response-body-address
  */
 @Entity('address')
-export class AddressEntity extends Timestamp {
+export class AddressEntity extends BaseEntity {
   /**
    * 전체 지번 주소
    */

@@ -3,7 +3,7 @@ import { Exclude, Expose } from 'class-transformer';
 import { Column, Entity, OneToOne } from 'typeorm';
 
 import { StringValidator } from '@app/common';
-import { Timestamp } from '../timestamp.entity';
+import { BaseEntity } from '../base.entity';
 import { GeoMarkEntity } from './geo-mark.entity';
 
 /**
@@ -11,7 +11,7 @@ import { GeoMarkEntity } from './geo-mark.entity';
  * @docs https://developers.kakao.com/docs/latest/ko/local/dev-guide#coord-to-address-response-body-road-address
  */
 @Entity('road_address')
-export class RoadAddressEntity extends Timestamp {
+export class RoadAddressEntity extends BaseEntity {
   /**
    * 전체 도로명 주소
    */

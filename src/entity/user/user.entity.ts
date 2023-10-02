@@ -13,6 +13,7 @@ import {
   IntValidator,
   StringValidator,
 } from '@app/common';
+import { BaseEntity } from '../base.entity';
 import { MbtiType } from '../enum';
 import {
   CommentEntity,
@@ -20,10 +21,9 @@ import {
   RecommendHistoryEntity,
   ReportHistoryEntity,
 } from '../feed';
-import { Timestamp } from '../timestamp.entity';
 
 @Entity('user')
-export class UserEntity extends Timestamp {
+export class UserEntity extends BaseEntity {
   /**
    * MBTI 유형
    */
@@ -117,7 +117,7 @@ export class UserEntity extends Timestamp {
     nullable: true,
     cascade: ['soft-remove'],
   })
-  feeds: FeedEntity[] | [];
+  feeds: FeedEntity[];
 
   /**
    * 유저가 작성한 댓글 내역
@@ -130,7 +130,7 @@ export class UserEntity extends Timestamp {
     cascade: ['soft-remove'],
     // Note: 유저는 자신의 댓글 삭제에만 권한을 가진다, 연관관계 주인은 Feed이다.
   })
-  comments: CommentEntity[] | [];
+  comments: CommentEntity[];
 
   /**
    * 유저 추천, 비추천 내역
@@ -140,7 +140,7 @@ export class UserEntity extends Timestamp {
   @OneToMany(() => RecommendHistoryEntity, (history) => history.user, {
     nullable: true,
   })
-  recommendHistories: RecommendHistoryEntity[] | [];
+  recommendHistories: RecommendHistoryEntity[];
 
   /**
    * 유저가 신고한 내역
@@ -150,5 +150,5 @@ export class UserEntity extends Timestamp {
   @OneToMany(() => ReportHistoryEntity, (history) => history.user, {
     nullable: true,
   })
-  reportHistories: ReportHistoryEntity[] | [];
+  reportHistories: ReportHistoryEntity[];
 }

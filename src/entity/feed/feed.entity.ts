@@ -10,15 +10,15 @@ import {
 } from 'typeorm';
 
 import { BooleanValidator, IntValidator, StringValidator } from '@app/common';
+import { BaseEntity } from '../base.entity';
 import { GeoMarkEntity } from '../geo';
-import { Timestamp } from '../timestamp.entity';
 import { UserEntity } from '../user';
 import { CommentEntity } from './comment.entity';
 import { RecommendHistoryEntity } from './recommend-history.entity';
 import { ReportHistoryEntity } from './report-history.entity';
 
 @Entity('feed')
-export class FeedEntity extends Timestamp {
+export class FeedEntity extends BaseEntity {
   /**
    * 피드 활성도
    * - 1 ~ 5
@@ -71,7 +71,7 @@ export class FeedEntity extends Timestamp {
     array: true,
     default: '{}',
   })
-  thumbnailImages: string[] | [];
+  thumbnailImages: string[];
 
   /**
    * 이미지 리스트
@@ -92,7 +92,7 @@ export class FeedEntity extends Timestamp {
     array: true,
     default: '{}',
   })
-  images: string[] | [];
+  images: string[];
 
   /**
    * 해시태그 리스트
@@ -106,7 +106,7 @@ export class FeedEntity extends Timestamp {
     array: true,
     default: '{}',
   })
-  hashTags: string[] | [];
+  hashTags: string[];
 
   /**
    * 피드 활성화 여부
@@ -170,7 +170,7 @@ export class FeedEntity extends Timestamp {
     nullable: true,
     cascade: true,
   })
-  comments: CommentEntity[] | [];
+  comments: CommentEntity[];
 
   /**
    * 피드에 추천, 비추천 내역
@@ -181,7 +181,7 @@ export class FeedEntity extends Timestamp {
     nullable: true,
     cascade: true,
   })
-  recommendHistories: RecommendHistoryEntity[] | [];
+  recommendHistories: RecommendHistoryEntity[];
 
   /**
    * 위치 정보
@@ -205,7 +205,7 @@ export class FeedEntity extends Timestamp {
   @OneToMany(() => ReportHistoryEntity, (history) => history.feed, {
     nullable: true,
   })
-  reportHistories: ReportHistoryEntity[] | [];
+  reportHistories: ReportHistoryEntity[];
 
   /**
    * 작성자

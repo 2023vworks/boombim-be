@@ -3,12 +3,12 @@ import { Exclude, Expose } from 'class-transformer';
 import { Column, Entity, ManyToOne } from 'typeorm';
 
 import { StringValidator } from '@app/common';
-import { Timestamp } from '../timestamp.entity';
+import { BaseEntity } from '../base.entity';
 import { UserEntity } from '../user';
 import { FeedEntity } from './feed.entity';
 
 @Entity('comment')
-export class CommentEntity extends Timestamp {
+export class CommentEntity extends BaseEntity {
   /**
    * 댓글 내용
    * - 140자

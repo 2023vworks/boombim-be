@@ -3,15 +3,15 @@ import { Exclude, Expose } from 'class-transformer';
 import { Column, Entity, JoinColumn, OneToOne, Point } from 'typeorm';
 
 import { EnumValidator, NumberValidator } from '@app/common';
+import { BaseEntity } from '../base.entity';
 import { CoordType } from '../enum';
 import { FeedEntity } from '../feed';
-import { Timestamp } from '../timestamp.entity';
 import { AddressEntity } from './address.entity';
 import { RegionInfoEntity } from './region-info.entity';
 import { RoadAddressEntity } from './road-address.entity';
 
 @Entity('geo_mark')
-export class GeoMarkEntity extends Timestamp {
+export class GeoMarkEntity extends BaseEntity {
   /**
    * 경도(x좌표)
    * - Double

@@ -3,13 +3,13 @@ import { Exclude, Expose } from 'class-transformer';
 import { Column, Entity, ManyToOne } from 'typeorm';
 
 import { EnumValidator } from '@app/common';
+import { BaseEntity } from '../base.entity';
 import { RecommendType } from '../enum';
-import { Timestamp } from '../timestamp.entity';
 import { UserEntity } from '../user';
 import { FeedEntity } from './feed.entity';
 
 @Entity('recommend_history')
-export class RecommendHistoryEntity extends Timestamp {
+export class RecommendHistoryEntity extends BaseEntity {
   /**
    * 추천 타입
    * - 'Recommend' | 'Unrecommend'
