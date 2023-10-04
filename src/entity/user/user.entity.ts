@@ -1,14 +1,10 @@
-import {
-  ApiHideProperty,
-  ApiProperty,
-  ApiPropertyOptional,
-} from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 import { Column, Entity, OneToMany } from 'typeorm';
 
 import {
+  BooleanValidator,
   DateValidator,
-  DateValidatorOptional,
   EnumValidator,
   IntValidator,
   StringValidator,
@@ -92,19 +88,27 @@ export class UserEntity extends BaseEntity {
   feedWritingCount: number;
 
   /**
-   * 피드 마지막 작성 시간 날짜
+   * 충전 시작 여부
+   * - default false
    */
-  @ApiPropertyOptional({
-    description: '피드 마지막 작성 시간 날짜',
-    type: Date,
-  })
-  @Expose()
-  @DateValidatorOptional()
+  @ApiHideProperty()
+  @Exclude()
+  @BooleanValidator()
+  @Column('boolean', { comment: '충전 시작 여부', default: false })
+  isRechargeStart: boolean;
+
+  /**
+   * feedWritingCount(피드 작성 가능 횟수) 충전 시작 시간
+   * - 최초 생성시 now
+   */
+  @ApiHideProperty()
+  @Exclude()
+  @DateValidator()
   @Column('timestamptz', {
-    comment: '피드 마지막 작성 시간 날짜',
-    nullable: true,
+    comment: '피드 작성 횟수 충전 시작 시간 날짜',
+    default: () => 'NOW()',
   })
-  lastFeedWrittenAt?: Date | null;
+  feedWritingCountRechargeStartAt: Date;
 
   /* ========== 단순 연관관계 - 역방향 x ==========*/
   /**
