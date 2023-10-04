@@ -72,11 +72,11 @@ export class UserServiceImpl implements UserService {
       return Util.toInstance(GetUserResponseDTO, { ...user.props });
     }
 
-    user.renewFeedWritingCount().isRenewedFeedWritingCount &&
+    const isRenewed = user.renewFeedWritingCount().isRenewedFeedWritingCount;
+    isRenewed &&
       (await this.userRepository.updateProperty(user.id, {
         feedWritingCount: user.feedWritingCount,
         feedWritingCountRechargeStartAt: user.feedWritingCountRechargeStartAt,
-        isRechargeStart: user.isRechargeStart,
       }));
 
     return Util.toInstance(GetUserResponseDTO, {

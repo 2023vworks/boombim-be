@@ -44,18 +44,10 @@ export class User extends BaseDomain<UserProps> {
 
   /**
    * 피드 작성 가능 횟수
-   * - min 0
-   * - max 5
+   * - min 0, max 5
    */
   get feedWritingCount(): number {
     return this.props.feedWritingCount;
-  }
-
-  /**
-   * 충전 시작 여부
-   */
-  get isRechargeStart(): boolean {
-    return this.props.isRechargeStart;
   }
 
   /**
@@ -66,12 +58,20 @@ export class User extends BaseDomain<UserProps> {
   }
 
   /* ============ custom ============ */
+
   /**
    * 피드 최대 작성 횟수인지 확인합니다.
    * - 최대 5회까지 작성 가능합니다.
    */
   get isMaxFeedWritingCount(): boolean {
     return this.props.feedWritingCount === this.MAX_FEED_WRITING_COUNT;
+  }
+
+  /**
+   * 충전 시작 여부
+   */
+  get isRechargeStart(): boolean {
+    return this.props.feedWritingCount <= this.MAX_FEED_WRITING_COUNT;
   }
 
   /**
@@ -110,12 +110,9 @@ export class User extends BaseDomain<UserProps> {
         : newFeedWritingCount;
 
     // 피드 작성 횟수 충전 시작 시간 갱신
-    this.props.feedWritingCountRechargeStartAt = this.isMaxFeedWritingCount
-      ? this.props.feedWritingCountRechargeStartAt
-      : new Date();
-
-    // 충전 시작 여부 갱신
-    this.props.isRechargeStart = this.isMaxFeedWritingCount ? false : true;
+    this.props.feedWritingCountRechargeStartAt = this.isRenewedFeedWritingCount
+      ? new Date()
+      : this.props.feedWritingCountRechargeStartAt;
 
     return this;
   }

@@ -3,7 +3,6 @@ import { Exclude, Expose } from 'class-transformer';
 import { Column, Entity, OneToMany } from 'typeorm';
 
 import {
-  BooleanValidator,
   DateValidator,
   EnumValidator,
   IntValidator,
@@ -86,16 +85,6 @@ export class UserEntity extends BaseEntity {
   @IntValidator({ min: 0, max: 5 })
   @Column('smallint', { comment: '피드 작성 가능 횟수', default: 5 })
   feedWritingCount: number;
-
-  /**
-   * 충전 시작 여부
-   * - default false
-   */
-  @ApiHideProperty()
-  @Exclude()
-  @BooleanValidator()
-  @Column('boolean', { comment: '충전 시작 여부', default: false })
-  isRechargeStart: boolean;
 
   /**
    * feedWritingCount(피드 작성 가능 횟수) 충전 시작 시간
