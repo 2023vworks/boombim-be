@@ -3,3 +3,4 @@ export * from './region-info.domain';
 export * from './address.domain';
 export * from './road-address.domain';
 export * from './geo-mark-entity-mapper';
+export * from './dto';

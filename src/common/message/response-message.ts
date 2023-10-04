@@ -3,10 +3,15 @@ const userSuccessMessage = {
   S200_USER_001: '유저 정보 조회에 성공하였습니다.',
 };
 
+const geoMarkSuccessMessage = {
+  S200_GEO_MARK_001: '지도 마커 리스트 조회에 성공하였습니다.',
+};
+
 // S + statusCode + _컨트롤러 + _넘버링
 export const successMessage = {
   S200_APP_001: '성공',
   ...userSuccessMessage,
+  ...geoMarkSuccessMessage,
 };
 
 // E + statusCode + _컨트롤러 + _넘버링

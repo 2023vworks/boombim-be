@@ -6,3 +6,4 @@ export * from './message';
 export * from './swagger';
 export * from './type';
 export * from './util';
+export * from './rest';
