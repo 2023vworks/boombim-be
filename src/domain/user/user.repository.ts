@@ -5,11 +5,13 @@ import { CustomRepository } from '@app/common';
 import { UserEntity } from '@app/entity';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { PostUsersRequestDTO } from './domain/dto';
+import { User, UserEntityMapper } from './domain';
 
 export const UserRepositoryToken = Symbol('UserRepositoryToken');
 export interface UserRepository extends CustomRepository<UserEntity> {
-  createUser(postDto: PostUsersRequestDTO): Promise<UserEntity>;
+  createUser(postDto: PostUsersRequestDTO): Promise<User>;
   updateProperty(id: number, properties: Partial<UserEntity>): Promise<void>;
+  findOneByPK(id: number): Promise<User | undefined>;
 }
 
 @Injectable()
@@ -24,9 +26,10 @@ export class UserRepositoryImpl
     super(UserEntity, manager);
   }
 
-  async createUser(postDto: PostUsersRequestDTO): Promise<UserEntity> {
+  async createUser(postDto: PostUsersRequestDTO): Promise<User> {
     const user = this.create({ ...postDto });
-    return this.save(user);
+    await this.save(user);
+    return UserEntityMapper.toDomain(user);
   }
 
   async updateProperty(
@@ -34,5 +37,10 @@ export class UserRepositoryImpl
     properties: Partial<UserEntity>,
   ): Promise<void> {
     await this.update(id, { ...properties });
+  }
+
+  async findOneByPK(id: number): Promise<User> {
+    const user = await this.findOneBy({ id });
+    return UserEntityMapper.toDomain(user);
   }
 }
