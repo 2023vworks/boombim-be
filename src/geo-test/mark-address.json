@@ -1,0 +1,2162 @@
+[
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로11길 14",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로11길",
+      "underground_yn": "N",
+      "main_building_no": "14",
+      "sub_building_no": "",
+      "building_name": "동성빌딩",
+      "zone_no": "05548"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 64-1",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "64",
+      "sub_address_no": "1",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로32길 29",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로32길",
+      "underground_yn": "N",
+      "main_building_no": "29",
+      "sub_building_no": "",
+      "building_name": "유성빌딩",
+      "zone_no": "05547"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 70",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "70",
+      "sub_address_no": "",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 위례성대로 10",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "위례성대로",
+      "underground_yn": "N",
+      "main_building_no": "10",
+      "sub_building_no": "",
+      "building_name": "에스-타워",
+      "zone_no": "05544"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 44-5",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "44",
+      "sub_address_no": "5",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 위례성대로 6",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "위례성대로",
+      "underground_yn": "N",
+      "main_building_no": "6",
+      "sub_building_no": "",
+      "building_name": "현대토픽스",
+      "zone_no": "05544"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 44-3",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "44",
+      "sub_address_no": "3",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로15길 7-8",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로15길",
+      "underground_yn": "N",
+      "main_building_no": "7",
+      "sub_building_no": "8",
+      "building_name": "",
+      "zone_no": "05548"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 68-5",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "68",
+      "sub_address_no": "5",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로11길 7",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로11길",
+      "underground_yn": "N",
+      "main_building_no": "7",
+      "sub_building_no": "",
+      "building_name": "제이타워빌딩",
+      "zone_no": "05542"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 24-3",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "24",
+      "sub_address_no": "3",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로32길 22-23",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로32길",
+      "underground_yn": "N",
+      "main_building_no": "22",
+      "sub_building_no": "23",
+      "building_name": "",
+      "zone_no": "05548"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 62-3",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "62",
+      "sub_address_no": "3",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로13길 14",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로13길",
+      "underground_yn": "N",
+      "main_building_no": "14",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05548"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 69-9",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "69",
+      "sub_address_no": "9",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로13길 8",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로13길",
+      "underground_yn": "N",
+      "main_building_no": "8",
+      "sub_building_no": "",
+      "building_name": "부흥빌딩",
+      "zone_no": "05548"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 67-7",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "67",
+      "sub_address_no": "7",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로16길 20",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로16길",
+      "underground_yn": "N",
+      "main_building_no": "20",
+      "sub_building_no": "",
+      "building_name": "보물창고",
+      "zone_no": "05622"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 37-6",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "37",
+      "sub_address_no": "6",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로45길 28",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로45길",
+      "underground_yn": "N",
+      "main_building_no": "28",
+      "sub_building_no": "",
+      "building_name": "벤도치빌딩",
+      "zone_no": "05619"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 55-7",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "55",
+      "sub_address_no": "7",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 석촌호수로 290",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "석촌호수로",
+      "underground_yn": "N",
+      "main_building_no": "290",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05618"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 58-18",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "58",
+      "sub_address_no": "18",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로11길 59",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로11길",
+      "underground_yn": "N",
+      "main_building_no": "59",
+      "sub_building_no": "",
+      "building_name": "올림픽파크존",
+      "zone_no": "05545"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 49-5",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "49",
+      "sub_address_no": "5",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 위례성대로 48",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "위례성대로",
+      "underground_yn": "N",
+      "main_building_no": "48",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05627"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 177-3",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "177",
+      "sub_address_no": "3",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로13길 6",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로13길",
+      "underground_yn": "N",
+      "main_building_no": "6",
+      "sub_building_no": "",
+      "building_name": "오선빌딩",
+      "zone_no": "05548"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 67",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "67",
+      "sub_address_no": "",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로32길 22-22",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로32길",
+      "underground_yn": "N",
+      "main_building_no": "22",
+      "sub_building_no": "22",
+      "building_name": "",
+      "zone_no": "05548"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 63-4",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "63",
+      "sub_address_no": "4",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로32길 22",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로32길",
+      "underground_yn": "N",
+      "main_building_no": "22",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05548"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 63-14",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "63",
+      "sub_address_no": "14",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로15길 7-16",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로15길",
+      "underground_yn": "N",
+      "main_building_no": "7",
+      "sub_building_no": "16",
+      "building_name": "",
+      "zone_no": "05548"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 68-10",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "68",
+      "sub_address_no": "10",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로32길 19-15",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로32길",
+      "underground_yn": "N",
+      "main_building_no": "19",
+      "sub_building_no": "15",
+      "building_name": "",
+      "zone_no": "05547"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 59-13",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "59",
+      "sub_address_no": "13",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로 131",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로",
+      "underground_yn": "N",
+      "main_building_no": "131",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05549"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 109-10",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "109",
+      "sub_address_no": "10",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로 125",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로",
+      "underground_yn": "N",
+      "main_building_no": "125",
+      "sub_building_no": "",
+      "building_name": "유미빌딩",
+      "zone_no": "05549"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 109-11",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "109",
+      "sub_address_no": "11",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로45길 3",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로45길",
+      "underground_yn": "N",
+      "main_building_no": "3",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05621"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 46-4",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "46",
+      "sub_address_no": "4",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로45길 17-3",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로45길",
+      "underground_yn": "N",
+      "main_building_no": "17",
+      "sub_building_no": "3",
+      "building_name": "",
+      "zone_no": "05622"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 42-6",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "42",
+      "sub_address_no": "6",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로 113",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로",
+      "underground_yn": "N",
+      "main_building_no": "113",
+      "sub_building_no": "",
+      "building_name": "석촌씨티빌딩",
+      "zone_no": "05548"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 66-3",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "66",
+      "sub_address_no": "3",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로15길 7-13",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로15길",
+      "underground_yn": "N",
+      "main_building_no": "7",
+      "sub_building_no": "13",
+      "building_name": "",
+      "zone_no": "05548"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 67-5",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "67",
+      "sub_address_no": "5",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로34길 16",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로34길",
+      "underground_yn": "N",
+      "main_building_no": "16",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05547"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 58-22",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "58",
+      "sub_address_no": "22",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로11길 12",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로11길",
+      "underground_yn": "N",
+      "main_building_no": "12",
+      "sub_building_no": "",
+      "building_name": "효창플라자",
+      "zone_no": "05548"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 64-12",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "64",
+      "sub_address_no": "12",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로45길 38",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로45길",
+      "underground_yn": "N",
+      "main_building_no": "38",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05618"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 57",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "57",
+      "sub_address_no": "",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로32길 19-10",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로32길",
+      "underground_yn": "N",
+      "main_building_no": "19",
+      "sub_building_no": "10",
+      "building_name": "방이 아뜰리에",
+      "zone_no": "05547"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 60-1",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "60",
+      "sub_address_no": "1",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로19길 5",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로19길",
+      "underground_yn": "N",
+      "main_building_no": "5",
+      "sub_building_no": "",
+      "building_name": "아넥스골프클럽",
+      "zone_no": "05641"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 110-12",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "110",
+      "sub_address_no": "12",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로32길 18",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로32길",
+      "underground_yn": "N",
+      "main_building_no": "18",
+      "sub_building_no": "",
+      "building_name": "경진빌딩",
+      "zone_no": "05548"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 64-6",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "64",
+      "sub_address_no": "6",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로32길 18-23",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로32길",
+      "underground_yn": "N",
+      "main_building_no": "18",
+      "sub_building_no": "23",
+      "building_name": "",
+      "zone_no": "05548"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 63",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "63",
+      "sub_address_no": "",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로32길 21",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로32길",
+      "underground_yn": "N",
+      "main_building_no": "21",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05547"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 60-5",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "60",
+      "sub_address_no": "5",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로32길 19-6",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로32길",
+      "underground_yn": "N",
+      "main_building_no": "19",
+      "sub_building_no": "6",
+      "building_name": "",
+      "zone_no": "05547"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 60-6",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "60",
+      "sub_address_no": "6",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로32길 18-11",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로32길",
+      "underground_yn": "N",
+      "main_building_no": "18",
+      "sub_building_no": "11",
+      "building_name": "",
+      "zone_no": "05548"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 63-1",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "63",
+      "sub_address_no": "1",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로 300",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로",
+      "underground_yn": "N",
+      "main_building_no": "300",
+      "sub_building_no": "",
+      "building_name": "롯데월드타워앤드롯데월드몰",
+      "zone_no": "05551"
+    },
+    "address": {
+      "address_name": "서울 송파구 신천동 29",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "신천동",
+      "mountain_yn": "N",
+      "main_address_no": "29",
+      "sub_address_no": "",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로45길 7",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로45길",
+      "underground_yn": "N",
+      "main_building_no": "7",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05621"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 45-5",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "45",
+      "sub_address_no": "5",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 석촌호수로 296",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "석촌호수로",
+      "underground_yn": "N",
+      "main_building_no": "296",
+      "sub_building_no": "",
+      "building_name": "레이크사이드타워",
+      "zone_no": "05618"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 58",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "58",
+      "sub_address_no": "",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로11길 34",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로11길",
+      "underground_yn": "N",
+      "main_building_no": "34",
+      "sub_building_no": "",
+      "building_name": "용준빌딩",
+      "zone_no": "05547"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 58",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "58",
+      "sub_address_no": "",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로 498",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로",
+      "underground_yn": "N",
+      "main_building_no": "498",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05627"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 180",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "180",
+      "sub_address_no": "",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로41길 42-19",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로41길",
+      "underground_yn": "N",
+      "main_building_no": "42",
+      "sub_building_no": "19",
+      "building_name": "더블유123빌딩",
+      "zone_no": "05623"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 32-2",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "32",
+      "sub_address_no": "2",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로32길 28",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로32길",
+      "underground_yn": "N",
+      "main_building_no": "28",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05548"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 62-9",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "62",
+      "sub_address_no": "9",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로32길 38",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로32길",
+      "underground_yn": "N",
+      "main_building_no": "38",
+      "sub_building_no": "",
+      "building_name": "흥진맨션",
+      "zone_no": "05549"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 93",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "93",
+      "sub_address_no": "",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로16길 5",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로16길",
+      "underground_yn": "N",
+      "main_building_no": "5",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05619"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 55",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "55",
+      "sub_address_no": "",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로41길 12-9",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로41길",
+      "underground_yn": "N",
+      "main_building_no": "12",
+      "sub_building_no": "9",
+      "building_name": "",
+      "zone_no": "05621"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 23-10",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "23",
+      "sub_address_no": "10",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로11길 11-8",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로11길",
+      "underground_yn": "N",
+      "main_building_no": "11",
+      "sub_building_no": "8",
+      "building_name": "현대드림밸리",
+      "zone_no": "05542"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 34-2",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "34",
+      "sub_address_no": "2",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로16길 4",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로16길",
+      "underground_yn": "N",
+      "main_building_no": "4",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05618"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 58-8",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "58",
+      "sub_address_no": "8",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로 342",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로",
+      "underground_yn": "N",
+      "main_building_no": "342",
+      "sub_building_no": "",
+      "building_name": "아울타워",
+      "zone_no": "05542"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 23-2",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "23",
+      "sub_address_no": "2",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로 387",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로",
+      "underground_yn": "N",
+      "main_building_no": "387",
+      "sub_building_no": "",
+      "building_name": "삼현빌딩",
+      "zone_no": "05626"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 19-9",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "19",
+      "sub_address_no": "9",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 석촌호수로 298",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "석촌호수로",
+      "underground_yn": "N",
+      "main_building_no": "298",
+      "sub_building_no": "",
+      "building_name": "잠실대우레이크월드",
+      "zone_no": "05618"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 58-1",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "58",
+      "sub_address_no": "1",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 석촌호수로 268",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "석촌호수로",
+      "underground_yn": "N",
+      "main_building_no": "268",
+      "sub_building_no": "",
+      "building_name": "경남레이크파크",
+      "zone_no": "05623"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 32-1",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "32",
+      "sub_address_no": "1",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로45길 34",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로45길",
+      "underground_yn": "N",
+      "main_building_no": "34",
+      "sub_building_no": "",
+      "building_name": "동방빌딩",
+      "zone_no": "05618"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 56-1",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "56",
+      "sub_address_no": "1",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로 435",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로",
+      "underground_yn": "N",
+      "main_building_no": "435",
+      "sub_building_no": "",
+      "building_name": "예스빌딩",
+      "zone_no": "05620"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 48-7",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "48",
+      "sub_address_no": "7",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로43길 10",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로43길",
+      "underground_yn": "N",
+      "main_building_no": "10",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05621"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 45-18",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "45",
+      "sub_address_no": "18",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로 148",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로",
+      "underground_yn": "N",
+      "main_building_no": "148",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05620"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 48-16",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "48",
+      "sub_address_no": "16",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 송파대로48길 37",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "송파대로48길",
+      "underground_yn": "N",
+      "main_building_no": "37",
+      "sub_building_no": "",
+      "building_name": "호수임광아파트 상가동",
+      "zone_no": "05623"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 33",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "33",
+      "sub_address_no": "",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 석촌호수로 258",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "석촌호수로",
+      "underground_yn": "N",
+      "main_building_no": "258",
+      "sub_building_no": "",
+      "building_name": "잠실아르누보팰리스",
+      "zone_no": "05624"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 7-1",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "7",
+      "sub_address_no": "1",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로13길 9",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로13길",
+      "underground_yn": "N",
+      "main_building_no": "9",
+      "sub_building_no": "",
+      "building_name": "석정빌딩",
+      "zone_no": "05548"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 62-8",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "62",
+      "sub_address_no": "8",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로45길 9",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로45길",
+      "underground_yn": "N",
+      "main_building_no": "9",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05621"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 45-4",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "45",
+      "sub_address_no": "4",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 송파대로48길 19",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "송파대로48길",
+      "underground_yn": "N",
+      "main_building_no": "19",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05623"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 30-7",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "30",
+      "sub_address_no": "7",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로45길 3",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로45길",
+      "underground_yn": "N",
+      "main_building_no": "3",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05621"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 46-4",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "46",
+      "sub_address_no": "4",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 송파대로48길 14",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "송파대로48길",
+      "underground_yn": "N",
+      "main_building_no": "14",
+      "sub_building_no": "",
+      "building_name": "마이크로 하우징",
+      "zone_no": "05624"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 9-17",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "9",
+      "sub_address_no": "17",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로 81",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로",
+      "underground_yn": "N",
+      "main_building_no": "81",
+      "sub_building_no": "",
+      "building_name": "씨젠송파빌딩",
+      "zone_no": "05542"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 22-3",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "22",
+      "sub_address_no": "3",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로 142",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로",
+      "underground_yn": "N",
+      "main_building_no": "142",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05619"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 59-9",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "59",
+      "sub_address_no": "9",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로41길 43-7",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로41길",
+      "underground_yn": "N",
+      "main_building_no": "43",
+      "sub_building_no": "7",
+      "building_name": "",
+      "zone_no": "05624"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 8-10",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "8",
+      "sub_address_no": "10",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로51길 7",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로51길",
+      "underground_yn": "N",
+      "main_building_no": "7",
+      "sub_building_no": "",
+      "building_name": "잠실엘퍼스트오피스텔",
+      "zone_no": "05545"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 50",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "50",
+      "sub_address_no": "",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로34길 20",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로34길",
+      "underground_yn": "N",
+      "main_building_no": "20",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05547"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 58-24",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "58",
+      "sub_address_no": "24",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 석촌호수로 278",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "석촌호수로",
+      "underground_yn": "N",
+      "main_building_no": "278",
+      "sub_building_no": "",
+      "building_name": "여흥레이크빌",
+      "zone_no": "05623"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 31",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "31",
+      "sub_address_no": "",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로11길 7",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로11길",
+      "underground_yn": "N",
+      "main_building_no": "7",
+      "sub_building_no": "",
+      "building_name": "제이타워빌딩",
+      "zone_no": "05542"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 24-3",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "24",
+      "sub_address_no": "3",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 석촌호수로 262",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "석촌호수로",
+      "underground_yn": "N",
+      "main_building_no": "262",
+      "sub_building_no": "",
+      "building_name": "선일타워",
+      "zone_no": "05624"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 7-4",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "7",
+      "sub_address_no": "4",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로11길 11-8",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로11길",
+      "underground_yn": "N",
+      "main_building_no": "11",
+      "sub_building_no": "8",
+      "building_name": "현대드림밸리",
+      "zone_no": "05542"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 34-2",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "34",
+      "sub_address_no": "2",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로 293-19",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로",
+      "underground_yn": "N",
+      "main_building_no": "293",
+      "sub_building_no": "19",
+      "building_name": "현대타워아파트",
+      "zone_no": "05510"
+    },
+    "address": {
+      "address_name": "서울 송파구 신천동 7-28",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "신천동",
+      "mountain_yn": "N",
+      "main_address_no": "7",
+      "sub_address_no": "28",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로45길 32",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로45길",
+      "underground_yn": "N",
+      "main_building_no": "32",
+      "sub_building_no": "",
+      "building_name": "빌드원빌딩",
+      "zone_no": "05618"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 56-7",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "56",
+      "sub_address_no": "7",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 잠실로 209",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "잠실로",
+      "underground_yn": "N",
+      "main_building_no": "209",
+      "sub_building_no": "",
+      "building_name": "KT송파타워",
+      "zone_no": "05552"
+    },
+    "address": {
+      "address_name": "서울 송파구 신천동 29-1",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "신천동",
+      "mountain_yn": "N",
+      "main_address_no": "29",
+      "sub_address_no": "1",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로45길 15",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로45길",
+      "underground_yn": "N",
+      "main_building_no": "15",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05622"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 42",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "42",
+      "sub_address_no": "",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로32길 22-17",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로32길",
+      "underground_yn": "N",
+      "main_building_no": "22",
+      "sub_building_no": "17",
+      "building_name": "",
+      "zone_no": "05548"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 62-14",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "62",
+      "sub_address_no": "14",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로18길 3",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로18길",
+      "underground_yn": "N",
+      "main_building_no": "3",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05620"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 48-15",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "48",
+      "sub_address_no": "15",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로45길 12",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로45길",
+      "underground_yn": "N",
+      "main_building_no": "12",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05619"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 51-10",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "51",
+      "sub_address_no": "10",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로 105",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로",
+      "underground_yn": "N",
+      "main_building_no": "105",
+      "sub_building_no": "",
+      "building_name": "덕림빌딩",
+      "zone_no": "05548"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 66",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "66",
+      "sub_address_no": "",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로46길 26-1",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로46길",
+      "underground_yn": "N",
+      "main_building_no": "26",
+      "sub_building_no": "1",
+      "building_name": "신화빌딩",
+      "zone_no": "05665"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 131-25",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "131",
+      "sub_address_no": "25",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 백제고분로45길 14",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "백제고분로45길",
+      "underground_yn": "N",
+      "main_building_no": "14",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05619"
+    },
+    "address": {
+      "address_name": "서울 송파구 송파동 51-7",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "송파동",
+      "mountain_yn": "N",
+      "main_address_no": "51",
+      "sub_address_no": "7",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로 300",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로",
+      "underground_yn": "N",
+      "main_building_no": "300",
+      "sub_building_no": "",
+      "building_name": "롯데월드타워앤드롯데월드몰",
+      "zone_no": "05551"
+    },
+    "address": {
+      "address_name": "서울 송파구 신천동 29",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "신천동",
+      "mountain_yn": "N",
+      "main_address_no": "29",
+      "sub_address_no": "",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로 289",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로",
+      "underground_yn": "N",
+      "main_building_no": "289",
+      "sub_building_no": "",
+      "building_name": "잠실시그마타워",
+      "zone_no": "05510"
+    },
+    "address": {
+      "address_name": "서울 송파구 신천동 7-19",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "신천동",
+      "mountain_yn": "N",
+      "main_address_no": "7",
+      "sub_address_no": "19",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로 300",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로",
+      "underground_yn": "N",
+      "main_building_no": "300",
+      "sub_building_no": "",
+      "building_name": "롯데월드타워앤드롯데월드몰",
+      "zone_no": "05551"
+    },
+    "address": {
+      "address_name": "서울 송파구 신천동 29",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "신천동",
+      "mountain_yn": "N",
+      "main_address_no": "29",
+      "sub_address_no": "",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로 354",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로",
+      "underground_yn": "N",
+      "main_building_no": "354",
+      "sub_building_no": "",
+      "building_name": "I-SPACE 잠실2",
+      "zone_no": "05543"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 35-4",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "35",
+      "sub_address_no": "4",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 위례성대로 6",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "위례성대로",
+      "underground_yn": "N",
+      "main_building_no": "6",
+      "sub_building_no": "",
+      "building_name": "현대토픽스",
+      "zone_no": "05544"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 44-3",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "44",
+      "sub_address_no": "3",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 오금로 95",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "오금로",
+      "underground_yn": "N",
+      "main_building_no": "95",
+      "sub_building_no": "",
+      "building_name": "국제빌딩",
+      "zone_no": "05548"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 65-6",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "65",
+      "sub_address_no": "6",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로35다길 32",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로35다길",
+      "underground_yn": "N",
+      "main_building_no": "32",
+      "sub_building_no": "",
+      "building_name": "",
+      "zone_no": "05510"
+    },
+    "address": {
+      "address_name": "서울 송파구 신천동 7-26",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "신천동",
+      "mountain_yn": "N",
+      "main_address_no": "7",
+      "sub_address_no": "26",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 위례성대로 38",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "위례성대로",
+      "underground_yn": "N",
+      "main_building_no": "38",
+      "sub_building_no": "",
+      "building_name": "해태그린피아빌라트",
+      "zone_no": "05627"
+    },
+    "address": {
+      "address_name": "서울 송파구 방이동 180-8",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "방이동",
+      "mountain_yn": "N",
+      "main_address_no": "180",
+      "sub_address_no": "8",
+      "zip_code": ""
+    }
+  },
+  {
+    "road_address": {
+      "address_name": "서울특별시 송파구 올림픽로35가길 16",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "",
+      "road_name": "올림픽로35가길",
+      "underground_yn": "N",
+      "main_building_no": "16",
+      "sub_building_no": "",
+      "building_name": "SONGPA FUN STADIUM",
+      "zone_no": "05510"
+    },
+    "address": {
+      "address_name": "서울 송파구 신천동 7-12",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "송파구",
+      "region_3depth_name": "신천동",
+      "mountain_yn": "N",
+      "main_address_no": "7",
+      "sub_address_no": "12",
+      "zip_code": ""
+    }
+  }
+]

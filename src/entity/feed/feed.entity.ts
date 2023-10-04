@@ -9,7 +9,7 @@ import {
   OneToOne,
 } from 'typeorm';
 
-import { BooleanValidator, IntValidator, StringValidator } from '@app/common';
+import { DateValidator, IntValidator, StringValidator } from '@app/common';
 import { BaseEntity } from '../base.entity';
 import { GeoMarkEntity } from '../geo';
 import { UserEntity } from '../user';
@@ -109,16 +109,14 @@ export class FeedEntity extends BaseEntity {
   hashTags: string[];
 
   /**
-   * 피드 활성화 여부
-   * - default true
-   * - 피드 남은 시간 0 이하면 false
-   * - 피드 남은 시간 = 생성된 시간 + (추천수 * 30) - (비추천 * 15)
+   * 피드 활성화 시간
+   * - 피드 활성화 시간 = 생성된 시간 + (추천수 * 30) - (비추천 * 15)
    */
-  @ApiProperty({ description: '피드 활성화 여부', type: Boolean })
+  @ApiProperty({ description: '피드 활성화 여부', type: Date })
   @Expose()
-  @BooleanValidator()
-  @Column('boolean', { comment: '피드 활성화 여부', default: true })
-  isActive: boolean;
+  @DateValidator()
+  @Column('timestamptz', { comment: '피드 활성화 시간' })
+  activationAt: Date;
 
   /**
    * 추천수
@@ -190,7 +188,10 @@ export class FeedEntity extends BaseEntity {
    */
   @ApiHideProperty()
   @Exclude()
-  @OneToOne(() => GeoMarkEntity)
+  @OneToOne(() => GeoMarkEntity, {
+    cascade: true,
+    nullable: false,
+  })
   @JoinColumn()
   geoMark: GeoMarkEntity;
 
