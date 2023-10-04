@@ -1,7 +1,13 @@
 import { CursorPaginationDTO } from '@app/common';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsLatitude, IsLongitude } from 'class-validator';
+import {
+  IsIn,
+  IsLatitude,
+  IsLongitude,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class GetGeoMarksRequestDTO extends CursorPaginationDTO {
   @ApiProperty({
@@ -47,4 +53,19 @@ export class GetGeoMarksRequestDTO extends CursorPaginationDTO {
   @Expose()
   @IsLatitude()
   readonly maxY: number;
+
+  @ApiPropertyOptional({
+    description: `
+    테스트용( default = Coordinates ): 
+    - Coordinates: 단순 좌표 검색
+    - Polygon: Polygon 검색
+    `,
+    type: String,
+  })
+  @Expose()
+  // @IntValidatorOptional() // TODO: 버그 개선 필요
+  @IsOptional()
+  @IsString()
+  @IsIn(['Coordinates', 'Polygon'])
+  readonly testType: 'Coordinates' | 'Polygon';
 }

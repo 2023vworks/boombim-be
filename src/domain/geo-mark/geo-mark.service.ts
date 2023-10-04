@@ -22,7 +22,10 @@ export class GeoMarkServiceImpl implements GeoMarkService {
   async getMarks(
     getDto: GetGeoMarksRequestDTO,
   ): Promise<GetGeoMarksResponseDTO[]> {
-    const geoMarks = await this.geoMarkRepo.findByPolygon(getDto);
+    const geoMarks =
+      getDto.testType === 'Polygon'
+        ? await this.geoMarkRepo.findByPolygon(getDto)
+        : await this.geoMarkRepo.findByCoordinates(getDto);
     return Util.toInstance(GetGeoMarksResponseDTO, geoMarks);
   }
 }
