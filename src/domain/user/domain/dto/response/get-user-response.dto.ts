@@ -9,5 +9,4 @@ export class GetUserResponseDTO extends PickType(UserEntity, [
   'mbtiType',
   'nickname',
   'feedWritingCount',
-  'lastFeedWrittenAt',
 ]) {}

@@ -47,9 +47,15 @@ export interface User extends Timestamp {
   feedWritingCount: number;
 
   /**
-   * 피드 마지막 작성 시간 날짜
+   * 충전 시작 여부
    */
-  lastFeedWrittenAt?: Date | null;
+  isRechargeStart: boolean;
+
+  /**
+   * 피드 작성 횟수 충전 시작 시간
+   * - 최초 생성시 now
+   */
+  feedWritingCountRechargeStartAt: Date;
 
   /* ========== 연관관계 ==========*/
   feeds: Feed[];
