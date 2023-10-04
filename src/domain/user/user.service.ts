@@ -67,16 +67,12 @@ export class UserServiceImpl implements UserService {
    */
   async getUser(userId: number): Promise<GetUserResponseDTO> {
     const user = await this.userRepository.findOneByPK(userId);
-
     if (!user) throw new NotFoundException(errorMessage.E404_APP_001);
-
-    if (user.feedWritingCount === 5) {
+    if (user.isMaxFeedWritingCount) {
       return Util.toInstance(GetUserResponseDTO, { ...user.props });
     }
 
-    user.renewFeedWritingCount();
-    const isRenewed = user.feedWritingCount !== user.feedWritingCount;
-    isRenewed &&
+    user.renewFeedWritingCount().isRenewedFeedWritingCount &&
       (await this.userRepository.updateProperty(user.id, {
         feedWritingCount: user.feedWritingCount,
         feedWritingCountRechargeStartAt: user.feedWritingCountRechargeStartAt,

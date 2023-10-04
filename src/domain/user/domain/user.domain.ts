@@ -7,6 +7,7 @@ export interface UserProps extends UserEntity {}
 
 export class User extends BaseDomain<UserProps> {
   private MAX_FEED_WRITING_COUNT = 5;
+  private oldFeedWritingCount: number;
 
   constructor(readonly props: UserProps) {
     super(props);
@@ -74,26 +75,32 @@ export class User extends BaseDomain<UserProps> {
   }
 
   /**
+   * 피드 작성 횟수가 갱신되었는지 확인합니다.
+   */
+  get isRenewedFeedWritingCount(): boolean {
+    return this.oldFeedWritingCount !== this.props.feedWritingCount;
+  }
+
+  /**
    * 피드 작성 횟수를 갱신합니다.
-   * - 작성횟수는 feedWritingCountRechargeStartAt 부터 dateLeft 시간까지 1시간에 1씩 충전됩니다.
+   * - 작성횟수는 feedWritingCountRechargeStartAt 부터 dateRight 시간까지 1시간에 1씩 충전됩니다.
    * - 최대 5회까지 작성 가능합니다.
-   * - dateLeft는 기본적으로 현재시간 기준으로 합니다.
-   * @param dateLeft
+   * - dateRight 기본적으로 현재시간 기준으로 합니다.
+   * @param dateRight
    * @returns
    * @error {Error} 충전횟수가 0보다 작을 경우 에러를 발생시킵니다.
    */
-  renewFeedWritingCount(dateLeft: Date = new Date()) {
-    if (this.isMaxFeedWritingCount) return this;
-
+  renewFeedWritingCount(dateRight: Date = new Date()) {
     const differenceHours = DateUtil.differenceInHours(
-      dateLeft,
       this.props.feedWritingCountRechargeStartAt,
+      dateRight,
     );
-    // 음수면 에러
     if (differenceHours < 0)
       throw new Error('[UserDomain] differenceHours is less than 0');
     // 갱신할 필요 없으면 그냥 리턴
     if (differenceHours === 0) return this;
+
+    this.oldFeedWritingCount = this.props.feedWritingCount;
 
     // 피드 작성 횟수 갱신
     const newFeedWritingCount = this.props.feedWritingCount + differenceHours;
@@ -101,10 +108,12 @@ export class User extends BaseDomain<UserProps> {
       newFeedWritingCount > this.MAX_FEED_WRITING_COUNT
         ? this.MAX_FEED_WRITING_COUNT
         : newFeedWritingCount;
+
     // 피드 작성 횟수 충전 시작 시간 갱신
     this.props.feedWritingCountRechargeStartAt = this.isMaxFeedWritingCount
       ? this.props.feedWritingCountRechargeStartAt
       : new Date();
+
     // 충전 시작 여부 갱신
     this.props.isRechargeStart = this.isMaxFeedWritingCount ? false : true;
 
