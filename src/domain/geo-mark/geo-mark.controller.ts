@@ -2,24 +2,30 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
-  NotFoundException,
+  Inject,
   Query,
   UseInterceptors,
 } from '@nestjs/common';
 
 import { ApiControllerDocument, DefalutAppName } from '@app/common';
-import { GetGeoMarksRequestDTO, GetGeoMarksResponseDTO } from './domain/dto';
 import { DocumentHelper } from './document';
+import { GetGeoMarksRequestDTO, GetGeoMarksResponseDTO } from './domain/dto';
+import { GeoMarkService, GeoMarkServiceToken } from './geo-mark.service';
 
 @ApiControllerDocument(`[${DefalutAppName}] geo-marks API`)
 @Controller('/geo-marks')
 @UseInterceptors(ClassSerializerInterceptor)
 export class GeoMarkController {
+  constructor(
+    @Inject(GeoMarkServiceToken)
+    private readonly geoMarkService: GeoMarkService,
+  ) {}
+
   @DocumentHelper('getGeoMarks')
   @Get()
   async getGeoMarks(
     @Query() getDto: GetGeoMarksRequestDTO,
   ): Promise<GetGeoMarksResponseDTO[]> {
-    throw new NotFoundException('미구현 API');
+    return this.geoMarkService.getMarks(getDto);
   }
 }

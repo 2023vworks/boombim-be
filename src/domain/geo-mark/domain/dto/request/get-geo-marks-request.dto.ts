@@ -1,14 +1,15 @@
-import { CurserPaginationDTO } from '@app/common';
+import { CursorPaginationDTO } from '@app/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsLatitude, IsLongitude } from 'class-validator';
 
-export class GetGeoMarksRequestDTO extends CurserPaginationDTO {
+export class GetGeoMarksRequestDTO extends CursorPaginationDTO {
   @ApiProperty({
     description: '경도(x좌표)',
     type: Number,
     minimum: -180,
     maximum: 180,
+    default: 127,
   })
   @Expose()
   @IsLongitude()
@@ -19,6 +20,7 @@ export class GetGeoMarksRequestDTO extends CurserPaginationDTO {
     type: Number,
     minimum: -180,
     maximum: 180,
+    default: 127.5,
   })
   @Expose()
   @IsLongitude()
@@ -29,6 +31,7 @@ export class GetGeoMarksRequestDTO extends CurserPaginationDTO {
     type: Number,
     minimum: -90,
     maximum: 90,
+    default: 37,
   })
   @Expose()
   @IsLatitude()
@@ -39,6 +42,7 @@ export class GetGeoMarksRequestDTO extends CurserPaginationDTO {
     type: Number,
     minimum: -90,
     maximum: 90,
+    default: 37.7,
   })
   @Expose()
   @IsLatitude()
