@@ -1,18 +1,26 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IntValidator } from '../decorator';
+import {
+  ApiHideProperty,
+  ApiProperty,
+  ApiPropertyOptional,
+} from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
+import { IsInt, IsOptional } from 'class-validator';
+import { IntValidator } from '../decorator';
 
-export class CurserPaginationDTO {
-  @ApiProperty({
-    description: '다음 커서(요청할 데이터 시작 커서)',
+export class CursorPaginationDTO {
+  @ApiPropertyOptional({
+    description:
+      '다음 커서(요청할 데이터 시작 커서), 없다면 가장 최초 커서를 사용한다.',
     type: Number,
     default: 1,
     minimum: 1,
     maximum: 2147483647,
   })
   @Expose()
-  @IntValidator({ min: 1, max: 2147483647 })
-  readonly nextCursor: number;
+  // @IntValidatorOptional() // TODO: 버그 개선 필요
+  @IsOptional()
+  @IsInt()
+  readonly nextCursor?: number;
 
   @ApiProperty({
     description: '요청할 데이터의 개수',
@@ -24,4 +32,9 @@ export class CurserPaginationDTO {
   @Expose()
   @IntValidator({ min: 1, max: 1000 })
   readonly size: number;
+
+  @ApiHideProperty()
+  @IsOptional()
+  @Expose()
+  readonly sort = 'DESC';
 }
