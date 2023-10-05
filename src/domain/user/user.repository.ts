@@ -4,7 +4,7 @@ import { EntityManager } from 'typeorm';
 import { CustomRepository } from '@app/common';
 import { UserEntity } from '@app/entity';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { PostUsersRequestDTO } from './domain/dto';
+import { PostUsersRequestDTO } from './dto';
 import { User, UserEntityMapper } from './domain';
 
 export const UserRepositoryToken = Symbol('UserRepositoryToken');

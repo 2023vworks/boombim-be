@@ -11,7 +11,7 @@ import {
   errorMessage,
   successMessage,
 } from '@app/common';
-import { GetUserResponseDTO, PostUsersResponseDTO } from '../domain';
+import { GetUserResponseDTO, PostUsersResponseDTO } from '../dto';
 import { UserController } from '../user.controller';
 
 type API_DOC_TYPE = keyof UserController;

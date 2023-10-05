@@ -3,7 +3,8 @@ import { EntityManager } from 'typeorm';
 
 import { CustomRepository, Util } from '@app/common';
 import { FeedEntity, GeoMarkEntity } from '@app/entity';
-import { GeoMark, GeoMarkEntityMapper, GetGeoMarksRequestDTO } from './domain';
+import { GeoMark, GeoMarkEntityMapper } from './domain';
+import { GetGeoMarksRequestDTO } from './dto';
 
 export const GeoMarkRepositoryToken = Symbol('GeoMarkRepositoryToken');
 export interface GeoMarkRepository extends CustomRepository<GeoMarkEntity> {

@@ -8,7 +8,7 @@ import {
   GetUserResponseDTO,
   PostUsersRequestDTO,
   PostUsersResponseDTO,
-} from './domain/dto';
+} from './dto';
 import { UserRepository, UserRepositoryToken } from './user.repository';
 
 export const UserServiceToken = Symbol('UserServiceToken');
