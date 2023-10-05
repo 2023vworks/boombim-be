@@ -1,6 +1,9 @@
 export const DefalutAppName = 'Boombim';
 export const USER_ACCESS_TOKEN = 'USER_ACCESS_TOKEN';
 
+export const UPLOAD_FILE_NAME = 'image';
+export const UPLOAD_FILES_NAME = 'images';
+
 /**
  * class-transform의 plainToInstance 함수에 사용할 옵션 기본값
  * - ClassTransformOptions
