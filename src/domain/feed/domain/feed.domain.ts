@@ -2,6 +2,7 @@ import { OmitType } from '@nestjs/swagger';
 
 import { FeedEntity } from '@app/entity';
 import { BaseDomain } from 'src/domain/base.domain';
+import { GeoMark } from 'src/domain/geo-mark/domain';
 import { Comment } from './comment.domain';
 import { RecommendHistory } from './recommend-history.domain';
 
@@ -10,14 +11,23 @@ export class FeedProps extends OmitType(FeedEntity, [
   'comments',
   'recommendHistories',
   'reportHistories',
+  'geoMark',
 ]) {
   comments: Comment[];
   recommendHistories: RecommendHistory[];
+  geoMark: GeoMark;
 }
 
 export class Feed extends BaseDomain<FeedProps> {
+  private readonly ADDITIONAL_MINUTES = 30;
+  private readonly DEDUCTED_MINUTES = 15;
+
   constructor(readonly props: FeedProps) {
-    super(props);
+    super({
+      ...props,
+      comments: props.comments ?? [],
+      recommendHistories: props.recommendHistories ?? [],
+    });
   }
 
   /**
@@ -94,8 +104,15 @@ export class Feed extends BaseDomain<FeedProps> {
   /**
    * 조회수
    */
-  get view(): number {
-    return this.props.view;
+  get viewCount(): number {
+    return this.props.viewCount;
+  }
+
+  /**
+   * 댓글수
+   */
+  get commentCount(): number {
+    return this.props.commentCount;
   }
 
   get comments(): Comment[] {
@@ -104,5 +121,34 @@ export class Feed extends BaseDomain<FeedProps> {
 
   get recommendHistories(): RecommendHistory[] {
     return this.props.recommendHistories;
+  }
+
+  get geoMark(): GeoMark {
+    return this.props.geoMark;
+  }
+
+  /* ========== custom ========== */
+
+  /**
+   * 피드 활성화 여부
+   * - 피드 활성화 시간이 현재 시간보다 크면 활성화(true)
+   */
+  get isActivated(): boolean {
+    return this.props.activationAt >= new Date();
+  }
+
+  /**
+   * 피드 활성화 시간 갱신(activationAt)
+   * - 피드 활성화 시간 = 생성된 시간 + (추천수 * 30) - (비추천 * 15)
+   * @returns
+   */
+  renewActivationAt() {
+    const { recommendCount, unrecommendCount, activationAt } = this.props;
+    const additionalMinutes = recommendCount * this.ADDITIONAL_MINUTES;
+    const deductedMinutes = unrecommendCount * this.DEDUCTED_MINUTES;
+    activationAt.setMinutes(
+      activationAt.getMinutes() + additionalMinutes - deductedMinutes,
+    );
+    return this;
   }
 }
