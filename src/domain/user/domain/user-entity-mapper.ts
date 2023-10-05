@@ -6,13 +6,4 @@ export class UserEntityMapper {
     return new User({ ...entity }) //
       .setBase(entity.id, entity.createdAt, entity.updatedAt);
   }
-
-  static toEntity(domain: User): UserEntity {
-    return {
-      id: domain.id,
-      createdAt: domain.createdAt,
-      updatedAt: domain.updatedAt,
-      ...domain.props,
-    };
-  }
 }
