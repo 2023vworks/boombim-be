@@ -5,8 +5,12 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 
-import { ApiAuthDocument, USER_ACCESS_TOKEN } from '@app/common';
-import { errorMessage, successMessage } from '@app/custom';
+import {
+  ApiAuthDocument,
+  USER_ACCESS_TOKEN,
+  errorMessage,
+  successMessage,
+} from '@app/common';
 import { GetUserResponseDTO, PostUsersResponseDTO } from '../domain';
 import { UserController } from '../user.controller';
 

@@ -1,7 +1,7 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
 
-import { successMessage } from '@app/custom';
+import { successMessage } from '@app/common';
 import { GetGeoMarksResponseDTO } from '../domain';
 import { GeoMarkController } from '../geo-mark.controller';
 
