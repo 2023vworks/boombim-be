@@ -156,7 +156,17 @@ export class FeedEntity extends BaseEntity {
   @Expose()
   @IntValidator({ min: 0 })
   @Column('integer', { comment: '조회수', default: 0 })
-  view: number;
+  viewCount: number;
+
+  /**
+   * 댓글수
+   * - default 0
+   */
+  @ApiProperty({ description: '댓글수', type: Number })
+  @Expose()
+  @IntValidator({ min: 0 })
+  @Column('integer', { comment: '댓글수', default: 0 })
+  commentCount: number;
 
   /* ========== 연관관계 주인 ==========*/
   /**
