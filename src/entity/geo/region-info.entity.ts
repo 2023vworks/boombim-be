@@ -2,7 +2,7 @@ import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 import { Column, Entity, OneToOne } from 'typeorm';
 
-import { EnumValidator, StringValidator } from '@app/common';
+import { EnumValidator, NumberValidator, StringValidator } from '@app/common';
 import { BaseEntity } from '../base.entity';
 import { RegionType } from '../enum';
 import { GeoMarkEntity } from './geo-mark.entity';
@@ -103,11 +103,27 @@ export class RegionInfoEntity extends BaseEntity {
    * X 좌표값, 경위도인 경우 경도(longitude)
    * - Double
    */
+  @ApiProperty({
+    description: '경도(x좌표)',
+    type: Number,
+    minimum: 0,
+  })
+  @Expose()
+  @NumberValidator({ min: 0 })
+  @Column('decimal', { comment: '경도(x좌표)' })
   x: number;
   /**
    * Y 좌표값, 경위도인 경우 위도(latitude)
    * - Double
    */
+  @ApiProperty({
+    description: '위도(y좌표)',
+    type: Number,
+    minimum: 0,
+  })
+  @Expose()
+  @NumberValidator({ min: 0 })
+  @Column('decimal', { comment: '위도(y좌표)' })
   y: number;
 
   /* ========== 연관관계 ==========*/

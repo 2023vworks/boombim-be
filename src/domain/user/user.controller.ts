@@ -20,7 +20,7 @@ import {
   GetUserResponseDTO,
   PostUsersRequestDTO,
   PostUsersResponseDTO,
-} from './domain/dto';
+} from './dto';
 import { UserService, UserServiceToken } from './user.service';
 import { JwtGuard } from '../auth/guard';
 

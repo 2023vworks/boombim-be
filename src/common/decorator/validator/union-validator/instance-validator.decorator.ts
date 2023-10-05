@@ -20,7 +20,7 @@ export function InstanceValidator(
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return applyDecorators(
-    ...createDecorators(entity, options, validationOptions, [IsNotEmpty]),
+    ...createDecorators(entity, options, validationOptions, [IsNotEmpty()]),
   );
 }
 
@@ -30,7 +30,7 @@ export function InstanceValidatorOptional(
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return applyDecorators(
-    ...createDecorators(entity, options, validationOptions, [IsOptional]),
+    ...createDecorators(entity, options, validationOptions, [IsOptional()]),
   );
 }
 

@@ -5,8 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
-import { errorMessage } from '@app/custom';
-import { UserRequest } from '@app/common';
+import { UserRequest, errorMessage } from '@app/common';
 import { AuthService } from '../auth.service';
 
 @Injectable()

@@ -34,13 +34,13 @@ export class GeoMarkEntity extends BaseEntity {
    * - 대한민국 y축 범위: 124 ~ 132
    */
   @ApiProperty({
-    description: '경위도(y좌표)',
+    description: '위도(y좌표)',
     type: Number,
     minimum: 0,
   })
   @Expose()
   @NumberValidator({ min: 0 })
-  @Column('decimal', { comment: '경위도(y좌표)' })
+  @Column('decimal', { comment: '위도(y좌표)' })
   y: number;
 
   /**

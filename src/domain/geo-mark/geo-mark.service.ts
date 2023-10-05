@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { Util } from '@app/common';
-import { GetGeoMarksRequestDTO, GetGeoMarksResponseDTO } from './domain';
+import { GetGeoMarksRequestDTO, GetGeoMarksResponseDTO } from './dto';
 import {
   GeoMarkRepository,
   GeoMarkRepositoryToken,

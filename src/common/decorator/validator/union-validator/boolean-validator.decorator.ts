@@ -19,7 +19,7 @@ export function BooleanValidator(
   validationOptions: ValidationOptions = {},
 ): PropertyDecorator {
   return applyDecorators(
-    ...createDecorators(options, validationOptions, [IsNotEmpty]),
+    ...createDecorators(options, validationOptions, [IsNotEmpty()]),
   );
 }
 
@@ -28,7 +28,7 @@ export function BooleanValidatorOptional(
   validationOptions: ValidationOptions = {},
 ): PropertyDecorator {
   return applyDecorators(
-    ...createDecorators(options, validationOptions, [IsOptional]),
+    ...createDecorators(options, validationOptions, [IsOptional()]),
   );
 }
 

@@ -19,7 +19,7 @@ export function DateValidator(
   validationOptions: ValidationOptions = {},
 ): PropertyDecorator {
   return applyDecorators(
-    ...createDecorators(options, validationOptions, [IsNotEmpty]),
+    ...createDecorators(options, validationOptions, [IsNotEmpty()]),
   );
 }
 
@@ -28,7 +28,7 @@ export function DateValidatorOptional(
   validationOptions: ValidationOptions = {},
 ): PropertyDecorator {
   return applyDecorators(
-    ...createDecorators(options, validationOptions, [IsOptional]),
+    ...createDecorators(options, validationOptions, [IsOptional()]),
   );
 }
 

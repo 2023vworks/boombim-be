@@ -19,7 +19,7 @@ export function EnumValidator(
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return applyDecorators(
-    ...createDecorators(enumType, options, validationOptions, [IsNotEmpty]),
+    ...createDecorators(enumType, options, validationOptions, [IsNotEmpty()]),
   );
 }
 
@@ -29,7 +29,7 @@ export function EnumValidatorOptional(
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return applyDecorators(
-    ...createDecorators(enumType, options, validationOptions, [IsOptional]),
+    ...createDecorators(enumType, options, validationOptions, [IsOptional()]),
   );
 }
 

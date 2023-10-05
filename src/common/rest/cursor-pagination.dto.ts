@@ -4,8 +4,9 @@ import {
   ApiPropertyOptional,
 } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsInt, IsOptional } from 'class-validator';
-import { IntValidator } from '../decorator';
+import { IsOptional } from 'class-validator';
+
+import { IntValidator, IntValidatorOptional } from '../decorator';
 
 export class CursorPaginationDTO {
   @ApiPropertyOptional({
@@ -17,9 +18,7 @@ export class CursorPaginationDTO {
     maximum: 2147483647,
   })
   @Expose()
-  // @IntValidatorOptional() // TODO: 버그 개선 필요
-  @IsOptional()
-  @IsInt()
+  @IntValidatorOptional()
   readonly nextCursor?: number;
 
   @ApiProperty({

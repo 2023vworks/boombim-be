@@ -5,9 +5,13 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 
-import { ApiAuthDocument, USER_ACCESS_TOKEN } from '@app/common';
-import { errorMessage, successMessage } from '@app/custom';
-import { GetUserResponseDTO, PostUsersResponseDTO } from '../domain';
+import {
+  ApiAuthDocument,
+  USER_ACCESS_TOKEN,
+  errorMessage,
+  successMessage,
+} from '@app/common';
+import { GetUserResponseDTO, PostUsersResponseDTO } from '../dto';
 import { UserController } from '../user.controller';
 
 type API_DOC_TYPE = keyof UserController;

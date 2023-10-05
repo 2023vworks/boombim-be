@@ -9,7 +9,7 @@ import {
 
 import { ApiControllerDocument, DefalutAppName } from '@app/common';
 import { DocumentHelper } from './document';
-import { GetGeoMarksRequestDTO, GetGeoMarksResponseDTO } from './domain/dto';
+import { GetGeoMarksRequestDTO, GetGeoMarksResponseDTO } from './dto';
 import { GeoMarkService, GeoMarkServiceToken } from './geo-mark.service';
 
 @ApiControllerDocument(`[${DefalutAppName}] geo-marks API`)
