@@ -73,7 +73,8 @@ AppDataSource.initialize()
         recommendCount: 0,
         unrecommendCount: 0,
         reportCount: 0,
-        view: 0,
+        viewCount: 0,
+        commentCount: 0,
         geoMark: createGeoMark(regionInfo[i], address[i]),
       });
       return feedRepo.save(feed);
