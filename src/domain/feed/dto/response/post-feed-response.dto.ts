@@ -9,5 +9,5 @@ export class PostFeedResponseDTO {
   })
   @Expose()
   @IntValidator({ min: 1, max: 2_147_483_647 })
-  id: number;
+  feedId: number;
 }

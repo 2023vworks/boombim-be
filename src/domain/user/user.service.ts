@@ -2,7 +2,7 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
-import { DBError, Util, errorMessage } from '@app/common';
+import { Util, errorMessage } from '@app/common';
 import { AuthService } from '../auth/auth.service';
 import {
   GetUserResponseDTO,
@@ -45,7 +45,7 @@ export class UserServiceImpl implements UserService {
       return { mbtiType: postDto.mbtiType, nickname, token };
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      throw new DBError(error as Error);
+      throw error;
     } finally {
       await queryRunner.release();
     }

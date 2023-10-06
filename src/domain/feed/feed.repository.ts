@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
-import { CustomRepository } from '@app/common';
+import { CustomRepository, DateUtil } from '@app/common';
 import { Feed, FeedEntityMapper } from './domain';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
-import { GetFeedsRequestDTO } from './dto';
+import { GetFeedsRequestDTO, PostFeedRequestDTO } from './dto';
 import {
   CommentEntity,
   FeedEntity,
@@ -36,6 +36,7 @@ export interface FeedRepository extends CustomRepository<FeedEntity> {
   findOneByGeoMarkId(geoMarkId: number): Promise<Feed | null>;
   findOneByPK(feedId: number): Promise<Feed | null>;
 
+  createFeed(userId: number, postDto: PostFeedRequestDTO): Promise<Feed>;
   updateProperty(
     feedId: number,
     properties: Partial<FeedEntity>,
@@ -139,6 +140,24 @@ export class FeedRepositoryImpl
       relations: this.getRelationsByFeed(),
     });
     return feed ? FeedEntityMapper.toDomain(feed) : null;
+  }
+
+  async createFeed(userId: number, postDto: PostFeedRequestDTO): Promise<Feed> {
+    const { x, y } = postDto.geoMark;
+    const feed = this.create({
+      ...postDto,
+      activationAt: DateUtil.addHours(6),
+      geoMark: {
+        ...postDto.geoMark,
+        point: {
+          type: 'Point',
+          coordinates: [x, y],
+        },
+      },
+      user: { id: userId },
+    });
+    await this.save(feed);
+    return FeedEntityMapper.toDomain(feed);
   }
 
   async updateProperty(

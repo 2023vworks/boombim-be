@@ -2,13 +2,14 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { FeedEntity } from '@app/entity';
-import { AuthModule } from '../auth/auth.module';
 import { FeedController } from './feed.controller';
 import { FeedServiceImpl, FeedServiceToken } from './feed.service';
 import { FeedRepositoryImpl, FeedRepositoryToken } from './feed.repository';
+import { AuthModule } from '../auth/auth.module';
+import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [AuthModule, TypeOrmModule.forFeature([FeedEntity])],
+  imports: [TypeOrmModule.forFeature([FeedEntity]), AuthModule, UserModule],
   controllers: [FeedController],
   providers: [
     {

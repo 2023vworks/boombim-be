@@ -59,10 +59,10 @@ class PostFeedWithGeoMarkRequestDTO extends PickType(GeoMarkEntity, [
 
   @ApiPropertyOptional({
     description: '도로명 주소 정보',
-    type: PostFeedWithAddressRequestDTO,
+    type: PostFeedWithRoadAddressRequestDTO,
   })
   @Expose()
-  @InstanceValidatorOptional(PostFeedWithAddressRequestDTO)
+  @InstanceValidatorOptional(PostFeedWithRoadAddressRequestDTO)
   roadAddress: PostFeedWithRoadAddressRequestDTO;
 }
 
