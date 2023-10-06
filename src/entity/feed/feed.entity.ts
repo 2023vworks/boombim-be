@@ -178,7 +178,7 @@ export class FeedEntity extends BaseEntity {
     nullable: true,
     cascade: true,
   })
-  comments: CommentEntity[];
+  comments?: CommentEntity[] | null;
 
   /**
    * 피드에 추천, 비추천 내역
@@ -189,7 +189,7 @@ export class FeedEntity extends BaseEntity {
     nullable: true,
     cascade: true,
   })
-  recommendHistories: RecommendHistoryEntity[];
+  recommendHistories?: RecommendHistoryEntity[] | null;
 
   /**
    * 위치 정보
@@ -216,7 +216,7 @@ export class FeedEntity extends BaseEntity {
   @OneToMany(() => ReportHistoryEntity, (history) => history.feed, {
     nullable: true,
   })
-  reportHistories: ReportHistoryEntity[];
+  reportHistories?: ReportHistoryEntity[] | null;
 
   /**
    * 작성자
