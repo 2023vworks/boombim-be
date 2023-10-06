@@ -25,6 +25,7 @@ import { FilesUploadInterceptor } from '@app/custom';
 import { JwtGuard } from '../auth/guard';
 import { DocumentHelper } from './document';
 import {
+  GetFeedActivationTimeResponseDTO,
   GetFeedCommentsRequestDTO,
   GetFeedCommentsResponseDTO,
   GetFeedResponseDTO,
@@ -64,7 +65,7 @@ export class FeedController {
     @GetUserInfoDecorator('id') userId: number,
     @Body() postDto: PostFeedRequestDTO,
   ): Promise<PostFeedResponseDTO> {
-    return this.feedService.postFeeds(userId, postDto);
+    return this.feedService.createFeeds(userId, postDto);
   }
 
   @DocumentHelper('getFeed')
@@ -75,24 +76,33 @@ export class FeedController {
     return this.feedService.getFeed(feedId);
   }
 
-  @DocumentHelper('getSearch')
+  @DocumentHelper('getFeedsSearch')
   @Get('/search')
-  async getSearch(
+  async getFeedsSearch(
     @Query() getDto: GetFeedsSearchRequestDTO,
   ): Promise<GetFeedResponseDTO[]> {
-    return this.feedService.getSearch(getDto);
+    return this.feedService.getFeedsByGeoMarkId(getDto.geoMarkId);
   }
 
-  @DocumentHelper('postImages')
+  @DocumentHelper('postFeedImages')
   @UseGuards(JwtGuard)
   @FilesUploadInterceptor(UPLOAD_FILES_NAME, { maxCount: 5 })
   @Post('/:id/images')
   @HttpCode(201)
-  async postImages(
+  async postFeedImages(
     @Param('id', ParseIntPipe) feedId: number,
     @UploadedFiles() file: Express.Multer.File[],
   ): Promise<void> {
-    return this.feedService.postImages(feedId, file);
+    return this.feedService.createFeedImages(feedId, file);
+  }
+
+  @DocumentHelper('getFeedActivationTime')
+  @UseGuards(JwtGuard)
+  @Get('/:id/activation-time')
+  async getFeedActivationTime(
+    @Param('id', ParseIntPipe) feedId: number,
+  ): Promise<GetFeedActivationTimeResponseDTO> {
+    return this.feedService.getFeedActivationTime(feedId);
   }
 
   @DocumentHelper('getComments')
@@ -112,7 +122,7 @@ export class FeedController {
     @Param('id', ParseIntPipe) feedId: number,
     @Body() postDto: PostFeedCommentRequestDTO,
   ): Promise<PostFeedCommentResponseDTO> {
-    return this.feedService.postComments(feedId, postDto);
+    return this.feedService.createComments(feedId, postDto);
   }
 
   @DocumentHelper('postRecommend')
@@ -121,8 +131,8 @@ export class FeedController {
   @HttpCode(201)
   async postRecommend(
     @Param('id', ParseIntPipe) feedId: number,
-  ): Promise<void> {
-    return this.feedService.postRecommend(feedId);
+  ): Promise<GetFeedActivationTimeResponseDTO> {
+    return this.feedService.feedRecommend(feedId);
   }
 
   @DocumentHelper('postUnrecommend')
@@ -131,18 +141,18 @@ export class FeedController {
   @HttpCode(201)
   async postUnrecommend(
     @Param('id', ParseIntPipe) feedId: number,
-  ): Promise<void> {
-    return this.feedService.postUnrecommend(feedId);
+  ): Promise<GetFeedActivationTimeResponseDTO> {
+    return this.feedService.feedUnrecommend(feedId);
   }
 
   @DocumentHelper('postReport')
   @UseGuards(JwtGuard)
   @Post('/:id/report')
-  @HttpCode(201)
+  @HttpCode(204)
   async postReport(
     @Param('id', ParseIntPipe) feedId: number,
     @Body() postDto: PostFeedReportRequestDTO,
   ): Promise<void> {
-    return this.feedService.postReport(feedId, postDto);
+    return this.feedService.feedReport(feedId, postDto);
   }
 }

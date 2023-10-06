@@ -17,6 +17,7 @@ import {
   USER_ACCESS_TOKEN,
 } from '@app/common';
 import {
+  GetFeedActivationTimeResponseDTO,
   GetFeedCommentsRequestDTO,
   GetFeedResponseDTO,
   GetFeedsResponseDTO,
@@ -64,7 +65,7 @@ const decorators: Record<API_DOC_TYPE, Function> = {
       ApiBadRequestResponse({ description: errorMessage.E400_APP_001 }),
       ApiNotFoundResponse({ description: errorMessage.E404_FEED_001 }),
     ),
-  getSearch: () =>
+  getFeedsSearch: () =>
     applyDecorators(
       ApiOperation({ summary: '피드 검색 - 마커 ID로 피드 조회' }),
       ApiOkResponse({
@@ -73,7 +74,7 @@ const decorators: Record<API_DOC_TYPE, Function> = {
       }),
       ApiBadRequestResponse({ description: errorMessage.E400_APP_001 }),
     ),
-  postImages: () =>
+  postFeedImages: () =>
     applyDecorators(
       ApiOperation({ summary: '단일 피드 이미지 추가(최대 5개)' }),
       ApiNoContentResponse({
@@ -81,6 +82,16 @@ const decorators: Record<API_DOC_TYPE, Function> = {
       }),
       ApiAuthDocument(USER_ACCESS_TOKEN),
       ApiFiles(UPLOAD_FILES_NAME),
+      ApiNotFoundResponse({ description: errorMessage.E404_FEED_001 }),
+    ),
+  getFeedActivationTime: () =>
+    applyDecorators(
+      ApiOperation({ summary: '단일 피드 활성 시간 조회' }),
+      ApiOkResponse({
+        description: successMessage.S200_FEED_005,
+        type: GetFeedActivationTimeResponseDTO,
+      }),
+      ApiBadRequestResponse({ description: errorMessage.E400_APP_001 }),
       ApiNotFoundResponse({ description: errorMessage.E404_FEED_001 }),
     ),
   getComments: () =>
@@ -107,7 +118,10 @@ const decorators: Record<API_DOC_TYPE, Function> = {
   postRecommend: () =>
     applyDecorators(
       ApiOperation({ summary: '피드 추천' }),
-      ApiNoContentResponse({ description: successMessage.S204_FEED_002 }),
+      ApiCreatedResponse({
+        description: successMessage.S204_FEED_002,
+        type: GetFeedActivationTimeResponseDTO,
+      }),
       ApiAuthDocument(USER_ACCESS_TOKEN),
       ApiBadRequestResponse({ description: errorMessage.E400_APP_001 }),
       ApiNotFoundResponse({ description: errorMessage.E404_FEED_001 }),
@@ -115,7 +129,10 @@ const decorators: Record<API_DOC_TYPE, Function> = {
   postUnrecommend: () =>
     applyDecorators(
       ApiOperation({ summary: '피드 비추천' }),
-      ApiNoContentResponse({ description: successMessage.S204_FEED_003 }),
+      ApiCreatedResponse({
+        description: successMessage.S204_FEED_003,
+        type: GetFeedActivationTimeResponseDTO,
+      }),
       ApiAuthDocument(USER_ACCESS_TOKEN),
       ApiBadRequestResponse({ description: errorMessage.E400_APP_001 }),
       ApiNotFoundResponse({ description: errorMessage.E404_FEED_001 }),
