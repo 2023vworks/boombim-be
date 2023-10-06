@@ -4,7 +4,7 @@ import {
   Controller,
   Get,
   HttpCode,
-  NotFoundException,
+  Inject,
   Param,
   ParseIntPipe,
   Post,
@@ -37,17 +37,23 @@ import {
   PostFeedRequestDTO,
   PostFeedResponseDTO,
 } from './dto';
+import { FeedService, FeedServiceToken } from './feed.service';
 
 @ApiControllerDocument(`[${DefalutAppName}] feeds API`)
 @Controller('/feeds')
 @UseInterceptors(ClassSerializerInterceptor)
 export class FeedController {
+  constructor(
+    @Inject(FeedServiceToken)
+    private readonly feedService: FeedService,
+  ) {}
+
   @DocumentHelper('getFeeds')
   @Get()
   async getFeeds(
     @Query() getDto: GetFeedsRequestDTO,
   ): Promise<GetFeedsResponseDTO[]> {
-    throw new NotFoundException('미구현 API');
+    return this.feedService.getFeeds(getDto);
   }
 
   @DocumentHelper('postFeeds')
@@ -58,7 +64,7 @@ export class FeedController {
     @GetUserInfoDecorator('id') userId: number,
     @Body() postDto: PostFeedRequestDTO,
   ): Promise<PostFeedResponseDTO> {
-    throw new NotFoundException('미구현 API');
+    return this.feedService.postFeeds(userId, postDto);
   }
 
   @DocumentHelper('getFeed')
@@ -66,7 +72,7 @@ export class FeedController {
   async getFeed(
     @Param('id', ParseIntPipe) feedId: number,
   ): Promise<GetFeedResponseDTO> {
-    throw new NotFoundException('미구현 API');
+    return this.feedService.getFeed(feedId);
   }
 
   @DocumentHelper('getSearch')
@@ -74,7 +80,7 @@ export class FeedController {
   async getSearch(
     @Query() getDto: GetFeedsSearchRequestDTO,
   ): Promise<GetFeedResponseDTO[]> {
-    throw new NotFoundException('미구현 API');
+    return this.feedService.getSearch(getDto);
   }
 
   @DocumentHelper('postImages')
@@ -86,7 +92,7 @@ export class FeedController {
     @Param('id', ParseIntPipe) feedId: number,
     @UploadedFiles() file: Express.Multer.File[],
   ): Promise<void> {
-    throw new NotFoundException('미구현 API');
+    return this.feedService.postImages(feedId, file);
   }
 
   @DocumentHelper('getComments')
@@ -95,7 +101,7 @@ export class FeedController {
     @Param('id', ParseIntPipe) feedId: number,
     @Query() getDto: GetFeedCommentsRequestDTO,
   ): Promise<GetFeedCommentsResponseDTO[]> {
-    throw new NotFoundException('미구현 API');
+    return this.feedService.getComments(feedId, getDto);
   }
 
   @DocumentHelper('postComments')
@@ -106,7 +112,7 @@ export class FeedController {
     @Param('id', ParseIntPipe) feedId: number,
     @Body() postDto: PostFeedCommentRequestDTO,
   ): Promise<PostFeedCommentResponseDTO> {
-    throw new NotFoundException('미구현 API');
+    return this.feedService.postComments(feedId, postDto);
   }
 
   @DocumentHelper('postRecommend')
@@ -116,7 +122,7 @@ export class FeedController {
   async postRecommend(
     @Param('id', ParseIntPipe) feedId: number,
   ): Promise<void> {
-    throw new NotFoundException('미구현 API');
+    return this.feedService.postRecommend(feedId);
   }
 
   @DocumentHelper('postUnrecommend')
@@ -126,7 +132,7 @@ export class FeedController {
   async postUnrecommend(
     @Param('id', ParseIntPipe) feedId: number,
   ): Promise<void> {
-    throw new NotFoundException('미구현 API');
+    return this.feedService.postUnrecommend(feedId);
   }
 
   @DocumentHelper('postReport')
@@ -137,6 +143,6 @@ export class FeedController {
     @Param('id', ParseIntPipe) feedId: number,
     @Body() postDto: PostFeedReportRequestDTO,
   ): Promise<void> {
-    throw new NotFoundException('미구현 API');
+    return this.feedService.postReport(feedId, postDto);
   }
 }
