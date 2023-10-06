@@ -91,9 +91,9 @@ export class User extends BaseDomain<UserProps> {
 
   /**
    * 피드 작성 횟수 소모
-   * 1. 피드 작성 횟수 갱신
-   * 2. 가능 여부 확인하여 불가능하면 에러 발생
-   * 3. 횟수를 차감
+   * 1. 피드 작성 횟수 갱신 수행 => this.renewFeedWritingCount()
+   * 2. 작성 불가능하면 에러 발생
+   * 3. 작성 횟수 차감
    * @returns
    * @Error {ConflictException} 피드 작성 횟수가 0일 경우 에러를 발생시킵니다.
    */
