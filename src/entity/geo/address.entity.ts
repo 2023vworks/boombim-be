@@ -5,6 +5,7 @@ import { Column, Entity, OneToOne } from 'typeorm';
 import { StringValidator } from '@app/common';
 import { BaseEntity } from '../base.entity';
 import { GeoMarkEntity } from './geo-mark.entity';
+import { IsIn } from 'class-validator';
 
 /**
  * 지번 주소 상세 정보
@@ -58,9 +59,10 @@ export class AddressEntity extends BaseEntity {
   /**
    * 산 여부, Y 또는 N
    */
-  @ApiProperty({ description: '산 여부, Y 또는 N', type: String })
+  @ApiProperty({ description: '산 여부, Y 또는 N', type: String, default: 'N' })
   @Expose()
   @StringValidator()
+  @IsIn(['Y', 'N'])
   @Column('char', { comment: '산 여부, Y 또는 N', length: 1 })
   mountainYn: 'Y' | 'N';
 
