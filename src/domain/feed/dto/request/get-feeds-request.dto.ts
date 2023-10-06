@@ -1,8 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsIn, IsLatitude, IsLongitude } from 'class-validator';
+import { IsIn, IsLatitude, IsLongitude, IsOptional } from 'class-validator';
 
-import { IntValidatorOptional, OffsetPaginationDTO } from '@app/common';
+import { OffsetPaginationDTO } from '@app/common';
 
 /**
  * 피드 리스트 조회 요청 DTO body
@@ -61,7 +61,7 @@ export class GetFeedsRequestDTO extends OffsetPaginationDTO {
     type: String,
   })
   @Expose()
-  @IntValidatorOptional() // TODO: 버그 개선 필요
+  @IsOptional()
   @IsIn(['Coordinates', 'Polygon'])
   readonly testType: 'Coordinates' | 'Polygon';
 }

@@ -7,7 +7,6 @@ import {
   GetFeedResponseDTO,
   GetFeedsRequestDTO,
   GetFeedsResponseDTO,
-  GetFeedsSearchRequestDTO,
   PostFeedCommentRequestDTO,
   PostFeedCommentResponseDTO,
   PostFeedReportRequestDTO,
@@ -15,6 +14,7 @@ import {
   PostFeedResponseDTO,
 } from './dto';
 import { FeedRepository, FeedRepositoryToken } from './feed.repository';
+import { Util, errorMessage } from '@app/common';
 
 export const FeedServiceToken = Symbol('FeedServiceToken');
 export interface FeedService {
@@ -53,17 +53,21 @@ export class FeedServiceImpl implements FeedService {
   ) {}
 
   async getFeeds(getDto: GetFeedsRequestDTO): Promise<GetFeedsResponseDTO[]> {
-    throw new NotFoundException('미구현 API');
-    // const feeds =
-    //   getDto.testType === 'Polygon'
-    //     ? await this.feedRepo.findByPolygon(getDto)
-    //     : await this.feedRepo.findByCoordinates(getDto);
-
-    // return Util.toInstance(GetFeedsRequestDTO, feeds);
+    const feeds =
+      getDto.testType === 'Polygon'
+        ? await this.feedRepo.findByPolygon(getDto)
+        : await this.feedRepo.findByCoordinates(getDto);
+    return Util.toInstance(GetFeedsResponseDTO, feeds);
   }
 
   async getFeedsByGeoMarkId(geoMarkId: number): Promise<GetFeedResponseDTO[]> {
-    throw new NotFoundException('미구현 API');
+    const feed = await this.feedRepo.findOneByGeoMarkId(geoMarkId);
+    if (!feed) return [];
+
+    await this.feedRepo.updateProperty(feed.id, {
+      viewCount: feed.addViewCount().viewCount,
+    });
+    return Util.toInstance(GetFeedResponseDTO, [feed]);
   }
 
   async createFeeds(
@@ -81,7 +85,13 @@ export class FeedServiceImpl implements FeedService {
   }
 
   async getFeed(feedId: number): Promise<GetFeedResponseDTO> {
-    throw new NotFoundException('미구현 API');
+    const feed = await this.feedRepo.findOneByPK(feedId);
+    if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
+
+    await this.feedRepo.updateProperty(feedId, {
+      viewCount: feed.addViewCount().viewCount,
+    });
+    return Util.toInstance(GetFeedResponseDTO, feed);
   }
 
   async getFeedActivationTime(

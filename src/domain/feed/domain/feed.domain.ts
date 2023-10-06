@@ -14,8 +14,7 @@ export class FeedProps extends OmitType(FeedEntity, [
   'geoMark',
 ]) {
   comments: Comment[];
-  recommendHistories: RecommendHistory[];
-  geoMark: GeoMark;
+  geoMark?: GeoMark | null;
 }
 
 export class Feed extends BaseDomain<FeedProps> {
@@ -23,11 +22,7 @@ export class Feed extends BaseDomain<FeedProps> {
   private readonly DEDUCTED_MINUTES = 15;
 
   constructor(readonly props: FeedProps) {
-    super({
-      ...props,
-      comments: props.comments ?? [],
-      recommendHistories: props.recommendHistories ?? [],
-    });
+    super({ ...props });
   }
 
   /**
@@ -119,15 +114,19 @@ export class Feed extends BaseDomain<FeedProps> {
     return this.props.comments;
   }
 
-  get recommendHistories(): RecommendHistory[] {
-    return this.props.recommendHistories;
-  }
-
   get geoMark(): GeoMark {
     return this.props.geoMark;
   }
 
   /* ========== custom ========== */
+
+  get hasGeoMark(): boolean {
+    return !!this.props.geoMark;
+  }
+
+  get hasComments(): boolean {
+    return this.props.comments.length > 0;
+  }
 
   /**
    * 피드 활성화 여부
@@ -135,6 +134,12 @@ export class Feed extends BaseDomain<FeedProps> {
    */
   get isActivated(): boolean {
     return this.props.activationAt >= new Date();
+  }
+
+  /* ========== method ========== */
+  addViewCount(): this {
+    this.props.viewCount++;
+    return this;
   }
 
   /**

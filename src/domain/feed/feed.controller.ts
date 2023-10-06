@@ -68,20 +68,20 @@ export class FeedController {
     return this.feedService.createFeeds(userId, postDto);
   }
 
-  @DocumentHelper('getFeed')
-  @Get('/:id')
-  async getFeed(
-    @Param('id', ParseIntPipe) feedId: number,
-  ): Promise<GetFeedResponseDTO> {
-    return this.feedService.getFeed(feedId);
-  }
-
   @DocumentHelper('getFeedsSearch')
   @Get('/search')
   async getFeedsSearch(
     @Query() getDto: GetFeedsSearchRequestDTO,
   ): Promise<GetFeedResponseDTO[]> {
     return this.feedService.getFeedsByGeoMarkId(getDto.geoMarkId);
+  }
+
+  @DocumentHelper('getFeed')
+  @Get('/:id')
+  async getFeed(
+    @Param('id', ParseIntPipe) feedId: number,
+  ): Promise<GetFeedResponseDTO> {
+    return this.feedService.getFeed(feedId);
   }
 
   @DocumentHelper('postFeedImages')
