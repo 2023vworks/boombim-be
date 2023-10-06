@@ -50,12 +50,10 @@ export class AddressEntity extends BaseEntity {
 
   /**
    * 지역 3 Depth, 행정동 명칭
+   * @deprecated 카카오 공식문서에는 해당 데이터가 들어 있지만, 조회시 해당 데이터가 없음
    */
-  @ApiProperty({ description: '지역 3 Depth, 행정동 명칭', type: String })
-  @Expose()
-  @StringValidator()
-  @Column('varchar', { comment: '지역 3 Depth, 행정동 명칭' })
-  region3DepthHName: string;
+  // @Column('varchar', { comment: '지역 3 Depth, 행정동 명칭' })
+  // region3DepthHName: string;
 
   /**
    * 산 여부, Y 또는 N
