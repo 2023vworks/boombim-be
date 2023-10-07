@@ -18,6 +18,7 @@ import {
   PostFeedResponseDTO,
 } from './dto';
 import { FeedRepository, FeedRepositoryToken } from './feed.repository';
+import { RecommendType } from '@app/entity';
 
 export const FeedServiceToken = Symbol('FeedServiceToken');
 export interface FeedService {
@@ -38,14 +39,25 @@ export interface FeedService {
     feedId: number,
     getDto: GetFeedCommentsRequestDTO,
   ): Promise<GetFeedCommentsResponseDTO[]>;
-  createComments(
+  createComment(
+    userId: number,
     feedId: number,
     postDto: PostFeedCommentRequestDTO,
   ): Promise<PostFeedCommentResponseDTO>;
 
-  feedRecommend(feedId: number): Promise<GetFeedActivationTimeResponseDTO>;
-  feedUnrecommend(feedId: number): Promise<GetFeedActivationTimeResponseDTO>;
-  feedReport(feedId: number, postDto: PostFeedReportRequestDTO): Promise<void>;
+  feedRecommend(
+    userId: number,
+    feedId: number,
+  ): Promise<GetFeedActivationTimeResponseDTO>;
+  feedUnrecommend(
+    userId: number,
+    feedId: number,
+  ): Promise<GetFeedActivationTimeResponseDTO>;
+  feedReport(
+    userId: number,
+    feedId: number,
+    postDto: PostFeedReportRequestDTO,
+  ): Promise<void>;
 }
 
 @Injectable()
@@ -81,8 +93,6 @@ export class FeedServiceImpl implements FeedService {
     userId: number,
     postDto: PostFeedRequestDTO,
   ): Promise<PostFeedResponseDTO> {
-    // 유저 조회 -> 작성횟수 갱신 => 작성 여부 확인 => 차감
-
     const queryRunner = this.dataSource.createQueryRunner();
     const manager = queryRunner.manager;
     await queryRunner.connect();
@@ -139,39 +149,117 @@ export class FeedServiceImpl implements FeedService {
   async getFeedActivationTime(
     feedId: number,
   ): Promise<GetFeedActivationTimeResponseDTO> {
-    throw new NotFoundException('미구현 API');
+    const feed = await this.feedRepo.findOnePure(feedId);
+    if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
+
+    return Util.toInstance(GetFeedActivationTimeResponseDTO, {
+      activationAt: feed.activationAt,
+      currentAt: new Date(),
+    });
   }
 
   async getComments(
     feedId: number,
     getDto: GetFeedCommentsRequestDTO,
   ): Promise<GetFeedCommentsResponseDTO[]> {
-    throw new NotFoundException('미구현 API');
+    const feed = await this.feedRepo.findOnePure(feedId);
+    if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
+
+    const comments = await this.feedRepo.findCommentsByFeedId(feedId, getDto);
+    return Util.toInstance(GetFeedCommentsResponseDTO, comments);
   }
 
-  async createComments(
+  async createComment(
+    userId: number,
     feedId: number,
     postDto: PostFeedCommentRequestDTO,
   ): Promise<PostFeedCommentResponseDTO> {
-    throw new NotFoundException('미구현 API');
+    const queryRunner = this.dataSource.createQueryRunner();
+    const manager = queryRunner.manager;
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const txFeedRepo = this.feedRepo.createTransactionRepo(manager);
+      const feed = await txFeedRepo.findOnePure(feedId);
+      if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
+
+      const comment = await txFeedRepo.createComment(userId, feedId, postDto);
+      await txFeedRepo.updateProperty(feedId, {
+        commentCount: feed.addCommentCount().commentCount,
+      });
+      await queryRunner.commitTransaction();
+      return { commentId: comment.id };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async feedRecommend(
+    userId: number,
     feedId: number,
   ): Promise<GetFeedActivationTimeResponseDTO> {
-    throw new NotFoundException('미구현 API');
+    return this.createRecommend(userId, feedId, RecommendType.RECOMMEND);
   }
 
   async feedUnrecommend(
+    userId: number,
     feedId: number,
   ): Promise<GetFeedActivationTimeResponseDTO> {
-    throw new NotFoundException('미구현 API');
+    return this.createRecommend(userId, feedId, RecommendType.UNRECOMMEND);
   }
 
   async feedReport(
+    userId: number,
     feedId: number,
     postDto: PostFeedReportRequestDTO,
   ): Promise<void> {
-    throw new NotFoundException('미구현 API');
+    const feed = await this.feedRepo.findOnePure(feedId);
+    if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
+
+    await this.feedRepo.createReportHistory(userId, feedId, postDto);
+    // TODO: 신고 횟수가 5회 이상이면 슬랙에 알림을 보내는 로직을 추가한다.
+  }
+
+  private async createRecommend(
+    userId: number,
+    feedId: number,
+    type: RecommendType,
+  ): Promise<GetFeedActivationTimeResponseDTO> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    const manager = queryRunner.manager;
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const txFeedRepo = this.feedRepo.createTransactionRepo(manager);
+      const feed = await txFeedRepo.findOnePure(feedId);
+      if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
+
+      if (type === RecommendType.RECOMMEND) {
+        feed.recommned();
+        await txFeedRepo.updateProperty(feedId, {
+          recommendCount: feed.recommendCount,
+          activationAt: feed.activationAt,
+          activity: feed.activity,
+        });
+      } else {
+        feed.unrecommned();
+        await txFeedRepo.updateProperty(feedId, {
+          unrecommendCount: feed.unrecommendCount,
+          activationAt: feed.activationAt,
+        });
+      }
+      await txFeedRepo.createRecommendHistory(userId, feedId, type);
+
+      await queryRunner.commitTransaction();
+      return { activationAt: feed.activationAt, currentAt: new Date() };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

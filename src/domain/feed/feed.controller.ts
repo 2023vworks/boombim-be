@@ -97,7 +97,6 @@ export class FeedController {
   }
 
   @DocumentHelper('getFeedActivationTime')
-  @UseGuards(JwtGuard)
   @Get('/:id/activation-time')
   async getFeedActivationTime(
     @Param('id', ParseIntPipe) feedId: number,
@@ -119,10 +118,11 @@ export class FeedController {
   @Post('/:id/comments')
   @HttpCode(201)
   async postComments(
+    @GetUserInfoDecorator('id') userId: number,
     @Param('id', ParseIntPipe) feedId: number,
     @Body() postDto: PostFeedCommentRequestDTO,
   ): Promise<PostFeedCommentResponseDTO> {
-    return this.feedService.createComments(feedId, postDto);
+    return this.feedService.createComment(userId, feedId, postDto);
   }
 
   @DocumentHelper('postRecommend')
@@ -130,9 +130,10 @@ export class FeedController {
   @Post('/:id/recommend')
   @HttpCode(201)
   async postRecommend(
+    @GetUserInfoDecorator('id') userId: number,
     @Param('id', ParseIntPipe) feedId: number,
   ): Promise<GetFeedActivationTimeResponseDTO> {
-    return this.feedService.feedRecommend(feedId);
+    return this.feedService.feedRecommend(userId, feedId);
   }
 
   @DocumentHelper('postUnrecommend')
@@ -140,9 +141,10 @@ export class FeedController {
   @Post('/:id/unrecommend')
   @HttpCode(201)
   async postUnrecommend(
+    @GetUserInfoDecorator('id') userId: number,
     @Param('id', ParseIntPipe) feedId: number,
   ): Promise<GetFeedActivationTimeResponseDTO> {
-    return this.feedService.feedUnrecommend(feedId);
+    return this.feedService.feedUnrecommend(userId, feedId);
   }
 
   @DocumentHelper('postReport')
@@ -150,9 +152,10 @@ export class FeedController {
   @Post('/:id/report')
   @HttpCode(204)
   async postReport(
+    @GetUserInfoDecorator('id') userId: number,
     @Param('id', ParseIntPipe) feedId: number,
     @Body() postDto: PostFeedReportRequestDTO,
   ): Promise<void> {
-    return this.feedService.feedReport(feedId, postDto);
+    return this.feedService.feedReport(userId, feedId, postDto);
   }
 }
