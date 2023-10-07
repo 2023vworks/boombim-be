@@ -44,6 +44,9 @@ interface DateUtil {
    * @param dateRight
    */
   differenceInHours(dateLeft: Date, dateRight: Date): number;
+
+  addHours(hours: number): Date;
+  addHours(date: Date, hours: number): Date;
 }
 
 export const DateUtil: DateUtil = {
@@ -87,5 +90,10 @@ export const DateUtil: DateUtil = {
         new Date('2023-10-03 00:51:59.999'),
       ); // 1
      */
+  },
+  addHours: function (date: number | Date, hours?: number): Date {
+    return typeof date === 'number'
+      ? Fns.addHours(new Date(), date)
+      : Fns.addHours(date, hours);
   },
 };

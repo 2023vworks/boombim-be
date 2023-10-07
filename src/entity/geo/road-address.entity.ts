@@ -5,6 +5,7 @@ import { Column, Entity, OneToOne } from 'typeorm';
 import { StringValidator } from '@app/common';
 import { BaseEntity } from '../base.entity';
 import { GeoMarkEntity } from './geo-mark.entity';
+import { IsIn } from 'class-validator';
 
 /**
  * 도로명 주소 상세 정보
@@ -60,9 +61,14 @@ export class RoadAddressEntity extends BaseEntity {
   /**
    * 지하 여부, Y 또는 N
    */
-  @ApiProperty({ description: '지하 여부, Y 또는 N', type: String })
+  @ApiProperty({
+    description: '지하 여부, Y 또는 N',
+    type: String,
+    default: 'N',
+  })
   @Expose()
   @StringValidator()
+  @IsIn(['Y', 'N'])
   @Column('char', { comment: '지하 여부, Y 또는 N', length: 1 })
   undergroundYn: 'Y' | 'N';
 
@@ -99,9 +105,13 @@ export class RoadAddressEntity extends BaseEntity {
   /**
    * 우편번호(5자리)
    */
-  @ApiProperty({ description: '우편번호(5자리)', type: String })
+  @ApiProperty({
+    description: '우편번호(5자리)',
+    type: String,
+    default: '12345',
+  })
   @Expose()
-  @StringValidator()
+  @StringValidator({ minLength: 5, maxLength: 5 })
   @Column('char', { comment: '우편번호(5자리)', length: 5 })
   zoneNo: string;
 

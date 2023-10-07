@@ -12,6 +12,7 @@ const feedSuccessMessage = {
   S200_FEED_002: '피드 검색에 성공하였습니다.',
   S200_FEED_003: '피드 상세 조회에 성공하였습니다.',
   S200_FEED_004: '댓글 리스트 조회에 성공하였습니다.',
+  S200_FEED_005: '피드의 활성 시간 조회에 성공하였습니다.',
 
   S201_FEED_001: '피드 생성에 성공하였습니다.',
   S201_FEED_002: '댓글 생성에 성공하였습니다.',
@@ -32,6 +33,7 @@ export const successMessage = {
 
 const feedErrorMessage = {
   E404_FEED_001: '피드가 존재하지 않습니다.',
+  E409_FEED_001: '작성횟수가 부족하여 피드를 작성할 수 없습니다.',
 };
 
 // E + statusCode + _컨트롤러 + _넘버링

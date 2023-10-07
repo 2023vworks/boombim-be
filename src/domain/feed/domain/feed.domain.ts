@@ -1,10 +1,12 @@
 import { OmitType } from '@nestjs/swagger';
 
-import { FeedEntity } from '@app/entity';
+import { FeedEntity, RecommendType } from '@app/entity';
 import { BaseDomain } from 'src/domain/base.domain';
 import { GeoMark } from 'src/domain/geo-mark/domain';
 import { Comment } from './comment.domain';
-import { RecommendHistory } from './recommend-history.domain';
+import { User } from 'src/domain/user/domain';
+
+type FeedWriter = Pick<User, 'id' | 'nickname' | 'mbtiType'>;
 
 export class FeedProps extends OmitType(FeedEntity, [
   'user',
@@ -14,8 +16,8 @@ export class FeedProps extends OmitType(FeedEntity, [
   'geoMark',
 ]) {
   comments: Comment[];
-  recommendHistories: RecommendHistory[];
-  geoMark: GeoMark;
+  user: FeedWriter;
+  geoMark?: GeoMark | null;
 }
 
 export class Feed extends BaseDomain<FeedProps> {
@@ -23,11 +25,7 @@ export class Feed extends BaseDomain<FeedProps> {
   private readonly DEDUCTED_MINUTES = 15;
 
   constructor(readonly props: FeedProps) {
-    super({
-      ...props,
-      comments: props.comments ?? [],
-      recommendHistories: props.recommendHistories ?? [],
-    });
+    super({ ...props });
   }
 
   /**
@@ -115,12 +113,12 @@ export class Feed extends BaseDomain<FeedProps> {
     return this.props.commentCount;
   }
 
-  get comments(): Comment[] {
-    return this.props.comments;
+  get user(): FeedWriter {
+    return this.props.user;
   }
 
-  get recommendHistories(): RecommendHistory[] {
-    return this.props.recommendHistories;
+  get comments(): Comment[] {
+    return this.props.comments;
   }
 
   get geoMark(): GeoMark {
@@ -128,6 +126,14 @@ export class Feed extends BaseDomain<FeedProps> {
   }
 
   /* ========== custom ========== */
+
+  get hasGeoMark(): boolean {
+    return !!this.props.geoMark;
+  }
+
+  get hasComments(): boolean {
+    return this.props.comments.length > 0;
+  }
 
   /**
    * 피드 활성화 여부
@@ -137,18 +143,88 @@ export class Feed extends BaseDomain<FeedProps> {
     return this.props.activationAt >= new Date();
   }
 
+  /* ========== method ========== */
+  addViewCount(): this {
+    this.props.viewCount++;
+    return this;
+  }
+
+  addCommentCount(): this {
+    this.props.commentCount++;
+    return this;
+  }
+
+  /**
+   * 추천을 통해 활성시간과 활성도를 조정한다.
+   * @returns
+   */
+  recommned(): this {
+    this.props.recommendCount++;
+    this.renewActivationAt(RecommendType.RECOMMEND);
+    this.setActivity();
+    return this;
+  }
+
+  /**
+   * 비추천을 통해 활성시간을 조정한다.
+   * @returns
+   */
+  unrecommned(): this {
+    this.props.unrecommendCount++;
+    this.renewActivationAt(RecommendType.UNRECOMMEND);
+    // TODO: 비추천은 활성도에 영향을 주지 않는게 맞는지 확인해야한다.
+    // this.setActivity();
+    return this;
+  }
+
   /**
    * 피드 활성화 시간 갱신(activationAt)
    * - 피드 활성화 시간 = 생성된 시간 + (추천수 * 30) - (비추천 * 15)
    * @returns
    */
-  renewActivationAt() {
-    const { recommendCount, unrecommendCount, activationAt } = this.props;
-    const additionalMinutes = recommendCount * this.ADDITIONAL_MINUTES;
-    const deductedMinutes = unrecommendCount * this.DEDUCTED_MINUTES;
-    activationAt.setMinutes(
-      activationAt.getMinutes() + additionalMinutes - deductedMinutes,
-    );
+  private renewActivationAt(type: RecommendType) {
+    const { activationAt } = this.props;
+    const additionalMinutes =
+      type === RecommendType.RECOMMEND
+        ? this.ADDITIONAL_MINUTES
+        : this.DEDUCTED_MINUTES;
+    activationAt.setMinutes(activationAt.getMinutes() + additionalMinutes);
+
+    return this;
+  }
+
+  /**
+   * 피드 활성도
+   * - 추천도에 따라 결정되면 기준을 아래와 같다.
+   * - 기준: 0이상 | 5이상 | 10이상 | 20이상 | 30이상
+   * - 결과: 1단계 | 2단계 | 3단계 | 4단계 | 5단계
+   * @returns
+   * @error {Error} 추천수가 0보다 작을 경우 에러를 발생시킵니다.
+   */
+  private setActivity() {
+    if (this.props.activity < 0) {
+      throw new Error('[FeedDomin] recommendCount is less than 0]');
+    }
+
+    switch (Math.floor(this.props.recommendCount / 5)) {
+      case 0:
+        this.props.activity = 1;
+        break;
+      case 1:
+        this.props.activity = 2;
+        break;
+      case 2:
+        this.props.activity = 3;
+        break;
+      case 4:
+        this.props.activity = 4;
+        break;
+      case 6:
+      default:
+        this.props.activity = 5;
+        break;
+    }
+
     return this;
   }
 }

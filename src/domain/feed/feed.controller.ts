@@ -4,7 +4,7 @@ import {
   Controller,
   Get,
   HttpCode,
-  NotFoundException,
+  Inject,
   Param,
   ParseIntPipe,
   Post,
@@ -25,6 +25,7 @@ import { FilesUploadInterceptor } from '@app/custom';
 import { JwtGuard } from '../auth/guard';
 import { DocumentHelper } from './document';
 import {
+  GetFeedActivationTimeResponseDTO,
   GetFeedCommentsRequestDTO,
   GetFeedCommentsResponseDTO,
   GetFeedResponseDTO,
@@ -37,17 +38,23 @@ import {
   PostFeedRequestDTO,
   PostFeedResponseDTO,
 } from './dto';
+import { FeedService, FeedServiceToken } from './feed.service';
 
 @ApiControllerDocument(`[${DefalutAppName}] feeds API`)
 @Controller('/feeds')
 @UseInterceptors(ClassSerializerInterceptor)
 export class FeedController {
+  constructor(
+    @Inject(FeedServiceToken)
+    private readonly feedService: FeedService,
+  ) {}
+
   @DocumentHelper('getFeeds')
   @Get()
   async getFeeds(
     @Query() getDto: GetFeedsRequestDTO,
   ): Promise<GetFeedsResponseDTO[]> {
-    throw new NotFoundException('미구현 API');
+    return this.feedService.getFeeds(getDto);
   }
 
   @DocumentHelper('postFeeds')
@@ -58,7 +65,15 @@ export class FeedController {
     @GetUserInfoDecorator('id') userId: number,
     @Body() postDto: PostFeedRequestDTO,
   ): Promise<PostFeedResponseDTO> {
-    throw new NotFoundException('미구현 API');
+    return this.feedService.createFeeds(userId, postDto);
+  }
+
+  @DocumentHelper('getFeedsSearch')
+  @Get('/search')
+  async getFeedsSearch(
+    @Query() getDto: GetFeedsSearchRequestDTO,
+  ): Promise<GetFeedResponseDTO[]> {
+    return this.feedService.getFeedsByGeoMarkId(getDto.geoMarkId);
   }
 
   @DocumentHelper('getFeed')
@@ -66,27 +81,27 @@ export class FeedController {
   async getFeed(
     @Param('id', ParseIntPipe) feedId: number,
   ): Promise<GetFeedResponseDTO> {
-    throw new NotFoundException('미구현 API');
+    return this.feedService.getFeed(feedId);
   }
 
-  @DocumentHelper('getSearch')
-  @Get('/search')
-  async getSearch(
-    @Query() getDto: GetFeedsSearchRequestDTO,
-  ): Promise<GetFeedResponseDTO[]> {
-    throw new NotFoundException('미구현 API');
-  }
-
-  @DocumentHelper('postImages')
+  @DocumentHelper('postFeedImages')
   @UseGuards(JwtGuard)
   @FilesUploadInterceptor(UPLOAD_FILES_NAME, { maxCount: 5 })
   @Post('/:id/images')
   @HttpCode(201)
-  async postImages(
+  async postFeedImages(
     @Param('id', ParseIntPipe) feedId: number,
     @UploadedFiles() file: Express.Multer.File[],
   ): Promise<void> {
-    throw new NotFoundException('미구현 API');
+    return this.feedService.createFeedImages(feedId, file);
+  }
+
+  @DocumentHelper('getFeedActivationTime')
+  @Get('/:id/activation-time')
+  async getFeedActivationTime(
+    @Param('id', ParseIntPipe) feedId: number,
+  ): Promise<GetFeedActivationTimeResponseDTO> {
+    return this.feedService.getFeedActivationTime(feedId);
   }
 
   @DocumentHelper('getComments')
@@ -95,7 +110,7 @@ export class FeedController {
     @Param('id', ParseIntPipe) feedId: number,
     @Query() getDto: GetFeedCommentsRequestDTO,
   ): Promise<GetFeedCommentsResponseDTO[]> {
-    throw new NotFoundException('미구현 API');
+    return this.feedService.getComments(feedId, getDto);
   }
 
   @DocumentHelper('postComments')
@@ -103,10 +118,11 @@ export class FeedController {
   @Post('/:id/comments')
   @HttpCode(201)
   async postComments(
+    @GetUserInfoDecorator('id') userId: number,
     @Param('id', ParseIntPipe) feedId: number,
     @Body() postDto: PostFeedCommentRequestDTO,
   ): Promise<PostFeedCommentResponseDTO> {
-    throw new NotFoundException('미구현 API');
+    return this.feedService.createComment(userId, feedId, postDto);
   }
 
   @DocumentHelper('postRecommend')
@@ -114,9 +130,10 @@ export class FeedController {
   @Post('/:id/recommend')
   @HttpCode(201)
   async postRecommend(
+    @GetUserInfoDecorator('id') userId: number,
     @Param('id', ParseIntPipe) feedId: number,
-  ): Promise<void> {
-    throw new NotFoundException('미구현 API');
+  ): Promise<GetFeedActivationTimeResponseDTO> {
+    return this.feedService.feedRecommend(userId, feedId);
   }
 
   @DocumentHelper('postUnrecommend')
@@ -124,19 +141,21 @@ export class FeedController {
   @Post('/:id/unrecommend')
   @HttpCode(201)
   async postUnrecommend(
+    @GetUserInfoDecorator('id') userId: number,
     @Param('id', ParseIntPipe) feedId: number,
-  ): Promise<void> {
-    throw new NotFoundException('미구현 API');
+  ): Promise<GetFeedActivationTimeResponseDTO> {
+    return this.feedService.feedUnrecommend(userId, feedId);
   }
 
   @DocumentHelper('postReport')
   @UseGuards(JwtGuard)
   @Post('/:id/report')
-  @HttpCode(201)
+  @HttpCode(204)
   async postReport(
+    @GetUserInfoDecorator('id') userId: number,
     @Param('id', ParseIntPipe) feedId: number,
     @Body() postDto: PostFeedReportRequestDTO,
   ): Promise<void> {
-    throw new NotFoundException('미구현 API');
+    return this.feedService.feedReport(userId, feedId, postDto);
   }
 }

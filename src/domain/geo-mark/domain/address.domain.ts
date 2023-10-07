@@ -39,13 +39,6 @@ export class Address extends BaseDomain<AddressEntity> {
   }
 
   /**
-   *  지역 3 Depth, 행정동 명칭
-   */
-  get region3DepthHName(): string {
-    return this.props.region3DepthHName;
-  }
-
-  /**
    *  산 여부, Y 또는 N
    */
   get mountainYn(): string {

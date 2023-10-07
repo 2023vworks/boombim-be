@@ -2,8 +2,13 @@ import { OmitType } from '@nestjs/swagger';
 
 import { CommentEntity } from '@app/entity';
 import { BaseDomain } from 'src/domain/base.domain';
+import { User } from 'src/domain/user/domain';
 
-export class CommentProps extends OmitType(CommentEntity, ['feed', 'user']) {}
+type CommentWriter = Pick<User, 'id' | 'nickname' | 'mbtiType'>;
+
+export class CommentProps extends OmitType(CommentEntity, ['feed', 'user']) {
+  user: CommentWriter;
+}
 
 export class Comment extends BaseDomain<CommentProps> {
   constructor(readonly props: CommentProps) {
@@ -16,5 +21,9 @@ export class Comment extends BaseDomain<CommentProps> {
    */
   get content(): string {
     return this.props.content;
+  }
+
+  get user(): CommentWriter {
+    return this.props.user;
   }
 }

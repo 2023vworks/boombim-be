@@ -1,7 +1,13 @@
-import { PickType } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
 
-import { defaultResponseProperties } from '@app/common';
-import { FeedEntity } from '@app/entity';
+import { InstanceValidator, defaultResponseProperties } from '@app/common';
+import { FeedEntity, UserEntity } from '@app/entity';
+import { Expose } from 'class-transformer';
+
+export class GetFeedsWithUserResponseDTO extends PickType(UserEntity, [
+  'mbtiType',
+  'nickname',
+]) {}
 
 export class GetFeedsResponseDTO extends PickType(FeedEntity, [
   ...defaultResponseProperties,
@@ -13,4 +19,12 @@ export class GetFeedsResponseDTO extends PickType(FeedEntity, [
   'reportCount',
   'viewCount',
   'commentCount',
-]) {}
+]) {
+  @ApiProperty({
+    description: '피드 작성자 정보',
+    type: GetFeedsWithUserResponseDTO,
+  })
+  @Expose()
+  @InstanceValidator(GetFeedsWithUserResponseDTO)
+  user: GetFeedsWithUserResponseDTO;
+}

@@ -20,5 +20,6 @@ import { AuthModule } from '../auth/auth.module';
       provide: UserRepositoryToken,
     },
   ],
+  exports: [UserRepositoryToken],
 })
 export class UserModule {}

@@ -13,7 +13,6 @@ export class CursorPaginationDTO {
     description:
       '다음 커서(요청할 데이터 시작 커서), 없다면 가장 최초 커서를 사용한다.',
     type: Number,
-    default: 1,
     minimum: 1,
     maximum: 2147483647,
   })
