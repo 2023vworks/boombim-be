@@ -6,6 +6,8 @@ import { GeoMark } from 'src/domain/geo-mark/domain';
 import { Comment } from './comment.domain';
 import { User } from 'src/domain/user/domain';
 
+type FeedWriter = Pick<User, 'id' | 'nickname' | 'mbtiType'>;
+
 export class FeedProps extends OmitType(FeedEntity, [
   'user',
   'comments',
@@ -14,7 +16,7 @@ export class FeedProps extends OmitType(FeedEntity, [
   'geoMark',
 ]) {
   comments: Comment[];
-  user: Pick<User, 'id' | 'nickname' | 'mbtiType'>;
+  user: FeedWriter;
   geoMark?: GeoMark | null;
 }
 
@@ -109,6 +111,10 @@ export class Feed extends BaseDomain<FeedProps> {
    */
   get commentCount(): number {
     return this.props.commentCount;
+  }
+
+  get user(): FeedWriter {
+    return this.props.user;
   }
 
   get comments(): Comment[] {
