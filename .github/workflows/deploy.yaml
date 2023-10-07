@@ -87,12 +87,14 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: Run Build App
-        run: npm run build
-
+      # Note: (v0.0.1-beta.3) ec2 사양(t2.micro) 이슈로, 기존 node app을 kill하고 빌드가 수행되도록 순서 변경
       - name: Stop old server (ignore error)
         run: |
           killall -9 node || true
+
+      - name: Run Build App
+        run: npm run build
+
       - name: Remove old server in ~/soruce (ignore error)
         run: |
           rm -rf ~/source || true
