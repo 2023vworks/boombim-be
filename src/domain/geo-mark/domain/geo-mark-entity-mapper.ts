@@ -4,8 +4,10 @@ import { GeoMark } from './geo-mark.domain';
 import { RegionInfo } from './region-info.domain';
 import { RoadAddress } from './road-address.domain';
 
+type CustomGeoMarkEntity = GeoMarkEntity & { activity: number };
+
 export class GeoMarkEntityMapper {
-  static toDomain(entity: GeoMarkEntity): GeoMark {
+  static toDomain(entity: CustomGeoMarkEntity): GeoMark {
     return new GeoMark({
       ...entity,
       regionInfo: new RegionInfo(entity.regionInfo),

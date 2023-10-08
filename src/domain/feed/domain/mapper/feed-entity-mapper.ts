@@ -15,7 +15,10 @@ export class FeedEntityMapper {
             ? CommentEntityMapper.toDomain(entity.comments)
             : [],
           geoMark: entity.geoMark
-            ? GeoMarkEntityMapper.toDomain(entity.geoMark)
+            ? GeoMarkEntityMapper.toDomain({
+                ...entity.geoMark,
+                activity: entity.activity,
+              })
             : null,
         }).setBase(entity.id, entity.createdAt, entity.updatedAt);
   }
