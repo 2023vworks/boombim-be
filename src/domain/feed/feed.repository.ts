@@ -60,6 +60,11 @@ export interface FeedRepository extends CustomRepository<FeedEntity> {
     postDto: PostFeedCommentRequestDTO,
   ): Promise<Comment>;
 
+  existHistory(
+    userId: number,
+    feedId: number,
+    type: RecommendType,
+  ): Promise<boolean>;
   createRecommendHistory(
     userId: number,
     feedId: number,
@@ -247,6 +252,20 @@ export class FeedRepositoryImpl
   }
 
   /* ======================== RecommendHistory ======================== */
+
+  async existHistory(
+    userId: number,
+    feedId: number,
+    type: RecommendType,
+  ): Promise<boolean> {
+    const qb = this.recommendHistoryRepo.createQueryBuilder('history');
+    qb.where('history.user = :userId', { userId });
+    qb.andWhere('history.feed = :feedId', { feedId });
+    qb.andWhere('history.type = :type', { type });
+    const count = await qb.getCount();
+    return !!count;
+  }
+
   async createRecommendHistory(
     userId: number,
     feedId: number,

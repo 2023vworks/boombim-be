@@ -187,7 +187,7 @@ export class Feed extends BaseDomain<FeedProps> {
     const additionalMinutes =
       type === RecommendType.RECOMMEND
         ? this.ADDITIONAL_MINUTES
-        : this.DEDUCTED_MINUTES;
+        : -this.DEDUCTED_MINUTES;
     activationAt.setMinutes(activationAt.getMinutes() + additionalMinutes);
 
     return this;

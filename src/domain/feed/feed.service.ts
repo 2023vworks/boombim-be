@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { Util, errorMessage } from '@app/common';
 import { InjectDataSource } from '@nestjs/typeorm';
@@ -236,6 +241,9 @@ export class FeedServiceImpl implements FeedService {
       const txFeedRepo = this.feedRepo.createTransactionRepo(manager);
       const feed = await txFeedRepo.findOnePure(feedId);
       if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
+
+      const isExist = await txFeedRepo.existHistory(userId, feedId, type);
+      if (isExist) throw new ConflictException(errorMessage.E409_FEED_002);
 
       if (type === RecommendType.RECOMMEND) {
         feed.recommned();
