@@ -221,11 +221,29 @@ export class FeedServiceImpl implements FeedService {
     feedId: number,
     postDto: PostFeedReportRequestDTO,
   ): Promise<void> {
-    const feed = await this.feedRepo.findOnePure(feedId);
-    if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
+    const queryRunner = this.dataSource.createQueryRunner();
+    const manager = queryRunner.manager;
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const txFeedRepo = this.feedRepo.createTransactionRepo(manager);
+      const feed = await txFeedRepo.findOnePure(feedId);
+      if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
+      const isExist = await txFeedRepo.existReportHistory(userId, feedId);
+      if (isExist) throw new ConflictException(errorMessage.E409_FEED_003);
 
-    await this.feedRepo.createReportHistory(userId, feedId, postDto);
-    // TODO: 신고 횟수가 5회 이상이면 슬랙에 알림을 보내는 로직을 추가한다.
+      await txFeedRepo.createReportHistory(userId, feedId, postDto);
+      await txFeedRepo.updateProperty(feedId, {
+        reportCount: feed.addReportCount().reportCount,
+      });
+      // TODO: 신고 횟수가 5회 이상이면 슬랙에 알림을 보내는 로직을 추가한다.
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   private async createRecommend(
@@ -242,7 +260,11 @@ export class FeedServiceImpl implements FeedService {
       const feed = await txFeedRepo.findOnePure(feedId);
       if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
 
-      const isExist = await txFeedRepo.existHistory(userId, feedId, type);
+      const isExist = await txFeedRepo.existRecommendHistory(
+        userId,
+        feedId,
+        type,
+      );
       if (isExist) throw new ConflictException(errorMessage.E409_FEED_002);
 
       if (type === RecommendType.RECOMMEND) {

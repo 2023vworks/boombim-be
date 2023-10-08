@@ -60,7 +60,7 @@ export interface FeedRepository extends CustomRepository<FeedEntity> {
     postDto: PostFeedCommentRequestDTO,
   ): Promise<Comment>;
 
-  existHistory(
+  existRecommendHistory(
     userId: number,
     feedId: number,
     type: RecommendType,
@@ -70,6 +70,8 @@ export interface FeedRepository extends CustomRepository<FeedEntity> {
     feedId: number,
     type: RecommendType,
   ): Promise<void>;
+
+  existReportHistory(userId: number, feedId: number): Promise<boolean>;
   createReportHistory(
     userId: number,
     feedId: number,
@@ -253,7 +255,7 @@ export class FeedRepositoryImpl
 
   /* ======================== RecommendHistory ======================== */
 
-  async existHistory(
+  async existRecommendHistory(
     userId: number,
     feedId: number,
     type: RecommendType,
@@ -279,7 +281,16 @@ export class FeedRepositoryImpl
     await this.recommendHistoryRepo.save(recommedHistory);
   }
 
-  /* ======================== RecommendHistory ======================== */
+  /* ======================== ReportHistory ======================== */
+
+  async existReportHistory(userId: number, feedId: number): Promise<boolean> {
+    const qb = this.reportHistoryRepo.createQueryBuilder('history');
+    qb.where('history.user = :userId', { userId });
+    qb.andWhere('history.feed = :feedId', { feedId });
+    const count = await qb.getCount();
+    return !!count;
+  }
+
   async createReportHistory(
     userId: number,
     feedId: number,
