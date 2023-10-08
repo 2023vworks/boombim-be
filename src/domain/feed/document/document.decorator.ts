@@ -1,6 +1,7 @@
 import { applyDecorators } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiConflictResponse,
   ApiCreatedResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
@@ -54,6 +55,7 @@ const decorators: Record<API_DOC_TYPE, Function> = {
       }),
       ApiAuthDocument(USER_ACCESS_TOKEN),
       ApiBadRequestResponse({ description: errorMessage.E400_APP_001 }),
+      ApiConflictResponse({ description: errorMessage.E409_FEED_001 }),
     ),
   getFeed: () =>
     applyDecorators(
@@ -125,6 +127,7 @@ const decorators: Record<API_DOC_TYPE, Function> = {
       ApiAuthDocument(USER_ACCESS_TOKEN),
       ApiBadRequestResponse({ description: errorMessage.E400_APP_001 }),
       ApiNotFoundResponse({ description: errorMessage.E404_FEED_001 }),
+      ApiConflictResponse({ description: errorMessage.E409_FEED_002 }),
     ),
   postUnrecommend: () =>
     applyDecorators(
@@ -136,6 +139,7 @@ const decorators: Record<API_DOC_TYPE, Function> = {
       ApiAuthDocument(USER_ACCESS_TOKEN),
       ApiBadRequestResponse({ description: errorMessage.E400_APP_001 }),
       ApiNotFoundResponse({ description: errorMessage.E404_FEED_001 }),
+      ApiConflictResponse({ description: errorMessage.E409_FEED_002 }),
     ),
   postReport: () =>
     applyDecorators(
@@ -144,6 +148,7 @@ const decorators: Record<API_DOC_TYPE, Function> = {
       ApiAuthDocument(USER_ACCESS_TOKEN),
       ApiBadRequestResponse({ description: errorMessage.E400_APP_001 }),
       ApiNotFoundResponse({ description: errorMessage.E404_FEED_001 }),
+      ApiConflictResponse({ description: errorMessage.E409_FEED_003 }),
     ),
 };
 
