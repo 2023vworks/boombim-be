@@ -34,5 +34,5 @@ export class CursorPaginationDTO {
   @ApiHideProperty()
   @IsOptional()
   @Expose()
-  readonly sort = 'DESC';
+  readonly sort: 'ASC' | 'DESC';
 }

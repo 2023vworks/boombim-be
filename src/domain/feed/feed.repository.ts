@@ -252,8 +252,8 @@ export class FeedRepositoryImpl
     qb.innerJoin('comment.user', 'user') //
       .addSelect(['user.id', 'user.nickname', 'user.mbtiType']);
     if (!Util.isNil(nextCursor)) {
-      sort === 'DESC' && qb.andWhere('comment.id <= :id', { id: nextCursor });
-      sort !== 'DESC' && qb.andWhere('comment.id >= :id', { id: nextCursor });
+      sort === 'ASC' && qb.andWhere('comment.id >= :id', { id: nextCursor });
+      sort !== 'ASC' && qb.andWhere('comment.id <= :id', { id: nextCursor });
     }
     qb.limit(size);
     qb.orderBy('comment.id', sort);

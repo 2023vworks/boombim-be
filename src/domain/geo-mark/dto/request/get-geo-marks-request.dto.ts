@@ -1,5 +1,9 @@
 import { CursorPaginationDTO } from '@app/common';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  ApiHideProperty,
+  ApiProperty,
+  ApiPropertyOptional,
+} from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import {
   IsIn,
@@ -68,4 +72,9 @@ export class GetGeoMarksRequestDTO extends CursorPaginationDTO {
   @IsString()
   @IsIn(['Coordinates', 'Polygon'])
   readonly testType: 'Coordinates' | 'Polygon';
+
+  @ApiHideProperty()
+  @IsOptional()
+  @Expose()
+  readonly sort = 'DESC';
 }
