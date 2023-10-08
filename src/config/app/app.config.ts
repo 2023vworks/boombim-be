@@ -1,5 +1,6 @@
 import { InstanceValidator, IntValidator, StringValidator } from '@app/common';
 import {
+  AwsConfig,
   CorsConfig,
   DatabaseConfig,
   SentryConfig,
@@ -21,6 +22,9 @@ export class AppConfig extends BaseConfig {
 
   @InstanceValidator(JwtConfig)
   readonly jwt: JwtConfig;
+
+  @InstanceValidator(AwsConfig)
+  readonly aws: AwsConfig;
 
   @InstanceValidator(DatabaseConfig)
   readonly database: DatabaseConfig;

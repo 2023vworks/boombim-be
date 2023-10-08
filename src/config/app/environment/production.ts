@@ -13,6 +13,12 @@ export const ProdConfig: AppConfig = {
     subject: process.env.JWT_SUBJECT,
   },
 
+  aws: {
+    accessKey: process.env.AWS_ACCESS_KEY,
+    secretAccess: process.env.AWS_ACCESS_SECRET,
+    region: process.env.AWS_REGION,
+  },
+
   database: {
     type: 'postgres',
     host: process.env.DATABASE_HOST,
