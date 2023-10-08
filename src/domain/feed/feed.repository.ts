@@ -41,10 +41,11 @@ export interface FeedRepository extends CustomRepository<FeedEntity> {
    */
   findByPolygon(getDto: GetFeedsRequestDTO): Promise<FeedOmitGeomark[]>;
 
+  existByUserId(feedId: number, userId: number): Promise<boolean>;
   findOneByGeoMarkId(geoMarkId: number): Promise<Feed | null>;
   findOneByPK(geoMarkId: number): Promise<Feed | null>;
   findOnePure(feedId: number): Promise<Feed | null>;
-  createFeed(userId: number, postDto: PostFeedRequestDTO): Promise<Feed | null>;
+  createOne(userId: number, postDto: PostFeedRequestDTO): Promise<Feed | null>;
   updateProperty(
     feedId: number,
     properties: Partial<FeedEntity>,
@@ -155,6 +156,14 @@ export class FeedRepositoryImpl
     return FeedEntityMapper.toDomain(feeds);
   }
 
+  async existByUserId(feedId: number, userId: number): Promise<boolean> {
+    const count = await this.createQueryBuilder('feed')
+      .where('feed.id = :feedId', { feedId })
+      .andWhere('feed.user = :userId', { userId })
+      .getCount();
+    return !!count;
+  }
+
   async findOneByGeoMarkId(geoMarkId: number): Promise<Feed | null> {
     const feed = await this.findOne({
       select: {
@@ -192,7 +201,7 @@ export class FeedRepositoryImpl
     return feed ? FeedEntityMapper.toDomain(feed) : null;
   }
 
-  async createFeed(userId: number, postDto: PostFeedRequestDTO): Promise<Feed> {
+  async createOne(userId: number, postDto: PostFeedRequestDTO): Promise<Feed> {
     const { x, y } = postDto.geoMark;
     const feed = this.create({
       ...postDto,

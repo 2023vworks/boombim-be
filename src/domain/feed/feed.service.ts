@@ -24,17 +24,22 @@ import {
 } from './dto';
 import { FeedRepository, FeedRepositoryToken } from './feed.repository';
 import { RecommendType } from '@app/entity';
+import { UploadService, UploadServiceToken } from './upload/upload.service';
 
 export const FeedServiceToken = Symbol('FeedServiceToken');
 export interface FeedService {
   getFeeds(getDto: GetFeedsRequestDTO): Promise<GetFeedsResponseDTO[]>;
   getFeedsByGeoMarkId(geoMarkId: number): Promise<GetFeedResponseDTO[]>;
-  createFeeds(
+  createFeed(
     userId: number,
     postDto: PostFeedRequestDTO,
   ): Promise<PostFeedResponseDTO>;
 
-  createFeedImages(feedId: number, file: Express.Multer.File[]): Promise<void>;
+  createFeedImages(
+    userId: number,
+    feedId: number,
+    file: Express.Multer.File[],
+  ): Promise<void>;
   getFeed(feedId: number): Promise<GetFeedResponseDTO>;
   getFeedActivationTime(
     feedId: number,
@@ -68,12 +73,10 @@ export interface FeedService {
 @Injectable()
 export class FeedServiceImpl implements FeedService {
   constructor(
-    @InjectDataSource()
-    private readonly dataSource: DataSource,
-    @Inject(FeedRepositoryToken)
-    private readonly feedRepo: FeedRepository,
-    @Inject(UserRepositoryToken)
-    private readonly userRepo: UserRepository,
+    @InjectDataSource() private readonly dataSource: DataSource,
+    @Inject(FeedRepositoryToken) private readonly feedRepo: FeedRepository,
+    @Inject(UserRepositoryToken) private readonly userRepo: UserRepository,
+    @Inject(UploadServiceToken) private readonly uploadService: UploadService,
   ) {}
 
   async getFeeds(getDto: GetFeedsRequestDTO): Promise<GetFeedsResponseDTO[]> {
@@ -94,7 +97,7 @@ export class FeedServiceImpl implements FeedService {
     return Util.toInstance(GetFeedResponseDTO, [feed]);
   }
 
-  async createFeeds(
+  async createFeed(
     userId: number,
     postDto: PostFeedRequestDTO,
   ): Promise<PostFeedResponseDTO> {
@@ -106,7 +109,7 @@ export class FeedServiceImpl implements FeedService {
       const txFeedRepo = this.feedRepo.createTransactionRepo(manager);
       const txUserRepo = this.userRepo.createTransactionRepo(manager);
 
-      const { id } = await txFeedRepo.createFeed(userId, postDto);
+      const { id } = await txFeedRepo.createOne(userId, postDto);
       const user = await txUserRepo.findOneByPK(userId);
 
       const isMaxFeedWritingCount = user.isMaxFeedWritingCount;
@@ -135,10 +138,21 @@ export class FeedServiceImpl implements FeedService {
   }
 
   async createFeedImages(
+    userId: number,
     feedId: number,
     file: Express.Multer.File[],
   ): Promise<void> {
-    throw new NotFoundException('미구현 API');
+    const feed = await this.feedRepo.existByUserId(feedId, userId);
+    if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
+    const images = await this.uploadService.feedFilesUpload(
+      userId,
+      feedId,
+      file,
+    );
+    await this.feedRepo.updateProperty(feedId, {
+      thumbnailImages: images, // TODO: 리사이징 로직 추가시 제거
+      images,
+    });
   }
 
   async getFeed(feedId: number): Promise<GetFeedResponseDTO> {
