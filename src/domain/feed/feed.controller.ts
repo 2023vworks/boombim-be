@@ -9,7 +9,6 @@ import {
   ParseIntPipe,
   Post,
   Query,
-  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -17,6 +16,7 @@ import {
 import {
   ApiControllerDocument,
   DefalutAppName,
+  UploadedFiles,
   GetUserInfoDecorator,
   UPLOAD_FILES_NAME,
 } from '@app/common';
@@ -65,7 +65,7 @@ export class FeedController {
     @GetUserInfoDecorator('id') userId: number,
     @Body() postDto: PostFeedRequestDTO,
   ): Promise<PostFeedResponseDTO> {
-    return this.feedService.createFeeds(userId, postDto);
+    return this.feedService.createFeed(userId, postDto);
   }
 
   @DocumentHelper('getFeedsSearch')
@@ -90,10 +90,11 @@ export class FeedController {
   @Post('/:id/images')
   @HttpCode(201)
   async postFeedImages(
+    @GetUserInfoDecorator('id') userId: number,
     @Param('id', ParseIntPipe) feedId: number,
     @UploadedFiles() file: Express.Multer.File[],
   ): Promise<void> {
-    return this.feedService.createFeedImages(feedId, file);
+    await this.feedService.createFeedImages(userId, feedId, file);
   }
 
   @DocumentHelper('getFeedActivationTime')

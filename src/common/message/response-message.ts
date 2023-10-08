@@ -34,6 +34,8 @@ export const successMessage = {
 const feedErrorMessage = {
   E404_FEED_001: '피드가 존재하지 않습니다.',
   E409_FEED_001: '작성횟수가 부족하여 피드를 작성할 수 없습니다.',
+  E409_FEED_002: '추천/비추천은 한번만 가능합니다.',
+  E409_FEED_003: '신고는 한번만 가능합니다.',
 };
 
 // E + statusCode + _컨트롤러 + _넘버링

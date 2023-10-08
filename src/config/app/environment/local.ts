@@ -13,6 +13,13 @@ export const LocalConfig: AppConfig = {
     subject: process.env.JWT_SUBJECT,
   },
 
+  aws: {
+    accessKey: process.env.AWS_ACCESS_KEY,
+    secret: process.env.AWS_ACCESS_SECRET,
+    region: process.env.AWS_REGION,
+    bucketName: process.env.AWS_IMAGE_S3,
+  },
+
   database: {
     type: 'postgres',
     host: process.env.DATABASE_HOST,

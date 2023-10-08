@@ -1,4 +1,4 @@
-import { InstanceValidator } from '@app/common';
+import { InstanceValidator, defaultResponseProperties } from '@app/common';
 import { CommentEntity, UserEntity } from '@app/entity';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
@@ -9,6 +9,7 @@ class GetFeedCommentsWithUserResponseDTO extends PickType(UserEntity, [
 ]) {}
 
 export class GetFeedCommentsResponseDTO extends PickType(CommentEntity, [
+  ...defaultResponseProperties,
   'content',
 ]) {
   @ApiProperty({

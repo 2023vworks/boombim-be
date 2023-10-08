@@ -14,6 +14,7 @@ export class GeoMarkProps extends OmitType(GeoMarkEntity, [
   regionInfo: RegionInfo;
   address: Address;
   roadAddress: RoadAddress | null;
+  activity: number;
 }
 
 export class GeoMark extends BaseDomain<GeoMarkProps> {
@@ -65,5 +66,10 @@ export class GeoMark extends BaseDomain<GeoMarkProps> {
    */
   get roadAddress(): RoadAddress | null {
     return this.props.roadAddress;
+  }
+
+  /* ================== custom ================== */
+  get activity(): number {
+    return this.props.activity;
   }
 }

@@ -7,9 +7,15 @@ import { FeedServiceImpl, FeedServiceToken } from './feed.service';
 import { FeedRepositoryImpl, FeedRepositoryToken } from './feed.repository';
 import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([FeedEntity]), AuthModule, UserModule],
+  imports: [
+    TypeOrmModule.forFeature([FeedEntity]),
+    AuthModule,
+    UserModule,
+    UploadModule,
+  ],
   controllers: [FeedController],
   providers: [
     {

@@ -41,10 +41,11 @@ export interface FeedRepository extends CustomRepository<FeedEntity> {
    */
   findByPolygon(getDto: GetFeedsRequestDTO): Promise<FeedOmitGeomark[]>;
 
+  existByUserId(feedId: number, userId: number): Promise<boolean>;
   findOneByGeoMarkId(geoMarkId: number): Promise<Feed | null>;
   findOneByPK(geoMarkId: number): Promise<Feed | null>;
   findOnePure(feedId: number): Promise<Feed | null>;
-  createFeed(userId: number, postDto: PostFeedRequestDTO): Promise<Feed | null>;
+  createOne(userId: number, postDto: PostFeedRequestDTO): Promise<Feed | null>;
   updateProperty(
     feedId: number,
     properties: Partial<FeedEntity>,
@@ -60,11 +61,18 @@ export interface FeedRepository extends CustomRepository<FeedEntity> {
     postDto: PostFeedCommentRequestDTO,
   ): Promise<Comment>;
 
+  existRecommendHistory(
+    userId: number,
+    feedId: number,
+    type: RecommendType,
+  ): Promise<boolean>;
   createRecommendHistory(
     userId: number,
     feedId: number,
     type: RecommendType,
   ): Promise<void>;
+
+  existReportHistory(userId: number, feedId: number): Promise<boolean>;
   createReportHistory(
     userId: number,
     feedId: number,
@@ -148,6 +156,14 @@ export class FeedRepositoryImpl
     return FeedEntityMapper.toDomain(feeds);
   }
 
+  async existByUserId(feedId: number, userId: number): Promise<boolean> {
+    const count = await this.createQueryBuilder('feed')
+      .where('feed.id = :feedId', { feedId })
+      .andWhere('feed.user = :userId', { userId })
+      .getCount();
+    return !!count;
+  }
+
   async findOneByGeoMarkId(geoMarkId: number): Promise<Feed | null> {
     const feed = await this.findOne({
       select: {
@@ -185,7 +201,7 @@ export class FeedRepositoryImpl
     return feed ? FeedEntityMapper.toDomain(feed) : null;
   }
 
-  async createFeed(userId: number, postDto: PostFeedRequestDTO): Promise<Feed> {
+  async createOne(userId: number, postDto: PostFeedRequestDTO): Promise<Feed> {
     const { x, y } = postDto.geoMark;
     const feed = this.create({
       ...postDto,
@@ -236,8 +252,8 @@ export class FeedRepositoryImpl
     qb.innerJoin('comment.user', 'user') //
       .addSelect(['user.id', 'user.nickname', 'user.mbtiType']);
     if (!Util.isNil(nextCursor)) {
-      sort === 'DESC' && qb.andWhere('comment.id <= :id', { id: nextCursor });
-      sort !== 'DESC' && qb.andWhere('comment.id >= :id', { id: nextCursor });
+      sort === 'ASC' && qb.andWhere('comment.id >= :id', { id: nextCursor });
+      sort !== 'ASC' && qb.andWhere('comment.id <= :id', { id: nextCursor });
     }
     qb.limit(size);
     qb.orderBy('comment.id', sort);
@@ -247,6 +263,20 @@ export class FeedRepositoryImpl
   }
 
   /* ======================== RecommendHistory ======================== */
+
+  async existRecommendHistory(
+    userId: number,
+    feedId: number,
+    type: RecommendType,
+  ): Promise<boolean> {
+    const qb = this.recommendHistoryRepo.createQueryBuilder('history');
+    qb.where('history.user = :userId', { userId });
+    qb.andWhere('history.feed = :feedId', { feedId });
+    qb.andWhere('history.type = :type', { type });
+    const count = await qb.getCount();
+    return !!count;
+  }
+
   async createRecommendHistory(
     userId: number,
     feedId: number,
@@ -260,7 +290,16 @@ export class FeedRepositoryImpl
     await this.recommendHistoryRepo.save(recommedHistory);
   }
 
-  /* ======================== RecommendHistory ======================== */
+  /* ======================== ReportHistory ======================== */
+
+  async existReportHistory(userId: number, feedId: number): Promise<boolean> {
+    const qb = this.reportHistoryRepo.createQueryBuilder('history');
+    qb.where('history.user = :userId', { userId });
+    qb.andWhere('history.feed = :feedId', { feedId });
+    const count = await qb.getCount();
+    return !!count;
+  }
+
   async createReportHistory(
     userId: number,
     feedId: number,

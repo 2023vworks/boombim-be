@@ -37,7 +37,7 @@ export class GeoMarkRepositoryImpl
     const { minX, minY, maxX, maxY, nextCursor, size, sort } = getDto;
     const feedRepo = this.manager.getRepository(FeedEntity);
     const qb = feedRepo.createQueryBuilder('feed');
-    qb.select('feed.id');
+    qb.select(['feed.id', 'feed.activity']);
     qb.innerJoinAndSelect('feed.geoMark', 'mark');
     qb.where('1 = 1');
     qb.andWhere('mark.x BETWEEN :minX AND :maxX', { minX, maxX });
@@ -52,14 +52,19 @@ export class GeoMarkRepositoryImpl
     qb.orderBy('mark.id', sort);
 
     const feeds = await qb.getMany();
-    return feeds.map((feed) => GeoMarkEntityMapper.toDomain(feed.geoMark));
+    return feeds.map((feed) =>
+      GeoMarkEntityMapper.toDomain({
+        ...feed.geoMark,
+        activity: feed.activity,
+      }),
+    );
   }
 
   async findByPolygon(getDto: GetGeoMarksRequestDTO): Promise<GeoMark[]> {
     const { minX, minY, maxX, maxY, nextCursor, size, sort } = getDto;
     const feedRepo = this.manager.getRepository(FeedEntity);
     const qb = feedRepo.createQueryBuilder('feed');
-    qb.select('feed.id');
+    qb.select(['feed.id', 'feed.activity']);
     qb.innerJoinAndSelect('feed.geoMark', 'mark');
     qb.where(
       `ST_Contains(
@@ -77,7 +82,12 @@ export class GeoMarkRepositoryImpl
     qb.orderBy('mark.id', 'DESC');
 
     const feeds = await qb.getMany();
-    return feeds.map((feed) => GeoMarkEntityMapper.toDomain(feed.geoMark));
+    return feeds.map((feed) =>
+      GeoMarkEntityMapper.toDomain({
+        ...feed.geoMark,
+        activity: feed.activity,
+      }),
+    );
   }
 }
 

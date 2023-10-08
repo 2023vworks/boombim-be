@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { Util, errorMessage } from '@app/common';
 import { InjectDataSource } from '@nestjs/typeorm';
@@ -19,17 +24,22 @@ import {
 } from './dto';
 import { FeedRepository, FeedRepositoryToken } from './feed.repository';
 import { RecommendType } from '@app/entity';
+import { UploadService, UploadServiceToken } from './upload/upload.service';
 
 export const FeedServiceToken = Symbol('FeedServiceToken');
 export interface FeedService {
   getFeeds(getDto: GetFeedsRequestDTO): Promise<GetFeedsResponseDTO[]>;
   getFeedsByGeoMarkId(geoMarkId: number): Promise<GetFeedResponseDTO[]>;
-  createFeeds(
+  createFeed(
     userId: number,
     postDto: PostFeedRequestDTO,
   ): Promise<PostFeedResponseDTO>;
 
-  createFeedImages(feedId: number, file: Express.Multer.File[]): Promise<void>;
+  createFeedImages(
+    userId: number,
+    feedId: number,
+    file: Express.Multer.File[],
+  ): Promise<void>;
   getFeed(feedId: number): Promise<GetFeedResponseDTO>;
   getFeedActivationTime(
     feedId: number,
@@ -63,12 +73,10 @@ export interface FeedService {
 @Injectable()
 export class FeedServiceImpl implements FeedService {
   constructor(
-    @InjectDataSource()
-    private readonly dataSource: DataSource,
-    @Inject(FeedRepositoryToken)
-    private readonly feedRepo: FeedRepository,
-    @Inject(UserRepositoryToken)
-    private readonly userRepo: UserRepository,
+    @InjectDataSource() private readonly dataSource: DataSource,
+    @Inject(FeedRepositoryToken) private readonly feedRepo: FeedRepository,
+    @Inject(UserRepositoryToken) private readonly userRepo: UserRepository,
+    @Inject(UploadServiceToken) private readonly uploadService: UploadService,
   ) {}
 
   async getFeeds(getDto: GetFeedsRequestDTO): Promise<GetFeedsResponseDTO[]> {
@@ -89,7 +97,7 @@ export class FeedServiceImpl implements FeedService {
     return Util.toInstance(GetFeedResponseDTO, [feed]);
   }
 
-  async createFeeds(
+  async createFeed(
     userId: number,
     postDto: PostFeedRequestDTO,
   ): Promise<PostFeedResponseDTO> {
@@ -101,7 +109,7 @@ export class FeedServiceImpl implements FeedService {
       const txFeedRepo = this.feedRepo.createTransactionRepo(manager);
       const txUserRepo = this.userRepo.createTransactionRepo(manager);
 
-      const { id } = await txFeedRepo.createFeed(userId, postDto);
+      const { id } = await txFeedRepo.createOne(userId, postDto);
       const user = await txUserRepo.findOneByPK(userId);
 
       const isMaxFeedWritingCount = user.isMaxFeedWritingCount;
@@ -130,10 +138,21 @@ export class FeedServiceImpl implements FeedService {
   }
 
   async createFeedImages(
+    userId: number,
     feedId: number,
     file: Express.Multer.File[],
   ): Promise<void> {
-    throw new NotFoundException('미구현 API');
+    const feed = await this.feedRepo.existByUserId(feedId, userId);
+    if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
+    const images = await this.uploadService.feedFilesUpload(
+      userId,
+      feedId,
+      file,
+    );
+    await this.feedRepo.updateProperty(feedId, {
+      thumbnailImages: images, // TODO: 리사이징 로직 추가시 제거
+      images,
+    });
   }
 
   async getFeed(feedId: number): Promise<GetFeedResponseDTO> {
@@ -216,11 +235,29 @@ export class FeedServiceImpl implements FeedService {
     feedId: number,
     postDto: PostFeedReportRequestDTO,
   ): Promise<void> {
-    const feed = await this.feedRepo.findOnePure(feedId);
-    if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
+    const queryRunner = this.dataSource.createQueryRunner();
+    const manager = queryRunner.manager;
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const txFeedRepo = this.feedRepo.createTransactionRepo(manager);
+      const feed = await txFeedRepo.findOnePure(feedId);
+      if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
+      const isExist = await txFeedRepo.existReportHistory(userId, feedId);
+      if (isExist) throw new ConflictException(errorMessage.E409_FEED_003);
 
-    await this.feedRepo.createReportHistory(userId, feedId, postDto);
-    // TODO: 신고 횟수가 5회 이상이면 슬랙에 알림을 보내는 로직을 추가한다.
+      await txFeedRepo.createReportHistory(userId, feedId, postDto);
+      await txFeedRepo.updateProperty(feedId, {
+        reportCount: feed.addReportCount().reportCount,
+      });
+      // TODO: 신고 횟수가 5회 이상이면 슬랙에 알림을 보내는 로직을 추가한다.
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   private async createRecommend(
@@ -236,6 +273,13 @@ export class FeedServiceImpl implements FeedService {
       const txFeedRepo = this.feedRepo.createTransactionRepo(manager);
       const feed = await txFeedRepo.findOnePure(feedId);
       if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
+
+      const isExist = await txFeedRepo.existRecommendHistory(
+        userId,
+        feedId,
+        type,
+      );
+      if (isExist) throw new ConflictException(errorMessage.E409_FEED_002);
 
       if (type === RecommendType.RECOMMEND) {
         feed.recommned();

@@ -154,6 +154,11 @@ export class Feed extends BaseDomain<FeedProps> {
     return this;
   }
 
+  addReportCount(): this {
+    this.props.reportCount++;
+    return this;
+  }
+
   /**
    * 추천을 통해 활성시간과 활성도를 조정한다.
    * @returns
@@ -187,7 +192,7 @@ export class Feed extends BaseDomain<FeedProps> {
     const additionalMinutes =
       type === RecommendType.RECOMMEND
         ? this.ADDITIONAL_MINUTES
-        : this.DEDUCTED_MINUTES;
+        : -this.DEDUCTED_MINUTES;
     activationAt.setMinutes(activationAt.getMinutes() + additionalMinutes);
 
     return this;
