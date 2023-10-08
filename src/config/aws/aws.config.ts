@@ -5,8 +5,11 @@ export class AwsConfig {
   readonly accessKey: string;
 
   @StringValidator()
-  readonly secretAccess: string;
+  readonly secret: string;
 
   @StringValidator()
   readonly region: string;
+
+  @StringValidator()
+  readonly bucketName: string;
 }

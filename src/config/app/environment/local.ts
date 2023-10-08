@@ -15,8 +15,9 @@ export const LocalConfig: AppConfig = {
 
   aws: {
     accessKey: process.env.AWS_ACCESS_KEY,
-    secretAccess: process.env.AWS_ACCESS_SECRET,
+    secret: process.env.AWS_ACCESS_SECRET,
     region: process.env.AWS_REGION,
+    bucketName: process.env.AWS_IMAGE_S3,
   },
 
   database: {
