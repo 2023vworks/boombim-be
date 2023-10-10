@@ -1,18 +1,13 @@
 import { utilities, WinstonModuleOptions } from 'nest-winston';
 import * as winston from 'winston';
 
-/**
- * winston에 설정할 커스텀 로그 우선순위 목록 정의
- */
-const levels = {
-  error: 0,
-  warn: 1,
-  info: 2,
-  http: 3,
-  verbose: 4,
-  debug: 5,
-  silly: 6,
-};
+const levels = winston.config.npm.levels;
+const reverseLevels = Object.fromEntries(
+  Object.entries(levels).reduce(
+    (acc, [key, value]) => acc.set(value.toString(), key),
+    new Map(),
+  ),
+);
 
 /**
  * WinstonModule.createLogger()에 넣을 옵션을 생성하는 객체
@@ -20,7 +15,7 @@ const levels = {
 export const Winston = {
   getProductionConfig: (appName: string): WinstonModuleOptions => ({
     levels,
-    level: 'http',
+    level: reverseLevels[levels.debug], // TODO: 향후 warn으로 변경예정
     format: winston.format.combine(
       winston.format.timestamp(),
       winston.format.ms(),
@@ -33,7 +28,7 @@ export const Winston = {
     /* 커스텀 레벨 목록 설정 */
     levels,
     /* 설정한 로그 레벨 이하만 출력 */
-    level: 'silly',
+    level: reverseLevels[levels.debug],
     /* 출력 포멧 설정 */
     format: winston.format.combine(
       winston.format.timestamp(),
