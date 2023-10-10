@@ -15,13 +15,23 @@ const reverseLevels = Object.fromEntries(
 export const Winston = {
   getProductionConfig: (appName: string): WinstonModuleOptions => ({
     levels,
-    level: reverseLevels[levels.debug], // TODO: 향후 warn으로 변경예정
+    level: reverseLevels[levels.info], // TODO: 향후 warn으로 변경예정
     format: winston.format.combine(
       winston.format.timestamp(),
       winston.format.ms(),
       utilities.format.nestLike(appName, { prettyPrint: true, colors: true }),
     ),
-    transports: new winston.transports.Console(),
+    transports: [
+      new winston.transports.Console(),
+      new winston.transports.File({
+        filename: 'logs/app.log',
+        level: 'info',
+      }),
+      new winston.transports.File({
+        filename: 'logs/error.log',
+        level: 'error',
+      }),
+    ],
   }),
 
   getDevelopmentConfig: (appName: string): WinstonModuleOptions => ({
@@ -37,6 +47,6 @@ export const Winston = {
       utilities.format.nestLike(appName, { prettyPrint: true, colors: true }), // colors: false => 색상 없음
     ),
     /* 생성한 로그를 어디에 출력(전송)할지 설정 */
-    transports: new winston.transports.Console(),
+    transports: [new winston.transports.Console()],
   }),
 };
