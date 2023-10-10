@@ -62,7 +62,7 @@ export class NestBuilder {
     return this;
   }
 
-  initSentry(): this {
+  setSentry(): this {
     const sentryConfig = this.configService.get<SentryConfig>('sentry');
     Sentry.init({
       ...sentryConfig,

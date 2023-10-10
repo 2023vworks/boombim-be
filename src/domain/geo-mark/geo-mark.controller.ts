@@ -7,12 +7,12 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 
-import { ApiControllerDocument, DefalutAppName } from '@app/common';
+import { ApiControllerDocument, DEFALUT_APP_NAME } from '@app/common';
 import { DocumentHelper } from './document';
 import { GetGeoMarksRequestDTO, GetGeoMarksResponseDTO } from './dto';
 import { GeoMarkService, GeoMarkServiceToken } from './geo-mark.service';
 
-@ApiControllerDocument(`[${DefalutAppName}] geo-marks API`)
+@ApiControllerDocument(`[${DEFALUT_APP_NAME}] geo-marks API`)
 @Controller('/geo-marks')
 @UseInterceptors(ClassSerializerInterceptor)
 export class GeoMarkController {

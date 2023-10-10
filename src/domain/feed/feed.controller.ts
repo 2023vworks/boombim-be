@@ -15,7 +15,7 @@ import {
 
 import {
   ApiControllerDocument,
-  DefalutAppName,
+  DEFALUT_APP_NAME,
   UploadedFiles,
   GetUserInfoDecorator,
   UPLOAD_FILES_NAME,
@@ -40,7 +40,7 @@ import {
 } from './dto';
 import { FeedService, FeedServiceToken } from './feed.service';
 
-@ApiControllerDocument(`[${DefalutAppName}] feeds API`)
+@ApiControllerDocument(`[${DEFALUT_APP_NAME}] feeds API`)
 @Controller('/feeds')
 @UseInterceptors(ClassSerializerInterceptor)
 export class FeedController {

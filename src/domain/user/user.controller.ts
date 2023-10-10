@@ -12,7 +12,7 @@ import {
 
 import {
   ApiControllerDocument,
-  DefalutAppName,
+  DEFALUT_APP_NAME,
   GetUserInfoDecorator,
 } from '@app/common';
 import { DocumentHelper } from './document';
@@ -24,7 +24,7 @@ import {
 import { UserService, UserServiceToken } from './user.service';
 import { JwtGuard } from '../auth/guard';
 
-@ApiControllerDocument(`[${DefalutAppName}] users API`)
+@ApiControllerDocument(`[${DEFALUT_APP_NAME}] users API`)
 @Controller('/users')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
