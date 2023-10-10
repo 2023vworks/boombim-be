@@ -19,7 +19,7 @@ export const Winston = {
     format: winston.format.combine(
       winston.format.timestamp(),
       winston.format.ms(),
-      utilities.format.nestLike(appName, { prettyPrint: true, colors: true }),
+      utilities.format.nestLike(appName, { prettyPrint: true, colors: false }),
     ),
     transports: [
       new winston.transports.Console(),
