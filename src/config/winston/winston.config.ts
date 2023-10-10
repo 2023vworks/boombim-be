@@ -27,10 +27,6 @@ export const Winston = {
         filename: 'logs/app.log',
         level: 'info',
       }),
-      new winston.transports.File({
-        filename: 'logs/error.log',
-        level: 'error',
-      }),
     ],
   }),
 
