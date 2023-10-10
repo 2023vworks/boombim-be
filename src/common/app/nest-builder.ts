@@ -1,16 +1,16 @@
-import { NestFactory } from '@nestjs/core';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
+import * as Sentry from '@sentry/node';
 import { json } from 'express';
-import * as morgan from 'morgan';
 import helmet from 'helmet';
 import { WinstonModule } from 'nest-winston';
-import * as Sentry from '@sentry/node';
 
-import { defaultValidationPipeOptions } from '../constant';
+import { httpLogger } from '@app/custom';
 import { CorsConfig } from '../../config/cors';
-import { Winston } from '../../config/winston';
 import { SentryConfig } from '../../config/monitor';
+import { Winston } from '../../config/winston';
+import { defaultValidationPipeOptions } from '../constant';
 import { EnvUtil } from '../util';
 
 type SwaggerBuilder = (basePath: string, app: INestApplication) => void;
@@ -42,16 +42,15 @@ export class NestBuilder {
   }
 
   preInitServer(options: { globalPrifix: string }): this {
-    const customPatten =
-      '[:date] ":method :url HTTP/:http-version" :status :res[content-length] :response-time ms';
     const { origin, ...other } = this.configService.get<CorsConfig>('cors');
+    const logger = this.app.get(Logger);
 
     this.app.enableCors({
       ...other,
       origin: typeof origin === 'string' ? origin.split(',') : origin,
     });
     this.app.use(json({ limit: '50mb' }));
-    this.app.use(morgan(customPatten));
+    this.app.use(httpLogger(logger));
     this.app.use(helmet());
     this.app.setGlobalPrefix(options.globalPrifix); // Note: Swagger 빌드전에 적용해야 docs에 적용된다.
     return this;
