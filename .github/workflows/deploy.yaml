@@ -95,13 +95,13 @@ jobs:
       - name: Run Build App
         run: npm run build
 
-      - name: Remove old server in ~/soruce (ignore error)
+      - name: Remove old server in ~/boombim (ignore error)
         run: |
-          rm -rf ~/source || true
-      - name: Copy new server to ~/soruce
+          rm -rf ~/boombim || true
+      - name: Copy new server to ~/boombim
         run: |
-          mkdir -p ~/source
-          cp -R ./ ~/source
+          mkdir -p ~/boombim
+          cp -R ./ ~/boombim
 
       # 백그라운드 실행 설정(데몬 실행 x)
       - name: Setting ENV and Run app
@@ -110,10 +110,11 @@ jobs:
           ## [참고](https://www.praetorian.com/blog/self-hosted-github-runners-are-backdoors/)
           RUNNER_TRACKING_ID: 0 # or ''
         run: |
-          cd ~/source
+          cd ~/boombim
           PRODUCTION_ENV=${{ secrets.PRODUCTION_ENV }}
           echo $PRODUCTION_ENV | base64 --decode > .env
           export $(grep -E "^[^#]+=" .env) && rm .env
-          # 로그 임시로 ~/source 폴더에 저장
-          nohup node dist/src/main.js >> ~/source/app.log 2>&1 & echo $! > node_pid
+          # 로그 임시로 ~/boombim 폴더에 저장
+          #nohup node dist/src/main.js >> ~/boombim/app.log 2>&1 & echo $! > node_pid
+          nohup node dist/src/main.js >> /dev/null 2>&1 & echo $! > node_pid
           disown $(cat node_pid)

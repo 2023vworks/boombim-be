@@ -1,4 +1,4 @@
-export const DefalutAppName = 'Boombim';
+export const DEFALUT_APP_NAME = process.env.APP_NAME ?? 'Test';
 export const USER_ACCESS_TOKEN = 'USER_ACCESS_TOKEN';
 
 export const UPLOAD_FILE_NAME = 'image';

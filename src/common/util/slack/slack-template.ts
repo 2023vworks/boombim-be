@@ -2,6 +2,7 @@ import { IncomingWebhookSendArguments, MessageAttachment } from '@slack/client';
 import { Request } from 'express';
 
 import { DateUtil } from '../date-util';
+import { DEFALUT_APP_NAME } from '@app/common/constant';
 
 type Viewer = {
   /**
@@ -17,7 +18,7 @@ type MessageOptions = {
   /**
    * 서버 이름
    */
-  appType: 'Admin' | 'User';
+  appType: string;
   /**
    * 메시지 헤더
    */
@@ -96,7 +97,7 @@ export class SlackTemplate {
           type: 'header',
           text: {
             type: 'plain_text',
-            text: `[ ${options.appType} ] ${options.header}`,
+            text: `[ ${process.env.NODE_ENV ?? 'local'} ] ${options.header}`,
             emoji: true,
           },
         },
@@ -109,7 +110,7 @@ export class SlackTemplate {
             },
             {
               type: 'mrkdwn',
-              text: `*Created by:*\n${options.appType}-daldal-api-server`,
+              text: `*Created by:*\n${DEFALUT_APP_NAME.toLowerCase()}-api-server`,
             },
           ],
         },

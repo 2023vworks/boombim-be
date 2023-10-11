@@ -1,8 +1,8 @@
-import { DefalutAppName, USER_ACCESS_TOKEN } from '@app/common';
+import { DEFALUT_APP_NAME, USER_ACCESS_TOKEN } from '@app/common';
 import { AppConfig } from '../app.config';
 
 export const ProdConfig: AppConfig = {
-  appName: process.env.APP_NAME ?? DefalutAppName,
+  appName: process.env.APP_NAME ?? DEFALUT_APP_NAME,
   port: +process.env.PORT,
   cors: { origin: process.env.CORS_ORIGIN },
 
@@ -49,8 +49,8 @@ export const ProdConfig: AppConfig = {
   swagger: {
     apis: {
       info: {
-        title: process.env.SWAGGER_APIS_TITLE ?? DefalutAppName,
-        description: process.env.SWAGGER_APIS_DESCRIPTION ?? DefalutAppName,
+        title: process.env.SWAGGER_APIS_TITLE ?? DEFALUT_APP_NAME,
+        description: process.env.SWAGGER_APIS_DESCRIPTION ?? DEFALUT_APP_NAME,
         version: process.env.SWAGGER_APIS_VERSION,
       },
       securityConfig: {
