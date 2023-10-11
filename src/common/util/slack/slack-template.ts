@@ -97,7 +97,7 @@ export class SlackTemplate {
           type: 'header',
           text: {
             type: 'plain_text',
-            text: `[ ${DEFALUT_APP_NAME} ] ${options.header}`,
+            text: `[ ${process.env.NODE_ENV ?? 'local'} ] ${options.header}`,
             emoji: true,
           },
         },
