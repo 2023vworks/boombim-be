@@ -7,6 +7,14 @@ import {
   SlackSenderInterceptor,
 } from '../interceptor';
 
+/** 400 초과 409 미만 에러는 무시합니다. (제외: 401 ~ 408) */
+const getExcludeClientError = (exception: HttpException) =>
+  400 > exception.getStatus() || 409 < exception.getStatus(); // 400 초과 409 미만 에러는 무시합니다.(401 ~ 408)
+
+/** 500미만 에러는 전부 무시 합니다. */
+const getExcludeServerError = (exception: HttpException) =>
+  500 > exception.getStatus(); // 500 미만 에러는 무시합니다.
+
 /**
  * ### 운영서버에 사용할 전역 provider
  * 실행 순서
@@ -33,7 +41,10 @@ export const ProductionProviders = [
       filters: [
         {
           type: HttpException,
-          filter: (exception: HttpException) => 500 > exception.getStatus(),
+          // 필터 결과가 true이면 해당 exception을 무시합니다.
+          filter: (exception: HttpException) =>
+            getExcludeClientError(exception) &&
+            getExcludeServerError(exception),
         },
       ],
     }),
