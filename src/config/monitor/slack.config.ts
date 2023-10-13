@@ -21,4 +21,7 @@ export class SlackAlertOptions {
 export class SlackConfig {
   @InstanceValidator(SlackAlertOptions)
   readonly serverErrorAlert: SlackAlertOptions;
+
+  @InstanceValidator(SlackAlertOptions)
+  readonly feedReportAlert: SlackAlertOptions;
 }
