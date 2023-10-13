@@ -16,17 +16,13 @@ type Viewer = {
 };
 type MessageOptions = {
   /**
-   * 서버 이름
-   */
-  appType: string;
-  /**
    * 메시지 헤더
    */
   header: string;
   /**
    * 메시지 타입
    */
-  type: 'Alert' | 'Error';
+  type: 'Alert' | 'Error' | 'Report';
   /**
    * 메세지 발행 주체 ex)className
    */
@@ -44,6 +40,11 @@ type ErrorMessageOptions = MessageOptions & {
   type: 'Error';
   error: Error;
   request?: Request;
+};
+type ReportAlertMessageOptions = MessageOptions & {
+  type: 'Report';
+  feed: { id: number; content: string; reportCount: number };
+  reason: string;
 };
 
 export class SlackTemplate {
@@ -88,8 +89,44 @@ export class SlackTemplate {
     };
   }
 
+  public static reportAlertTemplate(
+    options: ReportAlertMessageOptions,
+  ): IncomingWebhookSendArguments {
+    const { viewer, feed, reason } = options;
+    const defaultAttachment = this.makeDefaultAttachment(options);
+    const viewerAttachment = this.makeViewerAttachment({
+      ...viewer,
+      viewerUrl: `${viewer.viewerUrl}/${feed.id}`,
+    });
+    return {
+      attachments: [
+        defaultAttachment,
+        {
+          color: 'good',
+          fields: [
+            {
+              title: `*피드 정보*:`,
+              value:
+                '```' +
+                `- 피드 id: ${feed.id}\n- 피드 내용: ${feed.content}\n- 누적 신고 횟수: ${feed.reportCount}` +
+                '```',
+              short: false,
+            },
+            {
+              title: `*신고 내용*:`,
+              value: '```' + reason + '```',
+              short: false,
+            },
+          ],
+        },
+        ,
+        viewerAttachment,
+      ],
+    };
+  }
+
   private static makeDefaultAttachment(
-    options: AlertMessageOptions | ErrorMessageOptions,
+    options: MessageOptions,
   ): MessageAttachment {
     return {
       blocks: [

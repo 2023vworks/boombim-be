@@ -41,7 +41,6 @@ export class SlackSenderInterceptor implements NestInterceptor {
     const message = SlackTemplate.errorTemplate({
       error,
       request,
-      appType: this.config.get('appType'),
       header: `${appName}-API-Server 버그 발생`,
       type: 'Error',
       trigger: 'SlackInterceptor',

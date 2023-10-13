@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { Util, errorMessage } from '@app/common';
+import { SlackTemplate, Util, errorMessage } from '@app/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { UserRepository, UserRepositoryToken } from '../user/user.repository';
@@ -25,6 +25,10 @@ import {
 import { FeedRepository, FeedRepositoryToken } from './feed.repository';
 import { RecommendType } from '@app/entity';
 import { UploadService, UploadServiceToken } from './upload/upload.service';
+import { ConfigService } from '@nestjs/config';
+import { SlackAlertOptions, SlackConfig } from '@app/config';
+import { IncomingWebhook } from '@slack/client';
+import { Feed } from './domain';
 
 export const FeedServiceToken = Symbol('FeedServiceToken');
 export interface FeedService {
@@ -72,12 +76,19 @@ export interface FeedService {
 
 @Injectable()
 export class FeedServiceImpl implements FeedService {
+  private readonly reportAlartConfig: SlackAlertOptions;
+  private readonly webhook: IncomingWebhook;
+
   constructor(
     @InjectDataSource() private readonly dataSource: DataSource,
     @Inject(FeedRepositoryToken) private readonly feedRepo: FeedRepository,
     @Inject(UserRepositoryToken) private readonly userRepo: UserRepository,
     @Inject(UploadServiceToken) private readonly uploadService: UploadService,
-  ) {}
+    config: ConfigService,
+  ) {
+    this.reportAlartConfig = config.get<SlackConfig>('slack').feedReportAlert;
+    this.webhook = new IncomingWebhook(this.reportAlartConfig.webHooklUrl);
+  }
 
   async getFeeds(getDto: GetFeedsRequestDTO): Promise<GetFeedsResponseDTO[]> {
     const feeds =
@@ -247,10 +258,13 @@ export class FeedServiceImpl implements FeedService {
       if (isExist) throw new ConflictException(errorMessage.E409_FEED_003);
 
       await txFeedRepo.createReportHistory(userId, feedId, postDto);
+      // TODO: report 로직 향후 변경 예정
       await txFeedRepo.updateProperty(feedId, {
         reportCount: feed.addReportCount().reportCount,
+        activationAt: feed.isLockFeed ? new Date() : feed.activationAt,
       });
-      // TODO: 신고 횟수가 5회 이상이면 슬랙에 알림을 보내는 로직을 추가한다.
+
+      feed.isLockFeed && (await this.feedReportAlert(feed, postDto.reason));
       await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -305,5 +319,21 @@ export class FeedServiceImpl implements FeedService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  private async feedReportAlert(feed: Feed, reason: string) {
+    const { viewerUrl } = this.reportAlartConfig;
+    const message = SlackTemplate.reportAlertTemplate({
+      header: '피드 신고 알림',
+      type: 'Report',
+      trigger: 'FeedService',
+      viewer: {
+        viewerUrl,
+        viewerText: '피드 신고 내역 확인',
+      },
+      feed,
+      reason,
+    });
+    await this.webhook.send(message);
   }
 }
