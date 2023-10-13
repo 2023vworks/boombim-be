@@ -251,6 +251,7 @@ export class FeedRepositoryImpl
     qb.select();
     qb.innerJoin('comment.user', 'user') //
       .addSelect(['user.id', 'user.nickname', 'user.mbtiType']);
+    qb.where('comment.feedId = :feedId', { feedId });
     if (!Util.isNil(nextCursor)) {
       sort === 'ASC' && qb.andWhere('comment.id >= :id', { id: nextCursor });
       sort !== 'ASC' && qb.andWhere('comment.id <= :id', { id: nextCursor });

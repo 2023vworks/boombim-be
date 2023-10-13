@@ -78,5 +78,11 @@ export const ProdConfig: AppConfig = {
       description: process.env.SLACK_DESCRIPTION_BY_SERVER_ERROR_ALERT,
       viewerUrl: process.env.SLACK_VIEWER_URL_BY_SERVER_ERROR_ALERT,
     },
+    feedReportAlert: {
+      webHooklUrl: process.env.SLACK_WEB_HOOK_URI_BY_FEED_REPORT_ALERT,
+      channelName: process.env.SLACK_CHANNEL_NAME_BY_FEED_REPORT_ALERT,
+      description: process.env.SLACK_DESCRIPTION_BY_FEED_REPORT_ALERT,
+      viewerUrl: process.env.SLACK_VIEWER_URL_BY_FEED_REPORT_ALERT,
+    },
   },
 };

@@ -143,6 +143,10 @@ export class Feed extends BaseDomain<FeedProps> {
     return this.props.activationAt >= new Date();
   }
 
+  get isLockFeed(): boolean {
+    return this.props.reportCount >= 5;
+  }
+
   /* ========== method ========== */
   addViewCount(): this {
     this.props.viewCount++;

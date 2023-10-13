@@ -15,11 +15,11 @@ export class ReportHistoryEntity extends BaseEntity {
   @ApiProperty({
     description: '신고 사유',
     type: String,
-    minLength: 10,
+    minLength: 5,
     maxLength: 200,
   })
   @Expose()
-  @StringValidator({ minLength: 10, maxLength: 200 })
+  @StringValidator({ minLength: 5, maxLength: 200 })
   @Column('varchar', { comment: '신고 사유', length: 200 })
   reason: string;
 
