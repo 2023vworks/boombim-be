@@ -1,6 +1,10 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
 
-import { InstanceValidator, defaultResponseProperties } from '@app/common';
+import {
+  InstanceValidator,
+  IntValidator,
+  defaultResponseProperties,
+} from '@app/common';
 import { FeedEntity, UserEntity } from '@app/entity';
 import { Expose } from 'class-transformer';
 
@@ -14,6 +18,7 @@ export class GetFeedsResponseDTO extends PickType(FeedEntity, [
   'activity',
   'hashTags',
   'activationAt',
+  'content',
   'recommendCount',
   'unrecommendCount',
   'reportCount',
@@ -27,4 +32,14 @@ export class GetFeedsResponseDTO extends PickType(FeedEntity, [
   @Expose()
   @InstanceValidator(GetFeedsWithUserResponseDTO)
   user: GetFeedsWithUserResponseDTO;
+
+  @ApiProperty({
+    description: '지도 마커 ID',
+    type: Number,
+    minimum: 1,
+    maximum: 2147483647,
+  })
+  @IntValidator()
+  @Expose()
+  geoMarkId: number;
 }

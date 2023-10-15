@@ -15,7 +15,8 @@ export class FeedProps extends OmitType(FeedEntity, [
   'reportHistories',
   'geoMark',
 ]) {
-  comments: Comment[];
+  geoMarkId: number;
+  comments: Comment[] | [];
   user: FeedWriter;
   geoMark?: GeoMark | null;
 }
@@ -76,6 +77,10 @@ export class Feed extends BaseDomain<FeedProps> {
    */
   get activationAt(): Date {
     return this.props.activationAt;
+  }
+
+  get geoMarkId(): number {
+    return this.props.geoMarkId;
   }
 
   /**

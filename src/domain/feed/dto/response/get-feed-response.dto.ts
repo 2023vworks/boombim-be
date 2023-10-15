@@ -9,6 +9,7 @@ import {
 import {
   InstanceValidator,
   InstanceValidatorOptional,
+  IntValidator,
   defaultResponseProperties,
 } from '@app/common';
 import {
@@ -81,6 +82,16 @@ export class GetFeedResponseDTO extends PickType(FeedEntity, [
   @Expose()
   @InstanceValidator(GetFeedWithUserResponseDTO)
   user: GetFeedWithUserResponseDTO;
+
+  @ApiProperty({
+    description: '지도 마커 ID',
+    type: Number,
+    minimum: 1,
+    maximum: 2147483647,
+  })
+  @IntValidator()
+  @Expose()
+  geoMarkId: number;
 
   @ApiProperty({
     description: '지도 마커 정보',
