@@ -107,7 +107,8 @@ export class FeedRepositoryImpl
     qb.select();
     qb.innerJoin('feed.user', 'user') //
       .addSelect(['user.id', 'user.mbtiType', 'user.nickname']);
-    qb.innerJoin('feed.geoMark', 'mark');
+    qb.innerJoin('feed.geoMark', 'mark') //
+      .addSelect(['mark.id']);
 
     qb.where('feed."activationAt" >= now()');
     qb.andWhere('mark.x BETWEEN :minX AND :maxX', { minX, maxX });
@@ -133,7 +134,8 @@ export class FeedRepositoryImpl
     qb.select();
     qb.innerJoin('feed.user', 'user') //
       .addSelect(['user.id', 'user.mbtiType', 'user.nickname']);
-    qb.innerJoin('feed.geoMark', 'mark');
+    qb.innerJoin('feed.geoMark', 'mark') //
+      .addSelect(['mark.id']);
 
     qb.where('feed."activationAt" >= now()');
     qb.andWhere(
@@ -194,9 +196,10 @@ export class FeedRepositoryImpl
     const feed = await this.findOne({
       select: {
         user: { id: true, nickname: true, mbtiType: true },
+        geoMark: { id: true },
       },
       where: { id: feedId, activationAt: MoreThanOrEqual(new Date()) },
-      relations: { user: true },
+      relations: { user: true, geoMark: true },
     });
     return feed ? FeedEntityMapper.toDomain(feed) : null;
   }
