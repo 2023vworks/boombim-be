@@ -20,7 +20,7 @@ type API_DOC_TYPE = keyof UserController;
 const decorators: Record<API_DOC_TYPE, Function> = {
   postUsers: () =>
     applyDecorators(
-      ApiOperation({ summary: '유저 등록' }),
+      ApiOperation({ summary: '(MVP 전용)유저 등록' }),
       ApiCreatedResponse({
         description: successMessage.S201_USER_001,
         type: PostUsersResponseDTO,
@@ -34,6 +34,15 @@ const decorators: Record<API_DOC_TYPE, Function> = {
       ApiCreatedResponse({
         description: successMessage.S200_USER_001,
         type: GetUserResponseDTO,
+      }),
+    ),
+  postUserRenew: () =>
+    applyDecorators(
+      ApiAuthDocument(USER_ACCESS_TOKEN),
+      ApiOperation({ summary: '(MVP 전용)유저 재등록' }),
+      ApiCreatedResponse({
+        description: successMessage.S201_USER_002,
+        type: PostUsersResponseDTO,
       }),
     ),
 };

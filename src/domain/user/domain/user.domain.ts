@@ -4,7 +4,7 @@ import { ConflictException } from '@nestjs/common';
 
 import { BaseDomain } from 'src/domain/base.domain';
 
-export interface UserProps extends UserEntity {}
+export interface UserProps extends Omit<UserEntity, 'oldId'> {}
 
 export class User extends BaseDomain<UserProps> {
   private MAX_FEED_WRITING_COUNT = 5;

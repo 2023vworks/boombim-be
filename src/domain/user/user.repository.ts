@@ -11,7 +11,7 @@ export const UserRepositoryToken = Symbol('UserRepositoryToken');
 export interface UserRepository extends CustomRepository<UserEntity> {
   createUser(postDto: PostUsersRequestDTO): Promise<User>;
   updateProperty(id: number, properties: Partial<UserEntity>): Promise<void>;
-  findOneByPK(id: number): Promise<User | undefined>;
+  findOneByPK(id: number): Promise<User | null>;
 }
 
 @Injectable()
@@ -39,8 +39,8 @@ export class UserRepositoryImpl
     await this.update(id, { ...properties });
   }
 
-  async findOneByPK(id: number): Promise<User> {
+  async findOneByPK(id: number): Promise<User | null> {
     const user = await this.findOneBy({ id });
-    return UserEntityMapper.toDomain(user);
+    return !!user ? UserEntityMapper.toDomain(user) : null;
   }
 }

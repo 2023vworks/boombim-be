@@ -14,6 +14,10 @@ import { UserRepository, UserRepositoryToken } from './user.repository';
 export const UserServiceToken = Symbol('UserServiceToken');
 export interface UserService {
   createUser(postDto: PostUsersRequestDTO): Promise<PostUsersResponseDTO>;
+  createUser(
+    postDto: PostUsersRequestDTO,
+    oldId: number,
+  ): Promise<PostUsersResponseDTO>;
   getUser(userId: number): Promise<GetUserResponseDTO>;
 }
 
@@ -29,6 +33,7 @@ export class UserServiceImpl implements UserService {
 
   async createUser(
     postDto: PostUsersRequestDTO,
+    oldId?: number,
   ): Promise<PostUsersResponseDTO> {
     const queryRunner = this.dataSource.createQueryRunner();
     const manager = queryRunner.manager;
@@ -39,7 +44,13 @@ export class UserServiceImpl implements UserService {
       const newUser = await userRepository.createUser(postDto);
       const token = this.authService.issueToken({ id: newUser.id });
       const nickname = newUser.generateNickname().nickname;
-      await userRepository.updateProperty(newUser.id, { token, nickname });
+
+      const updateProperty = oldId
+        ? { token, nickname, oldId }
+        : { token, nickname };
+      oldId && (await userRepository.softDelete(oldId));
+
+      await userRepository.updateProperty(newUser.id, updateProperty);
 
       await queryRunner.commitTransaction();
       return { mbtiType: postDto.mbtiType, nickname, token };
@@ -51,20 +62,6 @@ export class UserServiceImpl implements UserService {
     }
   }
 
-  /**
-   * TODO: 알고리즘 개선이 필요하다.
-   *
-   * TODO: 테스트 필요하다.
-   * - feedWritingCount가 5인 경우
-   * - feedWritingCount가 5가 아닌 경우
-   * - 1시간이 지나지 않은 경우
-   * - 2시간이 지난 경우
-   * - 작성횟수가 0일때 6시간 이상 지난 경우
-   * - 작성횟수가 3일때 3시간 이상 지난 경우
-   * - 유저가 짧은 시간에 동시에 여러 글을 쓴 경우
-   * @param userId
-   * @returns
-   */
   async getUser(userId: number): Promise<GetUserResponseDTO> {
     const user = await this.userRepository.findOneByPK(userId);
     if (!user) throw new NotFoundException(errorMessage.E404_APP_001);
