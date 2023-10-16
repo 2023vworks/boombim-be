@@ -14,6 +14,10 @@ import { UserRepository, UserRepositoryToken } from './user.repository';
 export const UserServiceToken = Symbol('UserServiceToken');
 export interface UserService {
   createUser(postDto: PostUsersRequestDTO): Promise<PostUsersResponseDTO>;
+  createUser(
+    postDto: PostUsersRequestDTO,
+    oldId: number,
+  ): Promise<PostUsersResponseDTO>;
   getUser(userId: number): Promise<GetUserResponseDTO>;
 }
 
@@ -29,6 +33,7 @@ export class UserServiceImpl implements UserService {
 
   async createUser(
     postDto: PostUsersRequestDTO,
+    oldId?: number,
   ): Promise<PostUsersResponseDTO> {
     const queryRunner = this.dataSource.createQueryRunner();
     const manager = queryRunner.manager;
@@ -39,7 +44,11 @@ export class UserServiceImpl implements UserService {
       const newUser = await userRepository.createUser(postDto);
       const token = this.authService.issueToken({ id: newUser.id });
       const nickname = newUser.generateNickname().nickname;
-      await userRepository.updateProperty(newUser.id, { token, nickname });
+
+      const updateProperty = oldId
+        ? { token, nickname, oldId }
+        : { token, nickname };
+      await userRepository.updateProperty(newUser.id, updateProperty);
 
       await queryRunner.commitTransaction();
       return { mbtiType: postDto.mbtiType, nickname, token };

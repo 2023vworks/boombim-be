@@ -50,4 +50,14 @@ export class UserController {
   ): Promise<GetUserResponseDTO> {
     return this.userService.getUser(userId);
   }
+
+  @DocumentHelper('postUserRenew')
+  @UseGuards(JwtGuard)
+  @Post('/renew')
+  async postUserRenew(
+    @GetUserInfoDecorator('id') userId: number,
+    @Body() postDto: PostUsersRequestDTO,
+  ): Promise<PostUsersResponseDTO> {
+    return this.userService.createUser(postDto, userId);
+  }
 }
