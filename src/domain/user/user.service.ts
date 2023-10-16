@@ -48,6 +48,8 @@ export class UserServiceImpl implements UserService {
       const updateProperty = oldId
         ? { token, nickname, oldId }
         : { token, nickname };
+      oldId && (await userRepository.softDelete(oldId));
+
       await userRepository.updateProperty(newUser.id, updateProperty);
 
       await queryRunner.commitTransaction();
