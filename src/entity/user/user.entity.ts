@@ -6,6 +6,7 @@ import {
   DateValidator,
   EnumValidator,
   IntValidator,
+  IntValidatorOptional,
   StringValidator,
 } from '@app/common';
 import { BaseEntity } from '../base.entity';
@@ -19,6 +20,15 @@ import {
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
+  /**
+   * 이전(변경 전) id
+   */
+  @ApiHideProperty()
+  @Exclude()
+  @IntValidatorOptional({ min: 1 })
+  @Column('integer', { comment: '이전(변경 전) user id', nullable: true })
+  oldId?: number | null;
+
   /**
    * MBTI 유형
    */
