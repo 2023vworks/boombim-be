@@ -17,12 +17,13 @@ export class JwtGuard implements CanActivate {
     const jwt = this.getJwt(request);
     if (!jwt) throw new UnauthorizedException(errorMessage.E401_APP_001);
 
-    const user = this.authService.decodeToken(jwt);
-    if (!user) throw new UnauthorizedException(errorMessage.E401_APP_001);
+    const payload = this.authService.decodeToken(jwt);
+    if (!payload) throw new UnauthorizedException(errorMessage.E401_APP_001);
 
-    // TODO: 만료시간이 없기 때문에 유저 있는지 확인해야한다. 엑세스 시간도 업데이트하면 좋을듯?
-    user.jwt = jwt;
-    request.user = user;
+    const isValid = await this.authService.isValidUser({ id: payload.id, jwt });
+    if (!isValid) throw new UnauthorizedException(errorMessage.E401_APP_001);
+
+    request.user = { id: payload.id, jwt };
     return true;
   }
 
