@@ -15,7 +15,7 @@ type ValidationOptions = {
 const MB = 1 * 1024 * 1024;
 const defaultOptions = {
   maxSize: MB,
-  fileType: /^image\/(jpeg|jpg|png|gif|bmp|svg\+xml)$/i,
+  fileType: /^image\/(jpeg|jpg|png|gif|bmp|webp|svg\+xml)$/i,
   isOption: false,
 };
 

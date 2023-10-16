@@ -54,7 +54,7 @@ export class GetFeedsRequestDTO extends OffsetPaginationDTO {
 
   @ApiPropertyOptional({
     description: `
-    테스트용( default = Coordinates ): 
+    테스트용( default = Polygon ): 
     - Coordinates: 단순 좌표 검색
     - Polygon: Polygon 검색
     `,
