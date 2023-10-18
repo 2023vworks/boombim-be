@@ -5,6 +5,7 @@ import { BaseDomain } from 'src/domain/base.domain';
 import { GeoMark } from 'src/domain/geo-mark/domain';
 import { Comment } from './comment.domain';
 import { User } from 'src/domain/user/domain';
+import { ReportHistory } from './report-history.domain';
 
 type FeedWriter = Pick<User, 'id' | 'nickname' | 'mbtiType'>;
 
@@ -15,10 +16,11 @@ export class FeedProps extends OmitType(FeedEntity, [
   'reportHistories',
   'geoMark',
 ]) {
-  geoMarkId: number;
-  comments: Comment[] | [];
   user: FeedWriter;
+  geoMarkId: number;
   geoMark?: GeoMark | null;
+  comments: Comment[] | [];
+  reportHistories: ReportHistory[] | [];
 }
 
 export class Feed extends BaseDomain<FeedProps> {
@@ -128,6 +130,10 @@ export class Feed extends BaseDomain<FeedProps> {
 
   get geoMark(): GeoMark {
     return this.props.geoMark;
+  }
+
+  get reportHistories(): ReportHistory[] {
+    return this.props.reportHistories;
   }
 
   /* ========== custom ========== */
