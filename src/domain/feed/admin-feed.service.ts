@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 import { SlackAlertOptions, SlackConfig } from '@app/config';
 import { ConfigService } from '@nestjs/config';
@@ -11,7 +11,7 @@ import {
   AdminPatchFeedActivationRequestDTO,
 } from './dto';
 import { FeedRepository, FeedRepositoryToken } from './feed.repository';
-import { Util } from '@app/common';
+import { Util, errorMessage } from '@app/common';
 
 export const AdminFeedServiceToken = Symbol('AdminFeedServiceToken');
 export interface AdminFeedService {
@@ -20,6 +20,7 @@ export interface AdminFeedService {
   ): Promise<AdminGetFeedsResponseDTO[]>;
 
   patchFeedActivation(
+    feedId: number,
     patchDto: AdminPatchFeedActivationRequestDTO,
   ): Promise<void>;
 }
@@ -46,8 +47,15 @@ export class AdminFeedServiceImpl implements AdminFeedService {
   }
 
   async patchFeedActivation(
+    feedId: number,
     patchDto: AdminPatchFeedActivationRequestDTO,
   ): Promise<void> {
-    throw new Error('Method not implemented.');
+    const isExist = await this.feedRepo.exist({ where: { id: feedId } });
+    if (!isExist) throw new NotFoundException(errorMessage.E404_FEED_001);
+
+    await this.feedRepo.updateProperty(feedId, {
+      activationAt: patchDto.activationAt,
+      activity: patchDto.activity,
+    });
   }
 }

@@ -52,6 +52,6 @@ export class AdminFeedController {
     @Param('id', ParseIntPipe) feedId: number,
     @Body() patchDto: AdminPatchFeedActivationRequestDTO,
   ): Promise<void> {
-    throw new NotFoundException('미구현 API');
+    await this.feedService.patchFeedActivation(feedId, patchDto);
   }
 }
