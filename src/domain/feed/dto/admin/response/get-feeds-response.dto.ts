@@ -9,7 +9,6 @@ class AdminGetFeedsWithUserResponseDTO extends PickType(UserEntity, [
   'id',
   'nickname',
   'mbtiType',
-  'accessedAt',
 ]) {}
 class AdminGetFeedsWithReportHistoryResponseDTO extends ReportHistoryEntity {}
 

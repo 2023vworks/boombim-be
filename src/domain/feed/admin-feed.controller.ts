@@ -19,13 +19,13 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 
+import { AdminFeedService, AdminFeedServiceToken } from './admin-feed.service';
+import { AdminDocumentHelper } from './document';
 import {
   AdminGetFeedsRequestDTO,
   AdminGetFeedsResponseDTO,
   AdminPatchFeedActivationRequestDTO,
 } from './dto';
-import { FeedService, FeedServiceToken } from './feed.service';
-import { AdminDocumentHelper } from './document';
 
 @ApiControllerDocument(`[${DEFALUT_APP_NAME}] Admin - feeds API`)
 @ApiAuthDocument(ADMIN_ACCESS_TOKEN)
@@ -33,8 +33,8 @@ import { AdminDocumentHelper } from './document';
 @UseInterceptors(ClassSerializerInterceptor)
 export class AdminFeedController {
   constructor(
-    @Inject(FeedServiceToken)
-    private readonly feedService: FeedService,
+    @Inject(AdminFeedServiceToken)
+    private readonly feedService: AdminFeedService,
   ) {}
 
   @AdminDocumentHelper('getFeeds')
@@ -42,7 +42,7 @@ export class AdminFeedController {
   async getFeeds(
     @Query() getDto: AdminGetFeedsRequestDTO,
   ): Promise<AdminGetFeedsResponseDTO[]> {
-    throw new NotFoundException('미구현 API');
+    return this.feedService.getFeeds(getDto);
   }
 
   @AdminDocumentHelper('patchFeedActivation')

@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
-import { CustomRepository, DateUtil, Util } from '@app/common';
+import {
+  CustomRepository,
+  DateUtil,
+  OffsetPaginationDTO,
+  Util,
+} from '@app/common';
 import {
   CommentEntity,
   FeedEntity,
@@ -29,6 +34,7 @@ export const FeedRepositoryToken = Symbol('FeedRepositoryToken');
  * @todo 향후 테스트와 실제 지도에 표시되는 데이터를 비교해보고 더 정확한 메서드를 사용해야 한다.
  */
 export interface FeedRepository extends CustomRepository<FeedEntity> {
+  findMany(option: OffsetPaginationDTO): Promise<Feed[]>;
   /**
    * 좌표를 사용하여 검색후 중심좌표 기준 정렬
    * @param getDto
@@ -97,6 +103,25 @@ export class FeedRepositoryImpl
     this.commentRepo = manager.getRepository(CommentEntity);
     this.recommendHistoryRepo = manager.getRepository(RecommendHistoryEntity);
     this.reportHistoryRepo = manager.getRepository(ReportHistoryEntity);
+  }
+
+  async findMany(option: OffsetPaginationDTO): Promise<Feed[]> {
+    const { page, pageSize, sort } = option;
+    const qb = this.createQueryBuilder('feed');
+    qb.select();
+    qb.innerJoin('feed.user', 'user') //
+      .addSelect(['user.id', 'user.mbtiType', 'user.nickname']);
+    qb.innerJoin('feed.geoMark', 'mark') //
+      .addSelect(['mark.id']);
+    qb.leftJoinAndSelect('feed.reportHistories', 'report'); //
+
+    qb.orderBy('feed.id', sort);
+
+    if (page && pageSize) {
+      qb.offset((page - 1) * pageSize).limit(pageSize);
+    }
+    const feeds = await qb.distinct(true).getMany();
+    return FeedEntityMapper.toDomain(feeds);
   }
 
   async findByCoordinates(getDto: GetFeedsRequestDTO): Promise<Feed[]> {

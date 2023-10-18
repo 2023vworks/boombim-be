@@ -9,6 +9,10 @@ import { FeedController } from './feed.controller';
 import { FeedRepositoryImpl, FeedRepositoryToken } from './feed.repository';
 import { FeedServiceImpl, FeedServiceToken } from './feed.service';
 import { UploadModule } from './upload/upload.module';
+import {
+  AdminFeedServiceImpl,
+  AdminFeedServiceToken,
+} from './admin-feed.service';
 
 @Module({
   imports: [
@@ -22,6 +26,10 @@ import { UploadModule } from './upload/upload.module';
     {
       provide: FeedServiceToken,
       useClass: FeedServiceImpl,
+    },
+    {
+      provide: AdminFeedServiceToken,
+      useClass: AdminFeedServiceImpl,
     },
     {
       provide: FeedRepositoryToken,
