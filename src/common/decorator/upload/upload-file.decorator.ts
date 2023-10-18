@@ -12,10 +12,13 @@ type ValidationOptions = {
   isOption?: boolean;
 };
 
+const DEFAULT_PATTEN = process.env.UPLOAD_IMAGE_TYPE;
 const MB = 1 * 1024 * 1024;
 const defaultOptions = {
   maxSize: MB,
-  fileType: /^image\/(jpeg|jpg|png|gif|bmp|webp|svg\+xml)$/i,
+  fileType: DEFAULT_PATTEN
+    ? new RegExp(DEFAULT_PATTEN, 'i')
+    : /^image\/(jpeg|jpg|png|gif|bmp|svg\+xml)$/i,
   isOption: false,
 };
 
