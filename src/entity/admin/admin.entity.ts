@@ -29,5 +29,5 @@ export class AdminEntity extends BaseEntity {
   @Exclude()
   @BooleanValidator()
   @Column('boolean', { comment: '활성화 여부', default: false })
-  isActived: boolean;
+  isActive: boolean;
 }
