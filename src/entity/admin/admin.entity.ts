@@ -1,12 +1,12 @@
-import { Exclude } from 'class-transformer';
-import { BaseEntity } from '../base.entity';
-import { Column, Entity, OneToMany } from 'typeorm';
 import { ApiHideProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
+import { Column, Entity } from 'typeorm';
+
 import { BooleanValidator, DateValidator, StringValidator } from '@app/common';
-import { HttpRequestHistoryEntiy } from './http-request-history.entity';
+import { BaseEntity } from '../base.entity';
 
 @Entity('admin')
-export class AdminEntiy extends BaseEntity {
+export class AdminEntity extends BaseEntity {
   @ApiHideProperty()
   @Exclude()
   @StringValidator({ maxLength: 50 })
@@ -30,11 +30,4 @@ export class AdminEntiy extends BaseEntity {
   @BooleanValidator()
   @Column('boolean', { comment: '활성화 여부', default: false })
   isActived: boolean;
-
-  @ApiHideProperty()
-  @Exclude()
-  @OneToMany(() => HttpRequestHistoryEntiy, (history) => history.admin, {
-    nullable: true,
-  })
-  httpRequestHistories: HttpRequestHistoryEntiy[];
 }
