@@ -6,7 +6,12 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 
-import { errorMessage, successMessage } from '@app/common';
+import {
+  ADMIN_ACCESS_TOKEN,
+  ApiAuthDocument,
+  errorMessage,
+  successMessage,
+} from '@app/common';
 import { AdminFeedController } from '../admin-feed.controller';
 import { AdminGetFeedsResponseDTO } from '../dto';
 
@@ -21,6 +26,7 @@ const decorators: Record<API_DOC_TYPE, Function> = {
         description: successMessage.S200_ADMIN_FEED_001,
         type: [AdminGetFeedsResponseDTO],
       }),
+      ApiAuthDocument(ADMIN_ACCESS_TOKEN),
       ApiBadRequestResponse({ description: errorMessage.E400_APP_001 }),
     ),
   patchFeedActivation: () =>
@@ -29,6 +35,7 @@ const decorators: Record<API_DOC_TYPE, Function> = {
       ApiNoContentResponse({
         description: successMessage.S204_ADMIN_FEED_001,
       }),
+      ApiAuthDocument(ADMIN_ACCESS_TOKEN),
       ApiBadRequestResponse({ description: errorMessage.E400_APP_001 }),
     ),
 };

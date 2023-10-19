@@ -1,9 +1,4 @@
-import {
-  ADMIN_ACCESS_TOKEN,
-  ApiAuthDocument,
-  ApiControllerDocument,
-  DEFALUT_APP_NAME,
-} from '@app/common';
+import { ApiControllerDocument, DEFALUT_APP_NAME } from '@app/common';
 import {
   Body,
   ClassSerializerInterceptor,
@@ -11,14 +6,15 @@ import {
   Get,
   HttpCode,
   Inject,
-  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
   Query,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 
+import { AdminJwtGuard } from '../auth/guard';
 import { AdminFeedService, AdminFeedServiceToken } from './admin-feed.service';
 import { AdminDocumentHelper } from './document';
 import {
@@ -28,7 +24,7 @@ import {
 } from './dto';
 
 @ApiControllerDocument(`[${DEFALUT_APP_NAME}] Admin - feeds API`)
-@ApiAuthDocument(ADMIN_ACCESS_TOKEN)
+@UseGuards(AdminJwtGuard)
 @Controller('/admin/feeds')
 @UseInterceptors(ClassSerializerInterceptor)
 export class AdminFeedController {
