@@ -9,7 +9,7 @@ import { AuthService } from '../auth.service';
 import { BaseJwtGuard } from './base-jwt.guard';
 
 @Injectable()
-export class JwtGuard extends BaseJwtGuard {
+export class AdminJwtGuard extends BaseJwtGuard {
   constructor(private readonly authService: AuthService) {
     super();
   }
@@ -22,11 +22,11 @@ export class JwtGuard extends BaseJwtGuard {
     const payload = this.authService.decodeToken(jwt);
     if (!payload) throw new UnauthorizedException(errorMessage.E401_APP_001);
 
-    const userInfo = { id: payload.id, jwt };
-    const isValid = await this.authService.isValidUser(userInfo);
+    const adminInfo = { id: payload.id, jwt };
+    const isValid = await this.authService.isValidAdmin(adminInfo);
     if (!isValid) throw new UnauthorizedException(errorMessage.E401_APP_001);
 
-    request.user = userInfo;
+    request.user = adminInfo;
     return true;
   }
 }
