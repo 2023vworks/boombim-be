@@ -1,38 +1,16 @@
 import { Injectable } from '@nestjs/common';
-
-import {
-  CustomRepository,
-  DateUtil,
-  OffsetPaginationDTO,
-  Util,
-} from '@app/common';
-import {
-  CommentEntity,
-  FeedEntity,
-  RecommendHistoryEntity,
-  RecommendType,
-  ReportHistoryEntity,
-} from '@app/entity';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { EntityManager, MoreThanOrEqual, Repository } from 'typeorm';
-import { Comment, CommentEntityMapper, Feed, FeedEntityMapper } from './domain';
-import {
-  GetFeedCommentsRequestDTO,
-  GetFeedsRequestDTO,
-  PostFeedCommentRequestDTO,
-  PostFeedReportRequestDTO,
-  PostFeedRequestDTO,
-} from './dto';
+import { EntityManager, MoreThanOrEqual } from 'typeorm';
+
+import { CustomRepository, DateUtil, OffsetPaginationDTO } from '@app/common';
+import { FeedEntity } from '@app/entity';
+import { Feed, FeedEntityMapper } from '../domain';
+import { GetFeedsRequestDTO, PostFeedRequestDTO } from '../dto';
 
 type FeedOmitGeomark = Omit<Feed, 'geoMark'>;
 
 export const FeedRepositoryToken = Symbol('FeedRepositoryToken');
-/**
- * FeedRepository#findByCoordinates vs FeedRepository#findByPolygon
- * - 조회되는 데이터는 같으나 정렬방식에 차이가 발생한다.
- * - 좌표를 사용한 경우 정확한 거리데이터가 도출되지 않는다고 한다.
- * @todo 향후 테스트와 실제 지도에 표시되는 데이터를 비교해보고 더 정확한 메서드를 사용해야 한다.
- */
+
 export interface FeedRepository extends CustomRepository<FeedEntity> {
   findMany(option: OffsetPaginationDTO): Promise<Feed[]>;
   /**
@@ -47,7 +25,7 @@ export interface FeedRepository extends CustomRepository<FeedEntity> {
    */
   findByPolygon(getDto: GetFeedsRequestDTO): Promise<FeedOmitGeomark[]>;
 
-  existByUserId(feedId: number, userId: number): Promise<boolean>;
+  existOneByUserId(feedId: number, userId: number): Promise<boolean>;
   findOneByGeoMarkId(geoMarkId: number): Promise<Feed | null>;
   findOneByPK(geoMarkId: number): Promise<Feed | null>;
   findOnePure(feedId: number): Promise<Feed | null>;
@@ -56,34 +34,6 @@ export interface FeedRepository extends CustomRepository<FeedEntity> {
     feedId: number,
     properties: Partial<FeedEntity>,
   ): Promise<void>;
-
-  findCommentsByFeedId(
-    feedId: number,
-    getDto: GetFeedCommentsRequestDTO,
-  ): Promise<Comment[]>;
-  createComment(
-    userId: number,
-    feedId: number,
-    postDto: PostFeedCommentRequestDTO,
-  ): Promise<Comment>;
-
-  existRecommendHistory(
-    userId: number,
-    feedId: number,
-    type: RecommendType,
-  ): Promise<boolean>;
-  createRecommendHistory(
-    userId: number,
-    feedId: number,
-    type: RecommendType,
-  ): Promise<void>;
-
-  existReportHistory(userId: number, feedId: number): Promise<boolean>;
-  createReportHistory(
-    userId: number,
-    feedId: number,
-    postDto: PostFeedReportRequestDTO,
-  ): Promise<void>;
 }
 
 @Injectable()
@@ -91,18 +41,11 @@ export class FeedRepositoryImpl
   extends CustomRepository<FeedEntity>
   implements FeedRepository
 {
-  private readonly commentRepo: Repository<CommentEntity>;
-  private readonly recommendHistoryRepo: Repository<RecommendHistoryEntity>;
-  private readonly reportHistoryRepo: Repository<ReportHistoryEntity>;
-
   constructor(
     @InjectEntityManager()
     manager: EntityManager,
   ) {
     super(FeedEntity, manager);
-    this.commentRepo = manager.getRepository(CommentEntity);
-    this.recommendHistoryRepo = manager.getRepository(RecommendHistoryEntity);
-    this.reportHistoryRepo = manager.getRepository(ReportHistoryEntity);
   }
 
   async findMany(option: OffsetPaginationDTO): Promise<Feed[]> {
@@ -183,7 +126,7 @@ export class FeedRepositoryImpl
     return FeedEntityMapper.toDomain(feeds);
   }
 
-  async existByUserId(feedId: number, userId: number): Promise<boolean> {
+  async existOneByUserId(feedId: number, userId: number): Promise<boolean> {
     const count = await this.createQueryBuilder('feed')
       .where('feed.id = :feedId', { feedId })
       .andWhere('feed.user = :userId', { userId })
@@ -254,94 +197,6 @@ export class FeedRepositoryImpl
     await this.update(feedId, { ...properties });
   }
 
-  /* ======================== Comment ======================== */
-
-  async createComment(
-    userId: number,
-    feedId: number,
-    postDto: PostFeedCommentRequestDTO,
-  ): Promise<Comment> {
-    const comment = this.commentRepo.create({
-      ...postDto,
-      user: { id: userId },
-      feed: { id: feedId },
-    });
-    await this.commentRepo.save(comment);
-    return CommentEntityMapper.toDomain(comment);
-  }
-
-  async findCommentsByFeedId(
-    feedId: number,
-    getDto: GetFeedCommentsRequestDTO,
-  ): Promise<Comment[]> {
-    const { nextCursor, size, sort } = getDto;
-    const qb = this.commentRepo.createQueryBuilder('comment');
-    qb.select();
-    qb.innerJoin('comment.user', 'user') //
-      .addSelect(['user.id', 'user.nickname', 'user.mbtiType']);
-    qb.where('comment.feedId = :feedId', { feedId });
-    if (!Util.isNil(nextCursor)) {
-      sort === 'ASC' && qb.andWhere('comment.id >= :id', { id: nextCursor });
-      sort !== 'ASC' && qb.andWhere('comment.id <= :id', { id: nextCursor });
-    }
-    qb.limit(size);
-    qb.orderBy('comment.id', sort);
-
-    const comments = await qb.getMany();
-    return CommentEntityMapper.toDomain(comments);
-  }
-
-  /* ======================== RecommendHistory ======================== */
-
-  async existRecommendHistory(
-    userId: number,
-    feedId: number,
-    type: RecommendType,
-  ): Promise<boolean> {
-    const qb = this.recommendHistoryRepo.createQueryBuilder('history');
-    qb.where('history.user = :userId', { userId });
-    qb.andWhere('history.feed = :feedId', { feedId });
-    qb.andWhere('history.type = :type', { type });
-    const count = await qb.getCount();
-    return !!count;
-  }
-
-  async createRecommendHistory(
-    userId: number,
-    feedId: number,
-    type: RecommendType,
-  ): Promise<void> {
-    const recommedHistory = this.recommendHistoryRepo.create({
-      type,
-      user: { id: userId },
-      feed: { id: feedId },
-    });
-    await this.recommendHistoryRepo.save(recommedHistory);
-  }
-
-  /* ======================== ReportHistory ======================== */
-
-  async existReportHistory(userId: number, feedId: number): Promise<boolean> {
-    const qb = this.reportHistoryRepo.createQueryBuilder('history');
-    qb.where('history.user = :userId', { userId });
-    qb.andWhere('history.feed = :feedId', { feedId });
-    const count = await qb.getCount();
-    return !!count;
-  }
-
-  async createReportHistory(
-    userId: number,
-    feedId: number,
-    postDto: PostFeedReportRequestDTO,
-  ): Promise<void> {
-    const reportHistory = this.reportHistoryRepo.create({
-      ...postDto,
-      user: { id: userId },
-      feed: { id: feedId },
-    });
-    await this.reportHistoryRepo.save(reportHistory);
-  }
-
   /* ======================== private ======================== */
   private makeCenterPoint(X: number, Y: number): string;
   private makeCenterPoint(
@@ -364,7 +219,6 @@ export class FeedRepositoryImpl
   private getRelationsByFeed() {
     return {
       user: true,
-      comments: true,
       geoMark: {
         regionInfo: true,
         address: true,

@@ -10,7 +10,7 @@ import {
   AdminGetFeedsResponseDTO,
   AdminPatchFeedActivationRequestDTO,
 } from './dto';
-import { FeedRepository, FeedRepositoryToken } from './feed.repository';
+import { FeedRepository, FeedRepositoryToken } from './repository';
 import { Util, errorMessage } from '@app/common';
 
 export const AdminFeedServiceToken = Symbol('AdminFeedServiceToken');

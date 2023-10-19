@@ -1,8 +1,6 @@
 import { FeedEntity, GeoMarkEntity } from '@app/entity';
 import { GeoMarkEntityMapper } from 'src/domain/geo-mark/domain';
 import { Feed } from '../feed.domain';
-import { CommentEntityMapper } from './comment-entity-mapper';
-import { ReportHistoryEntityMapper } from './report-history-entity-mapper';
 
 export class FeedEntityMapper {
   static toDomain(entity: FeedEntity): Feed;
@@ -19,12 +17,12 @@ export class FeedEntityMapper {
                 activity: entity.activity,
               })
             : null,
-          comments: entity.comments
-            ? CommentEntityMapper.toDomain(entity.comments)
-            : [],
-          reportHistories: entity.reportHistories
-            ? ReportHistoryEntityMapper.toDomain(entity.reportHistories)
-            : [],
+          // comments: entity.comments
+          //   ? CommentEntityMapper.toDomain(entity.comments)
+          //   : [],
+          // reportHistories: entity.reportHistories
+          //   ? ReportHistoryEntityMapper.toDomain(entity.reportHistories)
+          //   : [],
         }).setBase(entity.id, entity.createdAt, entity.updatedAt);
   }
 
