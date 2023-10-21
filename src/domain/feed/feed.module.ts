@@ -9,24 +9,19 @@ import {
 } from '@app/entity';
 import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
-import { AdminFeedController } from './admin-feed.controller';
 import { FeedController } from './feed.controller';
 import { FeedServiceImpl, FeedServiceToken } from './feed.service';
-import { UploadModule } from './upload/upload.module';
 import {
-  AdminFeedServiceImpl,
-  AdminFeedServiceToken,
-} from './admin-feed.service';
-import {
-  FeedRepositoryImpl,
-  FeedRepositoryToken,
   CommentRepositoryImpl,
   CommentRepositoryToken,
+  FeedRepositoryImpl,
+  FeedRepositoryToken,
   RecommendHistoryRepositoryImpl,
   RecommendHistoryRepositoryToken,
   ReportHistoryRepositoryImpl,
   ReportHistoryRepositoryToken,
 } from './repository';
+import { UploadModule } from './upload/upload.module';
 
 const entities = [
   FeedEntity,
@@ -54,15 +49,11 @@ const repositories = [
     UserModule,
     UploadModule,
   ],
-  controllers: [FeedController, AdminFeedController],
+  controllers: [FeedController],
   providers: [
     {
       provide: FeedServiceToken,
       useClass: FeedServiceImpl,
-    },
-    {
-      provide: AdminFeedServiceToken,
-      useClass: AdminFeedServiceImpl,
     },
     ...repositories,
   ],
