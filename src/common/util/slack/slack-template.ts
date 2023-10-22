@@ -1,5 +1,6 @@
-import { Block, IncomingWebhookSendArguments, KnownBlock } from '@slack/client';
 import { Request } from 'express';
+import { IncomingWebhookSendArguments } from '@slack/webhook';
+import type { Block, KnownBlock } from '@slack/types';
 
 import { DEFALUT_APP_NAME } from '@app/common/constant';
 import { DateUtil } from '../date-util';
@@ -106,20 +107,41 @@ export class SlackTemplate {
       blocks: [...defaultBlocks],
       attachments: [
         {
-          color: 'good',
-          fields: [
+          blocks: [
             {
-              title: `*피드 정보*:`,
-              value:
-                '```' +
-                `- 피드 id: ${feed.id}\n- 피드 내용: ${feed.content}\n- 누적 신고 횟수: ${feed.reportCount}` +
-                '```',
-              short: false,
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text:
+                  `*신고 정보*:` +
+                  '```' +
+                  `- 피드 id: ${feed.id}\n- 피드 내용: ${feed.content}\n- 누적 신고 횟수: ${feed.reportCount}` +
+                  '```',
+              },
             },
             {
-              title: `*신고 내용*:`,
-              value: '```' + reason + '```',
-              short: false,
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `*신고 내용*:` + '```' + reason + '```',
+              },
+            },
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: '피드를 비활성화 하고 싶다면 클릭하세요.',
+              },
+              accessory: {
+                type: 'button',
+                text: {
+                  type: 'plain_text',
+                  text: '⚙️ 비활성화',
+                  emoji: true,
+                },
+                value: 'click_me_123', // 핸들링에서 받을 값
+                action_id: 'button-action', // 핸들링할 id
+              },
             },
           ],
         },
