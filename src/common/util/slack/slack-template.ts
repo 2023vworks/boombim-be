@@ -139,8 +139,8 @@ export class SlackTemplate {
                   text: '⚙️ 비활성화',
                   emoji: true,
                 },
-                value: 'click_me_123', // 핸들링에서 받을 값
-                action_id: 'button-action', // 핸들링할 id
+                value: 'action_feed_report_1', // 핸들링에서 받을 값
+                action_id: 'action_feed_report', // 핸들링할 id
               },
             },
           ],
