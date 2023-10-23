@@ -277,10 +277,8 @@ export class FeedServiceImpl implements FeedService {
       if (isExist) throw new ConflictException(errorMessage.E409_FEED_003);
 
       await txReportRepo.createOne(userId, feedId, postDto);
-      // TODO: report 로직 향후 변경 예정
       await txFeedRepo.updateProperty(feedId, {
         reportCount: feed.addReportCount().reportCount,
-        activationAt: feed.isLockFeed ? new Date() : feed.activationAt,
       });
 
       feed.isLockFeed && (await this.feedReportAlert(feed, postDto.reason));
