@@ -23,5 +23,6 @@ import { AuthModule } from 'src/domain/auth/auth.module';
       useClass: FeedRepositoryImpl,
     },
   ],
+  exports: [FeedServiceToken],
 })
 export class FeedModule {}

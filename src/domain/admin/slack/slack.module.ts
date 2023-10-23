@@ -1,12 +1,12 @@
 import { Module, forwardRef } from '@nestjs/common';
 
-import { SlackController } from './slack.controller';
-import { SlackService } from './slack.service';
 import { AuthModule } from 'src/domain/auth/auth.module';
+import { SlackController } from './slack.controller';
+import { FeedModule } from '../feed/feed.module';
 
 @Module({
-  imports: [forwardRef(() => AuthModule)],
+  imports: [forwardRef(() => AuthModule), FeedModule],
   controllers: [SlackController],
-  providers: [SlackService],
+  providers: [],
 })
 export class SlackModule {}

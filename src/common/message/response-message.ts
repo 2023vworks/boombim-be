@@ -42,6 +42,11 @@ const feedErrorMessage = {
   E409_FEED_002: '추천/비추천은 한번만 가능합니다.',
   E409_FEED_003: '신고는 한번만 가능합니다.',
 };
+const slackErrorMessage = {
+  E400_SLACK_001: 'actions[0].action_id가 존재하지 않습니다.',
+  E400_SLACK_002: 'actions[0].action_id 값이 잘못되었습니다.',
+  E400_SLACK_003: 'actions[0].value 값이 잘못되었습니다.',
+};
 
 // E + statusCode + _컨트롤러 + _넘버링
 export const errorMessage = {
@@ -50,4 +55,5 @@ export const errorMessage = {
   E401_APP_001: '인증 정보가 잘못되었습니다.',
   E415_APP_001: '지원하지 않는 미디어 타입(mimetypes)입니다.',
   ...feedErrorMessage,
+  ...slackErrorMessage,
 };

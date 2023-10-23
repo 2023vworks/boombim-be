@@ -4,6 +4,7 @@ import type { Block, KnownBlock } from '@slack/types';
 
 import { DEFALUT_APP_NAME } from '@app/common/constant';
 import { DateUtil } from '../date-util';
+import { SlackActionType } from './slack-action-type.enum';
 
 type SlackBlock = KnownBlock | Block;
 
@@ -139,8 +140,8 @@ export class SlackTemplate {
                   text: '⚙️ 비활성화',
                   emoji: true,
                 },
-                value: 'action_feed_report_1', // 핸들링에서 받을 값
-                action_id: 'action_feed_report', // 핸들링할 id
+                value: `${feed.id}`, // 핸들링에서 받을 값
+                action_id: `${SlackActionType.ACTION_FEED_REPORT}`, // 핸들링할 id
               },
             },
           ],
