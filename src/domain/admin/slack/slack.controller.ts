@@ -31,9 +31,9 @@ export class SlackController {
   @Post('/action')
   @HttpCode(204)
   async postAction(@Body() body: any): Promise<void> {
-    const { payload } = body;
-    const actionId: SlackActionType = payload?.actions[0]?.action_id;
-    const value: number = parseInt(payload?.actions[0]?.value);
+    const payload = JSON.parse(body?.payload);
+    const actionId: SlackActionType = payload?.actions.at(0)?.action_id;
+    const value: number = parseInt(payload?.actions.at(0)?.value);
 
     if (!actionId) throw new BadRequestException(errorMessage.E400_SLACK_001);
     if (!value || Number.isNaN(value))
