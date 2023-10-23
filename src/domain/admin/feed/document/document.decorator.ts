@@ -12,8 +12,8 @@ import {
   errorMessage,
   successMessage,
 } from '@app/common';
+import { AdminGetFeedsWithCountResponseDTO } from '../dto';
 import { FeedController } from '../feed.controller';
-import { AdminGetFeedsResponseDTO } from '../dto';
 
 type API_DOC_TYPE = keyof FeedController;
 
@@ -24,7 +24,7 @@ const decorators: Record<API_DOC_TYPE, Function> = {
       ApiOperation({ summary: '[Admin] 피드 리스트 조회' }),
       ApiOkResponse({
         description: successMessage.S200_ADMIN_FEED_001,
-        type: [AdminGetFeedsResponseDTO],
+        type: AdminGetFeedsWithCountResponseDTO,
       }),
       ApiAuthDocument(ADMIN_ACCESS_TOKEN),
       ApiBadRequestResponse({ description: errorMessage.E400_APP_001 }),

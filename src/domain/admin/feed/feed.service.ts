@@ -5,7 +5,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import {
   AdminGetFeedsRequestDTO,
-  AdminGetFeedsResponseDTO,
+  AdminGetFeedsWithCountResponseDTO,
   AdminPatchFeedActivationRequestDTO,
 } from './dto';
 import { FeedRepository, FeedRepositoryToken } from './feed.repository';
@@ -14,7 +14,7 @@ export const FeedServiceToken = Symbol('FeedServiceToken');
 export interface FeedService {
   getFeeds(
     getDto: AdminGetFeedsRequestDTO,
-  ): Promise<AdminGetFeedsResponseDTO[]>;
+  ): Promise<AdminGetFeedsWithCountResponseDTO>;
 
   patchFeedActivation(
     feedId: number,
@@ -31,9 +31,9 @@ export class FeedServiceImpl implements FeedService {
 
   async getFeeds(
     getDto: AdminGetFeedsRequestDTO,
-  ): Promise<AdminGetFeedsResponseDTO[]> {
-    const feeds = await this.feedRepo.findMany(getDto);
-    return Util.toInstance(AdminGetFeedsResponseDTO, feeds);
+  ): Promise<AdminGetFeedsWithCountResponseDTO> {
+    const result = await this.feedRepo.findMany(getDto);
+    return Util.toInstance(AdminGetFeedsWithCountResponseDTO, result);
   }
 
   async patchFeedActivation(

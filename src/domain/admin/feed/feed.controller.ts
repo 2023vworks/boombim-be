@@ -14,13 +14,13 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 
+import { AdminJwtGuard } from 'src/domain/auth/guard';
 import { AdminDocumentHelper } from './document';
 import {
   AdminGetFeedsRequestDTO,
-  AdminGetFeedsResponseDTO,
+  AdminGetFeedsWithCountResponseDTO,
   AdminPatchFeedActivationRequestDTO,
 } from './dto';
-import { AdminJwtGuard } from 'src/domain/auth/guard';
 import { FeedService, FeedServiceToken } from './feed.service';
 
 @ApiControllerDocument(`[${DEFALUT_APP_NAME}] Admin - feeds API`)
@@ -37,7 +37,7 @@ export class FeedController {
   @Get()
   async getFeeds(
     @Query() getDto: AdminGetFeedsRequestDTO,
-  ): Promise<AdminGetFeedsResponseDTO[]> {
+  ): Promise<AdminGetFeedsWithCountResponseDTO> {
     return this.feedService.getFeeds(getDto);
   }
 
