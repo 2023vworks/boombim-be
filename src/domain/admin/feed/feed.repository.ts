@@ -16,6 +16,7 @@ export const FeedRepositoryToken = Symbol('FeedRepositoryToken');
 
 export interface FeedRepository extends CustomRepository<FeedEntity> {
   findMany(option: AdminGetFeedsRequestDTO): Promise<AdminFeedWithCount>;
+  findOneByPK(feedId: number): Promise<AdminFeed>;
   /**
    * 좌표를 사용하여 검색후 중심좌표 기준 정렬
    * @param getDto
@@ -60,6 +61,15 @@ export class FeedRepositoryImpl
       feeds: AdminFeedEntityMapper.toDomain(feeds),
       totalCount,
     };
+  }
+
+  async findOneByPK(feedId: number): Promise<AdminFeed> {
+    const feed = await this.findOne({
+      select: { user: { id: true, nickname: true, mbtiType: true } },
+      where: { id: feedId },
+      relations: { user: true, reportHistories: true },
+    });
+    return AdminFeedEntityMapper.toDomain(feed);
   }
 
   async updateProperty(

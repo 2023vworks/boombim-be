@@ -41,9 +41,7 @@ export class SlackController {
 
     switch (actionId) {
       case SlackActionType.ACTION_FEED_REPORT:
-        await this.feedService.patchFeedActivation(value, {
-          activationAt: new Date(),
-        });
+        await this.feedService.expireFeed(value);
         break;
       default:
         throw new BadRequestException(errorMessage.E400_SLACK_002);
