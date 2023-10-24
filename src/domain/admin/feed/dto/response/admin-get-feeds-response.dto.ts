@@ -6,7 +6,7 @@ import {
   IntValidator,
   defaultResponseProperties,
 } from '@app/common';
-import { FeedEntity, ReportHistoryEntity, UserEntity } from '@app/entity';
+import { FeedEntity, UserEntity } from '@app/entity';
 
 class AdminGetFeedsWithUserResponseDTO extends PickType(UserEntity, [
   ...defaultResponseProperties,
@@ -14,7 +14,6 @@ class AdminGetFeedsWithUserResponseDTO extends PickType(UserEntity, [
   'nickname',
   'mbtiType',
 ]) {}
-class AdminGetFeedsWithReportHistoryResponseDTO extends ReportHistoryEntity {}
 
 export class AdminGetFeedsResponseDTO extends OmitType(FeedEntity, [
   'user',
@@ -30,18 +29,6 @@ export class AdminGetFeedsResponseDTO extends OmitType(FeedEntity, [
   @Expose()
   @InstanceValidator(AdminGetFeedsWithUserResponseDTO)
   user: AdminGetFeedsWithUserResponseDTO;
-
-  @ApiProperty({
-    description: '피드 신고 내역',
-    type: [AdminGetFeedsWithReportHistoryResponseDTO],
-  })
-  @Expose()
-  @InstanceValidator(
-    AdminGetFeedsWithReportHistoryResponseDTO,
-    {},
-    { each: true },
-  )
-  reportHistories: AdminGetFeedsWithReportHistoryResponseDTO[] | [];
 }
 
 export class AdminGetFeedsWithCountResponseDTO {

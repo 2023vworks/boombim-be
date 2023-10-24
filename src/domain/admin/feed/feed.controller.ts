@@ -17,6 +17,7 @@ import {
 import { AdminJwtGuard } from 'src/domain/auth/guard';
 import { AdminDocumentHelper } from './document';
 import {
+  AdminGetFeedResponseDTO,
   AdminGetFeedsRequestDTO,
   AdminGetFeedsWithCountResponseDTO,
   AdminPatchFeedActivationRequestDTO,
@@ -39,6 +40,14 @@ export class FeedController {
     @Query() getDto: AdminGetFeedsRequestDTO,
   ): Promise<AdminGetFeedsWithCountResponseDTO> {
     return this.feedService.getFeeds(getDto);
+  }
+
+  @AdminDocumentHelper('getFeed')
+  @Get('/:id')
+  async getFeed(
+    @Param('id', ParseIntPipe) feedId: number,
+  ): Promise<AdminGetFeedResponseDTO> {
+    return this.feedService.getFeed(feedId);
   }
 
   @AdminDocumentHelper('patchFeedActivation')

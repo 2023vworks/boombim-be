@@ -7,8 +7,10 @@ import { FeedEntity } from '@app/entity';
 import { AdminFeed, AdminFeedEntityMapper } from './domain';
 import { AdminGetFeedsRequestDTO, Filter, Sort } from './dto';
 
+type FeedOmitReportHistories = Omit<AdminFeed, 'reportHistories'>;
+
 type AdminFeedWithCount = {
-  feeds: AdminFeed[];
+  feeds: FeedOmitReportHistories[];
   totalCount: number;
 };
 
@@ -16,7 +18,7 @@ export const FeedRepositoryToken = Symbol('FeedRepositoryToken');
 
 export interface FeedRepository extends CustomRepository<FeedEntity> {
   findMany(option: AdminGetFeedsRequestDTO): Promise<AdminFeedWithCount>;
-  findOneByPK(feedId: number): Promise<AdminFeed>;
+  findOneByPK(feedId: number): Promise<AdminFeed | null>;
   /**
    * 좌표를 사용하여 검색후 중심좌표 기준 정렬
    * @param getDto
@@ -45,9 +47,6 @@ export class FeedRepositoryImpl
     qb.select();
     qb.innerJoin('feed.user', 'user') //
       .addSelect(['user.id', 'user.mbtiType', 'user.nickname']);
-    qb.innerJoin('feed.geoMark', 'mark') //
-      .addSelect(['mark.id']);
-    qb.leftJoinAndSelect('feed.reportHistories', 'report'); //
 
     qb.where('1 = 1');
     this.setSort(qb, sort);
@@ -56,20 +55,20 @@ export class FeedRepositoryImpl
     if (page && pageSize) {
       qb.offset((page - 1) * pageSize).limit(pageSize);
     }
-    const [feeds, totalCount] = await qb.distinct(true).getManyAndCount();
+    const [feeds, totalCount] = await qb.getManyAndCount();
     return {
       feeds: AdminFeedEntityMapper.toDomain(feeds),
       totalCount,
     };
   }
 
-  async findOneByPK(feedId: number): Promise<AdminFeed> {
+  async findOneByPK(feedId: number): Promise<AdminFeed | null> {
     const feed = await this.findOne({
       select: { user: { id: true, nickname: true, mbtiType: true } },
       where: { id: feedId },
       relations: { user: true, reportHistories: true },
     });
-    return AdminFeedEntityMapper.toDomain(feed);
+    return feed ? AdminFeedEntityMapper.toDomain(feed) : null;
   }
 
   async updateProperty(

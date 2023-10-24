@@ -25,6 +25,7 @@ const feedSuccessMessage = {
 
   // admin
   S200_ADMIN_FEED_001: '[Admin] 피드 리스트 조회에 성공하였습니다.',
+  S200_ADMIN_FEED_002: '[Admin] 피드 상세 조회에 성공하였습니다.',
   S204_ADMIN_FEED_001: '[Admin] 피드 리스트 활성 수정에 성공했습니다.',
 };
 

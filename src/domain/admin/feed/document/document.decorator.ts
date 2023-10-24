@@ -2,6 +2,7 @@ import { applyDecorators } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiNoContentResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
@@ -12,7 +13,10 @@ import {
   errorMessage,
   successMessage,
 } from '@app/common';
-import { AdminGetFeedsWithCountResponseDTO } from '../dto';
+import {
+  AdminGetFeedResponseDTO,
+  AdminGetFeedsWithCountResponseDTO,
+} from '../dto';
 import { FeedController } from '../feed.controller';
 
 type API_DOC_TYPE = keyof FeedController;
@@ -28,6 +32,17 @@ const decorators: Record<API_DOC_TYPE, Function> = {
       }),
       ApiAuthDocument(ADMIN_ACCESS_TOKEN),
       ApiBadRequestResponse({ description: errorMessage.E400_APP_001 }),
+    ),
+  getFeed: () =>
+    applyDecorators(
+      ApiOperation({ summary: '[Admin] 피드 상세 조회' }),
+      ApiOkResponse({
+        description: successMessage.S200_ADMIN_FEED_002,
+        type: AdminGetFeedResponseDTO,
+      }),
+      ApiAuthDocument(ADMIN_ACCESS_TOKEN),
+      ApiBadRequestResponse({ description: errorMessage.E400_APP_001 }),
+      ApiNotFoundResponse({ description: errorMessage.E404_APP_001 }),
     ),
   patchFeedActivation: () =>
     applyDecorators(

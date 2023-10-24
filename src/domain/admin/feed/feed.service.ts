@@ -7,6 +7,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { IncomingWebhook } from '@slack/webhook';
 import { DataSource } from 'typeorm';
 import {
+  AdminGetFeedResponseDTO,
   AdminGetFeedsRequestDTO,
   AdminGetFeedsWithCountResponseDTO,
   AdminPatchFeedActivationRequestDTO,
@@ -18,6 +19,7 @@ export interface FeedService {
   getFeeds(
     getDto: AdminGetFeedsRequestDTO,
   ): Promise<AdminGetFeedsWithCountResponseDTO>;
+  getFeed(feedId: number): Promise<AdminGetFeedResponseDTO>;
 
   patchFeedActivation(
     feedId: number,
@@ -48,6 +50,12 @@ export class FeedServiceImpl implements FeedService {
     return Util.toInstance(AdminGetFeedsWithCountResponseDTO, result);
   }
 
+  async getFeed(feedId: number): Promise<AdminGetFeedResponseDTO> {
+    const feed = await this.feedRepo.findOneByPK(feedId);
+    if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
+    return Util.toInstance(AdminGetFeedResponseDTO, feed);
+  }
+
   async patchFeedActivation(
     feedId: number,
     patchDto: AdminPatchFeedActivationRequestDTO,
@@ -64,6 +72,7 @@ export class FeedServiceImpl implements FeedService {
   async expireFeed(feedId: number): Promise<void> {
     const feed = await this.feedRepo.findOneByPK(feedId);
     if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
+    // const isExpired = feed.isExpired();
 
     await this.feedRepo.updateProperty(feedId, { activationAt: new Date() });
     await this.webhook.send(`${feedId} 피드가 비활성화 처리되었습니다.`);
