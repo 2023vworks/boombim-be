@@ -3,7 +3,6 @@ import { OmitType } from '@nestjs/swagger';
 import { FeedEntity, RecommendType } from '@app/entity';
 import { BaseDomain } from 'src/domain/base.domain';
 import { GeoMark } from 'src/domain/geo-mark/domain';
-import { Comment } from './comment.domain';
 import { User } from 'src/domain/user/domain';
 
 type FeedWriter = Pick<User, 'id' | 'nickname' | 'mbtiType'>;
@@ -15,9 +14,8 @@ export class FeedProps extends OmitType(FeedEntity, [
   'reportHistories',
   'geoMark',
 ]) {
-  geoMarkId: number;
-  comments: Comment[] | [];
   user: FeedWriter;
+  geoMarkId: number;
   geoMark?: GeoMark | null;
 }
 
@@ -122,10 +120,6 @@ export class Feed extends BaseDomain<FeedProps> {
     return this.props.user;
   }
 
-  get comments(): Comment[] {
-    return this.props.comments;
-  }
-
   get geoMark(): GeoMark {
     return this.props.geoMark;
   }
@@ -134,10 +128,6 @@ export class Feed extends BaseDomain<FeedProps> {
 
   get hasGeoMark(): boolean {
     return !!this.props.geoMark;
-  }
-
-  get hasComments(): boolean {
-    return this.props.comments.length > 0;
   }
 
   /**
