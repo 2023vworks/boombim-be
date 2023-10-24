@@ -2,7 +2,7 @@ import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import * as Sentry from '@sentry/node';
-import { json, urlencoded } from 'express';
+import { json } from 'express';
 import helmet from 'helmet';
 import { WinstonModule } from 'nest-winston';
 
@@ -50,7 +50,6 @@ export class NestBuilder {
       origin: typeof origin === 'string' ? origin.split(',') : origin,
     });
     this.app.use(json({ limit: '50mb' }));
-    this.app.use(urlencoded({ extended: true, limit: '50mb' }));
     this.app.use(httpLogger(logger));
     this.app.use(helmet());
     this.app.setGlobalPrefix(options.globalPrifix); // Note: Swagger 빌드전에 적용해야 docs에 적용된다.

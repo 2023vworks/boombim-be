@@ -1,7 +1,3 @@
-import { addHours } from 'date-fns';
-import * as fs from 'fs';
-import * as path from 'path';
-
 import { Util } from '@app/common';
 import {
   CoordType,
@@ -10,21 +6,36 @@ import {
   MbtiType,
   UserEntity,
 } from '@app/entity';
+import { addHours } from 'date-fns';
+import * as fs from 'fs';
+import * as path from 'path';
+import { DataSource } from 'typeorm';
 import {
   KakaoGeoAddress,
   KakaoGeoRegionCode,
   KakaoGeoRoadAddress,
-} from './geo/kakao-instance';
-import { runOrm } from './run-orm';
-import { DataSource } from 'typeorm';
+} from './kakao-instance';
 
 type KakaoGeoAddresses = {
   address: KakaoGeoAddress;
   road_address?: KakaoGeoRoadAddress;
 };
 
-const filePathRegion = path.join(__dirname, 'geo/mark-region-code.json');
-const filePathAddress = path.join(__dirname, 'geo/mark-address.json');
+const AppDataSource = new DataSource({
+  type: process.env.DATABASE_TYPE as any,
+  host: process.env.DATABASE_HOST,
+  port: +process.env.DATABASE_PORT,
+  database: process.env.DATABASE_NAME,
+  username: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  logging: 'all',
+  entities: [`${__dirname}/.././entity/**/*.entity{.ts,.js}`],
+  dropSchema: false,
+  synchronize: false,
+});
+
+const filePathRegion = path.join(__dirname, 'mark-region-code.json');
+const filePathAddress = path.join(__dirname, 'mark-address.json');
 
 const regionInfo: KakaoGeoRegionCode[] = JSON.parse(
   fs.readFileSync(filePathRegion, 'utf-8'),
@@ -33,47 +44,58 @@ const address: KakaoGeoAddresses[] = JSON.parse(
   fs.readFileSync(filePathAddress, 'utf-8'),
 );
 
-runOrm(async (dataSource: DataSource) => {
-  const feedRepo = dataSource.getRepository(FeedEntity);
-  const useRepo = dataSource.getRepository(UserEntity);
-  const user = useRepo.create({
-    nickname: 'test',
-    mbtiType: MbtiType.ENFJ,
-    token: '',
-    accessedAt: new Date(),
-    feedWritingCount: 5,
-    feedWritingCountRechargeStartAt: new Date(),
-    feeds: [],
-    comments: [],
-    recommendHistories: [],
-    reportHistories: [],
-  });
-  const { id } = await useRepo.save(user);
+AppDataSource.initialize()
+  .then(async () => {
+    console.log('Data Source has been initialized!');
 
-  const promises = address.map((_, i) => {
-    const feed = feedRepo.create({
-      user: { id },
-      activity: getRandomNumber(1, 35),
-      content: '테스트' + (i + 1),
-      activationAt: addHours(new Date(), 6),
-      recommendCount: 0,
-      unrecommendCount: 0,
-      reportCount: 0,
-      viewCount: 0,
-      commentCount: 0,
-      geoMark: createGeoMark(regionInfo[i], address[i]),
+    // const result = createGeoMark(regionInfo[0], address[0]);
+    // console.log(result);
+
+    const feedRepo = AppDataSource.getRepository(FeedEntity);
+    const useRepo = AppDataSource.getRepository(UserEntity);
+    const user = useRepo.create({
+      nickname: 'test',
+      mbtiType: MbtiType.ENFJ,
+      token: '',
+      accessedAt: new Date(),
+      feedWritingCount: 5,
+      feedWritingCountRechargeStartAt: new Date(),
+      feeds: [],
+      comments: [],
+      recommendHistories: [],
+      reportHistories: [],
     });
-    return feedRepo.save(feed);
-  });
+    const { id } = await useRepo.save(user);
 
-  await Promise.all(promises);
-});
+    const promises = address.map((_, i) => {
+      const feed = feedRepo.create({
+        user: { id },
+        activity: 1,
+        content: '테스트',
+        activationAt: addHours(new Date(), 6),
+        // isActive: true,
+        recommendCount: 0,
+        unrecommendCount: 0,
+        reportCount: 0,
+        viewCount: 0,
+        commentCount: 0,
+        geoMark: createGeoMark(regionInfo[i], address[i]),
+      });
+      return feedRepo.save(feed);
+    });
+
+    await Promise.all(promises);
+  })
+  .catch((err) => {
+    console.error('Error during Data Source initialization', err);
+  });
 
 function createGeoMark(
   regionInfo: KakaoGeoRegionCode,
   addresses: KakaoGeoAddresses,
 ): GeoMarkEntity {
   const { address, road_address } = addresses;
+  const repo = AppDataSource.getRepository(GeoMarkEntity);
 
   const result: GeoMarkEntity = Util.toInstance(
     GeoMarkEntity,
@@ -131,8 +153,4 @@ function createGeoMark(
       coordinates: [+regionInfo.x, +regionInfo.y],
     },
   };
-}
-
-function getRandomNumber(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1) + min);
 }

@@ -1,6 +1,5 @@
 export const DEFALUT_APP_NAME = process.env.APP_NAME ?? 'Test';
 export const USER_ACCESS_TOKEN = 'USER_ACCESS_TOKEN';
-export const ADMIN_ACCESS_TOKEN = 'ADMIN_ACCESS_TOKEN';
 
 export const UPLOAD_FILE_NAME = 'image';
 export const UPLOAD_FILES_NAME = 'images';
