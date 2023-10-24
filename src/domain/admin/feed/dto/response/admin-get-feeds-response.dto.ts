@@ -1,8 +1,12 @@
 import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 
-import { InstanceValidator, defaultResponseProperties } from '@app/common';
-import { FeedEntity, ReportHistoryEntity, UserEntity } from '@app/entity';
+import {
+  InstanceValidator,
+  IntValidator,
+  defaultResponseProperties,
+} from '@app/common';
+import { FeedEntity, UserEntity } from '@app/entity';
 
 class AdminGetFeedsWithUserResponseDTO extends PickType(UserEntity, [
   ...defaultResponseProperties,
@@ -10,7 +14,6 @@ class AdminGetFeedsWithUserResponseDTO extends PickType(UserEntity, [
   'nickname',
   'mbtiType',
 ]) {}
-class AdminGetFeedsWithReportHistoryResponseDTO extends ReportHistoryEntity {}
 
 export class AdminGetFeedsResponseDTO extends OmitType(FeedEntity, [
   'user',
@@ -26,12 +29,22 @@ export class AdminGetFeedsResponseDTO extends OmitType(FeedEntity, [
   @Expose()
   @InstanceValidator(AdminGetFeedsWithUserResponseDTO)
   user: AdminGetFeedsWithUserResponseDTO;
+}
 
+export class AdminGetFeedsWithCountResponseDTO {
   @ApiProperty({
-    description: '피드 신고 내역',
-    type: [AdminGetFeedsWithReportHistoryResponseDTO],
+    description: '피드 리스트',
+    type: AdminGetFeedsResponseDTO,
   })
   @Expose()
-  @InstanceValidator(AdminGetFeedsWithUserResponseDTO, {}, { each: true })
-  reportHistories: AdminGetFeedsWithReportHistoryResponseDTO[] | [];
+  @InstanceValidator(AdminGetFeedsResponseDTO, {}, { each: true })
+  feeds: AdminGetFeedsResponseDTO[];
+
+  @ApiProperty({
+    description: '피드 개수',
+    type: Number,
+  })
+  @Expose()
+  @IntValidator()
+  totalCount: number;
 }
