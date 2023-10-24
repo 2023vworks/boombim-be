@@ -1,6 +1,6 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
-import { Util, errorMessage } from '@app/common';
+import { Util, errorMessage, successMessage } from '@app/common';
 import { SlackAlertOptions, SlackConfig } from '@app/config';
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
@@ -71,10 +71,16 @@ export class FeedServiceImpl implements FeedService {
 
   async expireFeed(feedId: number): Promise<void> {
     const feed = await this.feedRepo.findOneByPK(feedId);
-    if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
-    // const isExpired = feed.isExpired();
+    if (!feed) {
+      await this.webhook.send(`${feedId}번 ${errorMessage.E404_FEED_001}`);
+      throw new NotFoundException(errorMessage.E404_FEED_001);
+    }
+    if (feed.isActivated) {
+      await this.webhook.send(`${feedId} ${errorMessage.E409_ADMIN_FEED_001}`);
+      throw new NotFoundException(errorMessage.E409_ADMIN_FEED_001);
+    }
 
     await this.feedRepo.updateProperty(feedId, { activationAt: new Date() });
-    await this.webhook.send(`${feedId} 피드가 비활성화 처리되었습니다.`);
+    await this.webhook.send(`${feedId}번 ${successMessage.S200_SLACK_001}`);
   }
 }

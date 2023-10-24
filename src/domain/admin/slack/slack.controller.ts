@@ -29,8 +29,8 @@ export class SlackController {
 
   @DocumentHelper('postAction')
   @Post('/action')
-  @HttpCode(204)
-  async postAction(@Body() body: any): Promise<void> {
+  @HttpCode(200) // TODO: slack api는 200을 반환해야 한다.
+  async postAction(@Body() body: any): Promise<any> {
     const payload = JSON.parse(body?.payload);
     const actionId: SlackActionType = payload?.actions.at(0)?.action_id;
     const value: number = parseInt(payload?.actions.at(0)?.value);

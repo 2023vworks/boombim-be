@@ -29,12 +29,17 @@ const feedSuccessMessage = {
   S204_ADMIN_FEED_001: '[Admin] 피드 리스트 활성 수정에 성공했습니다.',
 };
 
+const slackSuccessMessage = {
+  S200_SLACK_001: '피드가 비활성화 되었습니다.',
+};
+
 // S + statusCode + _컨트롤러 + _넘버링
 export const successMessage = {
   S200_APP_001: '성공',
   ...userSuccessMessage,
   ...geoMarkSuccessMessage,
   ...feedSuccessMessage,
+  ...slackSuccessMessage,
 };
 
 const feedErrorMessage = {
@@ -42,6 +47,9 @@ const feedErrorMessage = {
   E409_FEED_001: '작성횟수가 부족하여 피드를 작성할 수 없습니다.',
   E409_FEED_002: '추천/비추천은 한번만 가능합니다.',
   E409_FEED_003: '신고는 한번만 가능합니다.',
+
+  // admin
+  E409_ADMIN_FEED_001: '비활성화 피드입니다.',
 };
 const slackErrorMessage = {
   E400_SLACK_001: 'actions[0].action_id가 존재하지 않습니다.',

@@ -117,4 +117,12 @@ export class AdminFeed extends BaseDomain<AdminFeedProps> {
   get reportHistories(): AdminReportHistory[] {
     return this.props.reportHistories;
   }
+
+  /**
+   * 피드 활성화 여부
+   * - 피드 활성화 시간이 현재 시간보다 크면 활성화(true)
+   */
+  get isActivated(): boolean {
+    return this.props.activationAt >= new Date();
+  }
 }
