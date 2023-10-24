@@ -1,17 +1,50 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { FeedEntity } from '@app/entity';
-import { FeedController } from './feed.controller';
-import { FeedServiceImpl, FeedServiceToken } from './feed.service';
-import { FeedRepositoryImpl, FeedRepositoryToken } from './feed.repository';
+import {
+  CommentEntity,
+  FeedEntity,
+  RecommendHistoryEntity,
+  ReportHistoryEntity,
+} from '@app/entity';
 import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
+import { FeedController } from './feed.controller';
+import { FeedServiceImpl, FeedServiceToken } from './feed.service';
+import {
+  CommentRepositoryImpl,
+  CommentRepositoryToken,
+  FeedRepositoryImpl,
+  FeedRepositoryToken,
+  RecommendHistoryRepositoryImpl,
+  RecommendHistoryRepositoryToken,
+  ReportHistoryRepositoryImpl,
+  ReportHistoryRepositoryToken,
+} from './repository';
 import { UploadModule } from './upload/upload.module';
+
+const entities = [
+  FeedEntity,
+  CommentEntity,
+  RecommendHistoryEntity,
+  ReportHistoryEntity,
+];
+const repositories = [
+  { provide: FeedRepositoryToken, useClass: FeedRepositoryImpl },
+  { provide: CommentRepositoryToken, useClass: CommentRepositoryImpl },
+  {
+    provide: RecommendHistoryRepositoryToken,
+    useClass: RecommendHistoryRepositoryImpl,
+  },
+  {
+    provide: ReportHistoryRepositoryToken,
+    useClass: ReportHistoryRepositoryImpl,
+  },
+];
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([FeedEntity]),
+    TypeOrmModule.forFeature([...entities]),
     AuthModule,
     UserModule,
     UploadModule,
@@ -22,10 +55,7 @@ import { UploadModule } from './upload/upload.module';
       provide: FeedServiceToken,
       useClass: FeedServiceImpl,
     },
-    {
-      provide: FeedRepositoryToken,
-      useClass: FeedRepositoryImpl,
-    },
+    ...repositories,
   ],
 })
 export class FeedModule {}
