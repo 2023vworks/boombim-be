@@ -13,7 +13,7 @@ cd $1
 
 nest g cl $1.repository
 mv geo-mark.repository/* ./
-rm -r geo-mark.repository
+rm -rf geo-mark.repository
 
 mkdir document
 touch document/index.ts
@@ -23,10 +23,10 @@ mkdir domain
 touch domain/index.ts
 touch domain/$1.domain.ts
 
-mkdir dto
-touch dto/index.ts
+mkdir domain/dto
+touch domain/dto/index.ts
 
-mkdir dto/request
-mkdir dto/response
-touch dto/request/index.ts
-touch dto/response/index.ts
+mkdir domain/dto/request
+mkdir domain/dto/response
+touch domain/dto/request/index.ts
+touch domain/dto/response/index.ts

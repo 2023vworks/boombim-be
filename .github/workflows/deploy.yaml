@@ -115,6 +115,6 @@ jobs:
           echo $PRODUCTION_ENV | base64 --decode > .env
           export $(grep -E "^[^#]+=" .env) && rm .env
           # 로그 임시로 ~/boombim 폴더에 저장
-          #nohup node dist/main.js >> ~/boombim/app.log 2>&1 & echo $! > node_pid
-          nohup node dist/main.js >> /dev/null 2>&1 & echo $! > node_pid
+          #nohup node dist/src/main.js >> ~/boombim/app.log 2>&1 & echo $! > node_pid
+          nohup node dist/src/main.js >> /dev/null 2>&1 & echo $! > node_pid
           disown $(cat node_pid)

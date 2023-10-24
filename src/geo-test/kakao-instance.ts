@@ -55,8 +55,10 @@ const kakao = axios.create({
   baseURL: 'https://dapi.kakao.com/v2/local',
 });
 kakao.interceptors.request.use((config) => {
-  config.headers.Authorization = `KakaoAK ${process.env.KAKAO_REST_API_KEY}`;
-  return config;
+  return {
+    ...config,
+    headers: { Authorization: `KakaoAK ${process.env.KAKAO_API_KEY}` },
+  };
 });
 
 export {
