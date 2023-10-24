@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { Util, errorMessage, successMessage } from '@app/common';
 import { SlackAlertOptions, SlackConfig } from '@app/config';
@@ -75,9 +80,9 @@ export class FeedServiceImpl implements FeedService {
       await this.webhook.send(`${feedId}번 ${errorMessage.E404_FEED_001}`);
       throw new NotFoundException(errorMessage.E404_FEED_001);
     }
-    if (feed.isActivated) {
+    if (!feed.isActivated) {
       await this.webhook.send(`${feedId} ${errorMessage.E409_ADMIN_FEED_001}`);
-      throw new NotFoundException(errorMessage.E409_ADMIN_FEED_001);
+      throw new ConflictException(errorMessage.E409_ADMIN_FEED_001);
     }
 
     await this.feedRepo.updateProperty(feedId, { activationAt: new Date() });
