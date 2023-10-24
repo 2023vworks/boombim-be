@@ -22,6 +22,10 @@ const feedSuccessMessage = {
   S204_FEED_002: '피드 추천에 성공하였습니다.',
   S204_FEED_003: '피드 비추천에 성공하였습니다.',
   S204_FEED_004: '피드 신고에 성공하였습니다.',
+
+  // admin
+  S200_ADMIN_FEED_001: '[Admin] 피드 리스트 조회에 성공하였습니다.',
+  S204_ADMIN_FEED_001: '[Admin] 피드 리스트 활성 수정에 성공했습니다.',
 };
 
 // S + statusCode + _컨트롤러 + _넘버링

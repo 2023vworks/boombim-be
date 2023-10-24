@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, OmitType } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsIn, IsLatitude, IsLongitude, IsOptional } from 'class-validator';
 
@@ -7,7 +7,9 @@ import { OffsetPaginationDTO } from '@app/common';
 /**
  * 피드 리스트 조회 요청 DTO body
  */
-export class GetFeedsRequestDTO extends OffsetPaginationDTO {
+export class GetFeedsRequestDTO extends OmitType(OffsetPaginationDTO, [
+  'sort',
+]) {
   @ApiProperty({
     description: '경도(x좌표)',
     type: Number,

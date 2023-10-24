@@ -10,15 +10,17 @@ export function buildSwagger(
   // eslint-disable-next-line @typescript-eslint/ban-types
   modules: Function[] = void 0,
 ): void {
-  const { info, securityConfig } = options;
+  const { info, securityConfigs } = options;
   const { title, description, version } = info;
-  const { securityOptions, name } = securityConfig;
 
   const documentBuilder = new DocumentBuilder()
     .setTitle(title)
     .setDescription(description)
-    .addBearerAuth(securityOptions, name)
     .setVersion(version);
+
+  securityConfigs.forEach((config) => {
+    documentBuilder.addBearerAuth(config.securityOptions, config.name);
+  });
 
   const swaggerConfig = documentBuilder.build();
   const document = SwaggerModule.createDocument(app, swaggerConfig, {

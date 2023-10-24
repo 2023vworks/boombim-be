@@ -1,4 +1,8 @@
-import { DEFALUT_APP_NAME, USER_ACCESS_TOKEN } from '@app/common';
+import {
+  ADMIN_ACCESS_TOKEN,
+  DEFALUT_APP_NAME,
+  USER_ACCESS_TOKEN,
+} from '@app/common';
 import { AppConfig } from '../app.config';
 
 export const LocalConfig: AppConfig = {
@@ -53,17 +57,30 @@ export const LocalConfig: AppConfig = {
         description: process.env.SWAGGER_APIS_DESCRIPTION ?? DEFALUT_APP_NAME,
         version: process.env.SWAGGER_APIS_VERSION,
       },
-      securityConfig: {
-        name: USER_ACCESS_TOKEN,
-        securityOptions: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
-          name: 'Access JWT',
-          description: 'Enter Access Token',
-          in: 'header',
+      securityConfigs: [
+        {
+          name: USER_ACCESS_TOKEN,
+          securityOptions: {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
+            name: 'Access JWT',
+            description: 'Enter Access Token',
+            in: 'header',
+          },
         },
-      },
+        {
+          name: ADMIN_ACCESS_TOKEN,
+          securityOptions: {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
+            name: 'Access JWT',
+            description: 'Enter Access Token',
+            in: 'header',
+          },
+        },
+      ],
     },
   },
 

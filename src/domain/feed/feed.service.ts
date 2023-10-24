@@ -4,11 +4,17 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { IncomingWebhook } from '@slack/client';
+import { DataSource } from 'typeorm';
 
 import { SlackTemplate, Util, errorMessage } from '@app/common';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { SlackAlertOptions, SlackConfig } from '@app/config';
+import { RecommendType } from '@app/entity';
 import { UserRepository, UserRepositoryToken } from '../user/user.repository';
+import { UploadService, UploadServiceToken } from './upload/upload.service';
+import { Feed } from './domain';
 import {
   GetFeedActivationTimeResponseDTO,
   GetFeedCommentsRequestDTO,
@@ -22,13 +28,16 @@ import {
   PostFeedRequestDTO,
   PostFeedResponseDTO,
 } from './dto';
-import { FeedRepository, FeedRepositoryToken } from './feed.repository';
-import { RecommendType } from '@app/entity';
-import { UploadService, UploadServiceToken } from './upload/upload.service';
-import { ConfigService } from '@nestjs/config';
-import { SlackAlertOptions, SlackConfig } from '@app/config';
-import { IncomingWebhook } from '@slack/client';
-import { Feed } from './domain';
+import {
+  FeedRepository,
+  FeedRepositoryToken,
+  CommentRepository,
+  CommentRepositoryToken,
+  RecommendHistoryRepository,
+  RecommendHistoryRepositoryToken,
+  ReportHistoryRepository,
+  ReportHistoryRepositoryToken,
+} from './repository';
 
 export const FeedServiceToken = Symbol('FeedServiceToken');
 export interface FeedService {
@@ -84,6 +93,12 @@ export class FeedServiceImpl implements FeedService {
     @Inject(FeedRepositoryToken) private readonly feedRepo: FeedRepository,
     @Inject(UserRepositoryToken) private readonly userRepo: UserRepository,
     @Inject(UploadServiceToken) private readonly uploadService: UploadService,
+    @Inject(CommentRepositoryToken)
+    private readonly commentRepo: CommentRepository,
+    @Inject(RecommendHistoryRepositoryToken)
+    private readonly recommnedRepo: RecommendHistoryRepository,
+    @Inject(ReportHistoryRepositoryToken)
+    private readonly reportRepo: ReportHistoryRepository,
     config: ConfigService,
   ) {
     this.reportAlartConfig = config.get<SlackConfig>('slack').feedReportAlert;
@@ -153,7 +168,7 @@ export class FeedServiceImpl implements FeedService {
     feedId: number,
     file: Express.Multer.File[],
   ): Promise<void> {
-    const feed = await this.feedRepo.existByUserId(feedId, userId);
+    const feed = await this.feedRepo.existOneByUserId(feedId, userId);
     if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
     const images = await this.uploadService.feedFilesUpload(
       userId,
@@ -195,7 +210,7 @@ export class FeedServiceImpl implements FeedService {
     const feed = await this.feedRepo.findOnePure(feedId);
     if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
 
-    const comments = await this.feedRepo.findCommentsByFeedId(feedId, getDto);
+    const comments = await this.commentRepo.findByFeedId(feedId, getDto);
     return Util.toInstance(GetFeedCommentsResponseDTO, comments);
   }
 
@@ -210,10 +225,12 @@ export class FeedServiceImpl implements FeedService {
     await queryRunner.startTransaction();
     try {
       const txFeedRepo = this.feedRepo.createTransactionRepo(manager);
+      const txCommentRepo = this.commentRepo.createTransactionRepo(manager);
+
       const feed = await txFeedRepo.findOnePure(feedId);
       if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
 
-      const comment = await txFeedRepo.createComment(userId, feedId, postDto);
+      const comment = await txCommentRepo.createOne(userId, feedId, postDto);
       await txFeedRepo.updateProperty(feedId, {
         commentCount: feed.addCommentCount().commentCount,
       });
@@ -252,12 +269,14 @@ export class FeedServiceImpl implements FeedService {
     await queryRunner.startTransaction();
     try {
       const txFeedRepo = this.feedRepo.createTransactionRepo(manager);
+      const txReportRepo = this.reportRepo.createTransactionRepo(manager);
+
       const feed = await txFeedRepo.findOnePure(feedId);
       if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
-      const isExist = await txFeedRepo.existReportHistory(userId, feedId);
+      const isExist = await txReportRepo.existOne(userId, feedId);
       if (isExist) throw new ConflictException(errorMessage.E409_FEED_003);
 
-      await txFeedRepo.createReportHistory(userId, feedId, postDto);
+      await txReportRepo.createOne(userId, feedId, postDto);
       // TODO: report 로직 향후 변경 예정
       await txFeedRepo.updateProperty(feedId, {
         reportCount: feed.addReportCount().reportCount,
@@ -285,14 +304,12 @@ export class FeedServiceImpl implements FeedService {
     await queryRunner.startTransaction();
     try {
       const txFeedRepo = this.feedRepo.createTransactionRepo(manager);
+      const txRecommendRepo = this.recommnedRepo.createTransactionRepo(manager);
+
       const feed = await txFeedRepo.findOnePure(feedId);
       if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
 
-      const isExist = await txFeedRepo.existRecommendHistory(
-        userId,
-        feedId,
-        type,
-      );
+      const isExist = await txRecommendRepo.existOne(userId, feedId, type);
       if (isExist) throw new ConflictException(errorMessage.E409_FEED_002);
 
       if (type === RecommendType.RECOMMEND) {
@@ -309,7 +326,7 @@ export class FeedServiceImpl implements FeedService {
           activationAt: feed.activationAt,
         });
       }
-      await txFeedRepo.createRecommendHistory(userId, feedId, type);
+      await txRecommendRepo.createOne(userId, feedId, type);
 
       await queryRunner.commitTransaction();
       return { activationAt: feed.activationAt, currentAt: new Date() };
