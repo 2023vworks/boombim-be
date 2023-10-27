@@ -1,5 +1,4 @@
 import {
-  CanActivate,
   ExecutionContext,
   Injectable,
   UnauthorizedException,
@@ -7,10 +6,13 @@ import {
 
 import { UserRequest, errorMessage } from '@app/common';
 import { AuthService } from '../auth.service';
+import { BaseJwtGuard } from './base-jwt.guard';
 
 @Injectable()
-export class JwtGuard implements CanActivate {
-  constructor(private readonly authService: AuthService) {}
+export class JwtGuard extends BaseJwtGuard {
+  constructor(private readonly authService: AuthService) {
+    super();
+  }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = this.getRequest<UserRequest>(context);
@@ -20,23 +22,11 @@ export class JwtGuard implements CanActivate {
     const payload = this.authService.decodeToken(jwt);
     if (!payload) throw new UnauthorizedException(errorMessage.E401_APP_001);
 
-    const isValid = await this.authService.isValidUser({ id: payload.id, jwt });
+    const userInfo = { id: payload.id, jwt };
+    const isValid = await this.authService.isValidUser(userInfo);
     if (!isValid) throw new UnauthorizedException(errorMessage.E401_APP_001);
 
-    request.user = { id: payload.id, jwt };
+    request.user = userInfo;
     return true;
-  }
-
-  private getRequest<T>(context: ExecutionContext): T {
-    return context.switchToHttp().getRequest();
-  }
-
-  private getJwt(request: UserRequest): string | null {
-    const authorization: string | undefined = request.headers['authorization']; // authorization
-    return (
-      authorization &&
-      authorization.startsWith('Bearer') &&
-      authorization.split(' ')[1]
-    );
   }
 }

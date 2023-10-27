@@ -44,5 +44,6 @@
         "src/entity/*"
       ]
     }
-  }
+  },
+  "include": ["src/**/*.ts", "test/**/*"],
 }

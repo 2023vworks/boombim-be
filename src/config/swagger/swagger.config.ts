@@ -1,3 +1,4 @@
+import { InstanceValidator } from '@app/common';
 import {
   InfoObject,
   SecuritySchemeObject,
@@ -74,20 +75,14 @@ export class SwaggerSecurityConfig {
 }
 
 export class SwaggerOptions {
-  @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => SwaggerInfo)
+  @InstanceValidator(SwaggerInfo)
   info: SwaggerInfo;
 
-  @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => SwaggerSecurityConfig)
-  securityConfig: SwaggerSecurityConfig;
+  @InstanceValidator(SwaggerSecurityConfig, { arrayMinSize: 1 }, { each: true })
+  securityConfigs: SwaggerSecurityConfig[];
 }
 
 export class SwaggerConfig {
-  @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => SwaggerOptions)
+  @InstanceValidator(SwaggerOptions)
   apis: SwaggerOptions;
 }
