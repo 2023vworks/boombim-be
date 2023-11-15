@@ -3,7 +3,7 @@ import { BaseEntity } from '../base.entity';
 import { RegionType } from '../enum';
 
 @Entity('polygon_info')
-export class PolygonInfo extends BaseEntity {
+export class PolygonInfoEntity extends BaseEntity {
   @Column('varchar', { comment: '시 구 동 이름' })
   addressPart: string;
 

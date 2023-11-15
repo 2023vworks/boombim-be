@@ -3,14 +3,14 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { runOrm } from './run-orm';
 import { Geo } from './polygon/geo.type';
-import { PolygonInfo, RegionType } from '@app/entity';
+import { PolygonInfoEntity, RegionType } from '@app/entity';
 
 runOrm(async (dataSource: DataSource) => {
   // 테스트 데이터 준비
   const seoulGeoDatas = getSeoulGeoDatas('seoul-city.geo-35%.geo.json');
 
   // polygon entity 생성
-  const polygonRepo = dataSource.getRepository(PolygonInfo);
+  const polygonRepo = dataSource.getRepository(PolygonInfoEntity);
   const polygons = seoulGeoDatas.map(({ properties, geometry }) => {
     return polygonRepo.create({
       addressPart: properties.adm_nm,
