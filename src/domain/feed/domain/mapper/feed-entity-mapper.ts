@@ -11,6 +11,7 @@ export class FeedEntityMapper {
       : new Feed({
           ...entity,
           geoMarkId: entity.geoMark.id,
+          geoMarkRegion: entity.geoMark.region,
           geoMark: this.isExistGeoMark(entity.geoMark)
             ? GeoMarkEntityMapper.toDomain({
                 ...entity.geoMark,

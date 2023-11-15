@@ -16,6 +16,7 @@ export class FeedProps extends OmitType(FeedEntity, [
 ]) {
   user: FeedWriter;
   geoMarkId: number;
+  geoMarkRegion: string;
   geoMark?: GeoMark | null;
 }
 
@@ -79,6 +80,10 @@ export class Feed extends BaseDomain<FeedProps> {
 
   get geoMarkId(): number {
     return this.props.geoMarkId;
+  }
+
+  get geoMarkRegion(): string {
+    return this.props.geoMarkRegion;
   }
 
   /**

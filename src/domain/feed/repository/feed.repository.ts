@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { EntityManager, MoreThanOrEqual } from 'typeorm';
+import { EntityManager, MoreThanOrEqual, Repository } from 'typeorm';
 
 import { CustomRepository, DateUtil, OffsetPaginationDTO } from '@app/common';
-import { FeedEntity } from '@app/entity';
+import { FeedEntity, PolygonInfoEntity, RegionType } from '@app/entity';
 import { Feed, FeedEntityMapper } from '../domain';
 import { GetFeedsRequestDTO, PostFeedRequestDTO } from '../dto';
 
@@ -41,11 +41,14 @@ export class FeedRepositoryImpl
   extends CustomRepository<FeedEntity>
   implements FeedRepository
 {
+  private readonly polygonInfoRepo: Repository<PolygonInfoEntity>;
+
   constructor(
     @InjectEntityManager()
     manager: EntityManager,
   ) {
     super(FeedEntity, manager);
+    this.polygonInfoRepo = manager.getRepository(PolygonInfoEntity);
   }
 
   async findMany(option: OffsetPaginationDTO): Promise<Feed[]> {
@@ -76,7 +79,7 @@ export class FeedRepositoryImpl
     qb.innerJoin('feed.user', 'user') //
       .addSelect(['user.id', 'user.mbtiType', 'user.nickname']);
     qb.innerJoin('feed.geoMark', 'mark') //
-      .addSelect(['mark.id']);
+      .addSelect(['mark.id', 'mark.region']);
 
     qb.where('feed."activationAt" >= now()');
     qb.andWhere('mark.x BETWEEN :minX AND :maxX', { minX, maxX });
@@ -103,7 +106,7 @@ export class FeedRepositoryImpl
     qb.innerJoin('feed.user', 'user') //
       .addSelect(['user.id', 'user.mbtiType', 'user.nickname']);
     qb.innerJoin('feed.geoMark', 'mark') //
-      .addSelect(['mark.id']);
+      .addSelect(['mark.id', 'mark.region']);
 
     qb.where('feed."activationAt" >= now()');
     qb.andWhere(
@@ -164,7 +167,7 @@ export class FeedRepositoryImpl
     const feed = await this.findOne({
       select: {
         user: { id: true, nickname: true, mbtiType: true },
-        geoMark: { id: true },
+        geoMark: { id: true, region: true },
       },
       where: { id: feedId, activationAt: MoreThanOrEqual(new Date()) },
       relations: { user: true, geoMark: true },
@@ -174,11 +177,14 @@ export class FeedRepositoryImpl
 
   async createOne(userId: number, postDto: PostFeedRequestDTO): Promise<Feed> {
     const { x, y } = postDto.geoMark;
+
     const feed = this.create({
       ...postDto,
       activationAt: DateUtil.addHours(6),
       geoMark: {
         ...postDto.geoMark,
+        region: '',
+        regionType: RegionType.H,
         point: {
           type: 'Point',
           coordinates: [x, y],
