@@ -1,15 +1,14 @@
-import { Expose } from 'class-transformer';
 import {
   ApiProperty,
   ApiPropertyOptional,
   OmitType,
   PickType,
 } from '@nestjs/swagger';
+import { Expose } from 'class-transformer';
 
 import {
   InstanceValidator,
   InstanceValidatorOptional,
-  IntValidator,
   defaultResponseProperties,
 } from '@app/common';
 import {
@@ -30,7 +29,12 @@ class PostFeedWithAddressResponseDTO extends OmitType(AddressEntity, [
 class PostFeedWithRoadAddressResponseDTO extends OmitType(RoadAddressEntity, [
   'geoMark',
 ]) {}
-class PostFeedWithGeoMarkResponseDTO extends PickType(GeoMarkEntity, ['feed']) {
+class PostFeedWithGeoMarkResponseDTO extends OmitType(GeoMarkEntity, [
+  'feed',
+  'regionInfo',
+  'address',
+  'roadAddress',
+]) {
   @ApiProperty({
     description: '행정구역 정보',
     type: PostFeedWithRegionInfoResponseDTO,
@@ -82,16 +86,6 @@ export class GetFeedResponseDTO extends PickType(FeedEntity, [
   @Expose()
   @InstanceValidator(GetFeedWithUserResponseDTO)
   user: GetFeedWithUserResponseDTO;
-
-  @ApiProperty({
-    description: '지도 마커 ID',
-    type: Number,
-    minimum: 1,
-    maximum: 2147483647,
-  })
-  @IntValidator()
-  @Expose()
-  geoMarkId: number;
 
   @ApiProperty({
     description: '지도 마커 정보',
