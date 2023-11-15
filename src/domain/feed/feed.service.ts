@@ -106,10 +106,7 @@ export class FeedServiceImpl implements FeedService {
   }
 
   async getFeeds(getDto: GetFeedsRequestDTO): Promise<GetFeedsResponseDTO[]> {
-    const feeds =
-      getDto.testType === 'Coordinates'
-        ? await this.feedRepo.findByCoordinates(getDto)
-        : await this.feedRepo.findByPolygon(getDto);
+    const feeds = await this.feedRepo.findByPolygon(getDto);
     return Util.toInstance(GetFeedsResponseDTO, feeds);
   }
 

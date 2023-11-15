@@ -14,11 +14,6 @@ export const FeedRepositoryToken = Symbol('FeedRepositoryToken');
 export interface FeedRepository extends CustomRepository<FeedEntity> {
   findMany(option: OffsetPaginationDTO): Promise<Feed[]>;
   /**
-   * 좌표를 사용하여 검색후 중심좌표 기준 정렬
-   * @param getDto
-   */
-  findByCoordinates(getDto: GetFeedsRequestDTO): Promise<FeedOmitGeomark[]>;
-  /**
    * PostGIS의 Polygon을 사용하여 검색후 중심좌표 기준 정렬
    * - 폴리곤을 사용한 경우 더 정확한 거리데이터가 도출된다고 한다.
    * @param getDto
@@ -70,37 +65,10 @@ export class FeedRepositoryImpl
     return FeedEntityMapper.toDomain(feeds);
   }
 
-  async findByCoordinates(getDto: GetFeedsRequestDTO): Promise<Feed[]> {
-    const { minX, minY, maxX, maxY, page, pageSize } = getDto;
-    const qb = this.createQueryBuilder('feed');
-    const centerPoint = this.makeCenterPoint(minX, minY, maxX, maxY);
-
-    qb.select();
-    qb.innerJoin('feed.user', 'user') //
-      .addSelect(['user.id', 'user.mbtiType', 'user.nickname']);
-    qb.innerJoin('feed.geoMark', 'mark') //
-      .addSelect(['mark.id', 'mark.region']);
-
-    qb.where('feed."activationAt" >= now()');
-    qb.andWhere('mark.x BETWEEN :minX AND :maxX', { minX, maxX });
-    qb.andWhere('mark.y BETWEEN :minY AND :maxY', { minY, maxY });
-
-    if (page && pageSize) {
-      qb.offset((page - 1) * pageSize).limit(pageSize);
-    }
-    /* 1. 추천이 많은 순 > 2. 중심좌표 기준 가까운 거리 > 3. 남은 잔여시간이 많은 순 */
-    qb.orderBy('feed.recommendCount', 'DESC');
-    qb.addOrderBy(`ST_Distance(mark.point, ${centerPoint})`, 'DESC');
-    qb.addOrderBy('feed.activationAt', 'DESC');
-
-    const feeds = await qb.getMany();
-    return FeedEntityMapper.toDomain(feeds);
-  }
-
   async findByPolygon(getDto: GetFeedsRequestDTO): Promise<Feed[]> {
-    const { minX, minY, maxX, maxY, page, pageSize } = getDto;
+    const { centerX, centerY, dongs, page, pageSize } = getDto;
     const qb = this.createQueryBuilder('feed');
-    const centerPoint = this.makeCenterPoint(minX, minY, maxX, maxY);
+    const centerPoint = this.makeCenterPoint(centerX, centerY);
 
     qb.select();
     qb.innerJoin('feed.user', 'user') //
@@ -109,12 +77,14 @@ export class FeedRepositoryImpl
       .addSelect(['mark.id', 'mark.region']);
 
     qb.where('feed."activationAt" >= now()');
+    // Note: polygon_info가 가진 행정동 경계 정보를 사용, 행정동에 포함된 피드만 조회
     qb.andWhere(
-      `ST_Contains(
-          ST_MakeEnvelope(:minX, :minY, :maxX, :maxY, 4326),
-          mark.point
-        )`,
-      { minX, minY, maxX, maxY },
+      `EXISTS(
+        SELECT 1 FROM polygon_info pol
+        WHERE pol.dong IN (:...dongs)
+        AND ST_Contains(pol."polygon", mark.point)
+    )`,
+      { dongs },
     );
 
     if (page && pageSize) {
