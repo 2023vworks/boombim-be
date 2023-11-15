@@ -183,7 +183,7 @@ export class FeedRepositoryImpl
       activationAt: DateUtil.addHours(6),
       geoMark: {
         ...postDto.geoMark,
-        region: '',
+        region: await this.getRegion(x, y),
         regionType: RegionType.H,
         point: {
           type: 'Point',
@@ -220,6 +220,24 @@ export class FeedRepositoryImpl
     return arguments.length === 2
       ? `ST_SetSRID(ST_MakePoint(${a}, ${b}), 4326)`
       : `ST_SetSRID(ST_MakePoint(${(a + b) / 2}, ${(c + d) / 2}), 4326)`;
+  }
+
+  /**
+   * PostGIS를 사용하여 x, y가 속하는 폴리곤(지역)을 찾는다.
+   * @param x
+   * @param y
+   * @returns
+   */
+  async getRegion(x: number, y: number) {
+    const qb = this.polygonInfoRepo.createQueryBuilder('pol');
+    qb.select('pol.dong');
+    qb.where(`
+      ST_Contains(
+        pol."polygon", 
+        ST_GeomFromText('POINT (${x} ${y})', 4326))
+    `);
+    const { dong } = await qb.getOne();
+    return dong;
   }
 
   private getRelationsByFeed() {
