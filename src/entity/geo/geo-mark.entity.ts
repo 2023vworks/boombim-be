@@ -2,9 +2,9 @@ import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 import { Column, Entity, JoinColumn, OneToOne, Point } from 'typeorm';
 
-import { EnumValidator, NumberValidator } from '@app/common';
+import { EnumValidator, NumberValidator, StringValidator } from '@app/common';
 import { BaseEntity } from '../base.entity';
-import { CoordType } from '../enum';
+import { CoordType, RegionType } from '../enum';
 import { FeedEntity } from '../feed';
 import { AddressEntity } from './address.entity';
 import { RegionInfoEntity } from './region-info.entity';
@@ -75,6 +75,31 @@ export class GeoMarkEntity extends BaseEntity {
   @Exclude()
   @Column('smallint', { comment: 'SRID 식별자', default: 4326 })
   srid: 4326 | number;
+
+  /**
+   * H(행정동) 또는 B(법정동)
+   */
+  @ApiProperty({
+    description: 'H(행정동) 또는 B(법정동)',
+    enum: RegionType,
+  })
+  @Expose()
+  @EnumValidator(RegionType)
+  @Column('enum', { enum: RegionType, comment: 'H(행정동) 또는 B(법정동)' })
+  regionType: RegionType;
+
+  @ApiProperty({
+    description: `GeoMark가 속하는 지역 이름 
+    - regionType(행정동 or 법정동)에 따른 지역 명칭`,
+    type: String,
+  })
+  @Expose()
+  @StringValidator()
+  @Column('varchar', {
+    comment:
+      'GeoMark가 속하는 지역 이름, regionType(행정동 or 법정동)에 따른 지역 명칭',
+  })
+  region: string;
 
   /**
    * 행정구역 정보
