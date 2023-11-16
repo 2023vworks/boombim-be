@@ -55,9 +55,10 @@ export class GetFeedsRequestDTO extends OmitType(OffsetPaginationDTO, [
     - ,(콤마)를 사용하여 다중 조회 가능하다.
     `,
     type: String,
+    default: '잠실6동,송파1동,석촌동,잠실3동',
   })
   @Expose()
-  @Transform(({ value }) => value.split(','))
+  @Transform(({ value }) => value && value.split(','))
   @StringValidator({ minLength: 1 }, { each: true })
   dongs: string[];
 }
