@@ -4,7 +4,6 @@ import { FeedEntity, RecommendType } from '@app/entity';
 import { BaseDomain } from 'src/domain/base.domain';
 import { GeoMark } from 'src/domain/geo-mark/domain';
 import { User } from 'src/domain/user/domain';
-import { RecommendHistory } from './recommend-history.domain';
 
 type FeedWriter = Pick<User, 'id' | 'nickname' | 'mbtiType'>;
 
@@ -19,7 +18,6 @@ export class FeedProps extends OmitType(FeedEntity, [
   geoMarkId: number;
   geoMarkRegion: string;
   geoMark?: GeoMark | null;
-  recommendHistories?: RecommendHistory[] | [];
 }
 
 export class Feed extends BaseDomain<FeedProps> {
@@ -129,10 +127,6 @@ export class Feed extends BaseDomain<FeedProps> {
 
   get geoMark(): GeoMark {
     return this.props.geoMark;
-  }
-
-  get recommendHistories(): RecommendHistory[] | [] {
-    return this.props.recommendHistories;
   }
 
   /* ========== custom ========== */

@@ -1,7 +1,6 @@
 import { FeedEntity, GeoMarkEntity } from '@app/entity';
 import { GeoMarkEntityMapper } from 'src/domain/geo-mark/domain';
 import { Feed } from '../feed.domain';
-import { RecommendHistoryEntityMapper } from './recomend-history-entity-mapper';
 
 export class FeedEntityMapper {
   static toDomain(entity: FeedEntity): Feed;
@@ -19,9 +18,9 @@ export class FeedEntityMapper {
                 activity: entity.activity,
               })
             : null,
-          recommendHistories: entity.recommendHistories
-            ? RecommendHistoryEntityMapper.toDomain(entity.recommendHistories)
-            : [],
+          // recommendHistories: entity.recommendHistories
+          //   ? RecommendHistoryEntityMapper.toDomain(entity.recommendHistories)
+          //   : [],
         }).setBase(entity.id, entity.createdAt, entity.updatedAt);
   }
 

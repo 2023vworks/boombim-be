@@ -7,7 +7,7 @@ import { FeedEntity, PolygonInfoEntity, RegionType } from '@app/entity';
 import { Feed, FeedEntityMapper } from '../domain';
 import { GetFeedsRequestDTO, PostFeedRequestDTO } from '../dto';
 
-export type PureFeed = Omit<Feed, 'geoMark' | 'reportHistories'>;
+export type PureFeed = Omit<Feed, 'geoMark'>;
 
 export const FeedRepositoryToken = Symbol('FeedRepositoryToken');
 
@@ -18,7 +18,7 @@ export interface FeedRepository extends CustomRepository<FeedEntity> {
    * - 폴리곤을 사용한 경우 더 정확한 거리데이터가 도출된다고 한다.
    * @param getDto
    */
-  findByPolygon(getDto: GetFeedsRequestDTO): Promise<PureFeed[]>;
+  findManyByPolygon(getDto: GetFeedsRequestDTO): Promise<PureFeed[]>;
 
   existOneByUserId(feedId: number, userId: number): Promise<boolean>;
   findOneByGeoMarkId(geoMarkId: number): Promise<Feed | null>;
@@ -68,7 +68,7 @@ export class FeedRepositoryImpl
     return FeedEntityMapper.toDomain(feeds);
   }
 
-  async findByPolygon(getDto: GetFeedsRequestDTO): Promise<PureFeed[]> {
+  async findManyByPolygon(getDto: GetFeedsRequestDTO): Promise<PureFeed[]> {
     const { centerX, centerY, dongs, page, pageSize } = getDto;
     const qb = this.createQueryBuilder('feed');
     const centerPoint = this.makeCenterPoint(centerX, centerY);
@@ -220,9 +220,6 @@ export class FeedRepositoryImpl
         regionInfo: true,
         address: true,
         roadAddress: true,
-      },
-      recommendHistories: {
-        user: true,
       },
     };
   }

@@ -106,7 +106,7 @@ export class FeedServiceImpl implements FeedService {
   }
 
   async getFeeds(getDto: GetFeedsRequestDTO): Promise<GetFeedsResponseDTO[]> {
-    const feeds = await this.feedRepo.findByPolygon(getDto);
+    const feeds = await this.feedRepo.findManyByPolygon(getDto);
     return Util.toInstance(GetFeedsResponseDTO, feeds);
   }
 
@@ -181,11 +181,17 @@ export class FeedServiceImpl implements FeedService {
   async getFeed(feedId: number): Promise<GetFeedResponseDTO> {
     const feed = await this.feedRepo.findOneByPK(feedId);
     if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
+    const recommendHistories = await this.recommnedRepo.findManyByFeedId(
+      feed.id,
+    );
 
     await this.feedRepo.updateProperty(feedId, {
       viewCount: feed.addViewCount().viewCount,
     });
-    return Util.toInstance(GetFeedResponseDTO, feed);
+    return Util.toInstance(GetFeedResponseDTO, {
+      ...feed.props,
+      recommendHistories,
+    });
   }
 
   async getFeedActivationTime(
