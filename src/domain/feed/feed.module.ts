@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import {
@@ -7,7 +7,6 @@ import {
   RecommendHistoryEntity,
   ReportHistoryEntity,
 } from '@app/entity';
-import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
 import { FeedController } from './feed.controller';
 import { FeedServiceImpl, FeedServiceToken } from './feed.service';
@@ -45,8 +44,7 @@ const repositories = [
 @Module({
   imports: [
     TypeOrmModule.forFeature([...entities]),
-    AuthModule,
-    UserModule,
+    forwardRef(() => UserModule),
     UploadModule,
   ],
   controllers: [FeedController],
@@ -57,5 +55,6 @@ const repositories = [
     },
     ...repositories,
   ],
+  exports: [FeedRepositoryToken],
 })
 export class FeedModule {}

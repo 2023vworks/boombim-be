@@ -17,6 +17,7 @@ import {
 } from '@app/common';
 import { DocumentHelper } from './document';
 import {
+  GetUserFeedsResponseDTO,
   GetUserResponseDTO,
   PostUsersRequestDTO,
   PostUsersResponseDTO,
@@ -49,6 +50,15 @@ export class UserController {
     @GetUserInfoDecorator('id') userId: number,
   ): Promise<GetUserResponseDTO> {
     return this.userService.getUser(userId);
+  }
+
+  @DocumentHelper('getUserFeeds')
+  @UseGuards(JwtGuard)
+  @Get('/me/feeds')
+  async getUserFeeds(
+    @GetUserInfoDecorator('id') userId: number,
+  ): Promise<GetUserFeedsResponseDTO[]> {
+    return this.userService.getUserFeeds(userId);
   }
 
   @DocumentHelper('postUserRenew')
