@@ -9,12 +9,14 @@ import { Expose } from 'class-transformer';
 import {
   InstanceValidator,
   InstanceValidatorOptional,
+  IntValidator,
   defaultResponseProperties,
 } from '@app/common';
 import {
   AddressEntity,
   FeedEntity,
   GeoMarkEntity,
+  RecommendHistoryEntity,
   RegionInfoEntity,
   RoadAddressEntity,
   UserEntity,
@@ -65,6 +67,19 @@ class GetFeedWithUserResponseDTO extends PickType(UserEntity, [
   'nickname',
 ]) {}
 
+class GetFeedWithRecommendHistoryResponseDTO extends PickType(
+  RecommendHistoryEntity,
+  [...defaultResponseProperties, 'type'],
+) {
+  @ApiProperty({
+    description: '추천(비추천)한 유저 ID',
+    type: Number,
+  })
+  @Expose()
+  @IntValidator()
+  userId: number;
+}
+
 export class GetFeedResponseDTO extends PickType(FeedEntity, [
   ...defaultResponseProperties,
   'activity',
@@ -94,4 +109,12 @@ export class GetFeedResponseDTO extends PickType(FeedEntity, [
   @Expose()
   @InstanceValidator(PostFeedWithGeoMarkResponseDTO)
   geoMark: PostFeedWithGeoMarkResponseDTO;
+
+  @ApiProperty({
+    description: '피드 추천 내역',
+    type: [GetFeedWithRecommendHistoryResponseDTO],
+  })
+  @Expose()
+  @InstanceValidator(GetFeedWithRecommendHistoryResponseDTO, {}, { each: true })
+  recommendHistories: GetFeedWithRecommendHistoryResponseDTO[];
 }

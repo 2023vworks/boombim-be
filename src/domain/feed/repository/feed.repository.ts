@@ -221,6 +221,9 @@ export class FeedRepositoryImpl
         address: true,
         roadAddress: true,
       },
+      recommendHistories: {
+        user: true,
+      },
     };
   }
 }
