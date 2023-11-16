@@ -3,6 +3,7 @@ const userSuccessMessage = {
   S201_USER_002: '유저 재등록에 성공하였습니다.',
   S200_USER_001: '유저 정보 조회에 성공하였습니다.',
   S200_USER_002: '유저가 작성한 피드 리스트 조회에 성공하였습니다.',
+  S204_USER_001: '유저가 제거에 성공하였습니다.',
 };
 
 const geoMarkSuccessMessage = {

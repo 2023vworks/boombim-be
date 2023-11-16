@@ -2,6 +2,7 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Inject,
@@ -43,10 +44,10 @@ export class UserController {
     return this.userService.createUser(postDto);
   }
 
-  @DocumentHelper('getUserMe')
+  @DocumentHelper('getUser')
   @UseGuards(JwtGuard)
   @Get('/me')
-  async getUserMe(
+  async getUser(
     @GetUserInfoDecorator('id') userId: number,
   ): Promise<GetUserResponseDTO> {
     return this.userService.getUser(userId);
@@ -59,6 +60,14 @@ export class UserController {
     @GetUserInfoDecorator('id') userId: number,
   ): Promise<GetUserFeedsResponseDTO[]> {
     return this.userService.getUserFeeds(userId);
+  }
+
+  @DocumentHelper('deleteUser')
+  @UseGuards(JwtGuard)
+  @Delete('/me')
+  @HttpCode(204)
+  async deleteUser(@GetUserInfoDecorator('id') userId: number): Promise<void> {
+    await this.userService.sofeDeleteUser(userId);
   }
 
   @DocumentHelper('postUserRenew')
