@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager, MoreThanOrEqual, Repository } from 'typeorm';
 
-import { CustomRepository, DateUtil, OffsetPaginationDTO } from '@app/common';
+import { CustomRepository, DateUtil } from '@app/common';
 import { FeedEntity, PolygonInfoEntity, RegionType } from '@app/entity';
 import { Feed, FeedEntityMapper } from '../domain';
 import { GetFeedsRequestDTO, PostFeedRequestDTO } from '../dto';
@@ -12,13 +12,13 @@ export type PureFeed = Omit<Feed, 'geoMark'>;
 export const FeedRepositoryToken = Symbol('FeedRepositoryToken');
 
 export interface FeedRepository extends CustomRepository<FeedEntity> {
-  findMany(option: OffsetPaginationDTO): Promise<Feed[]>;
   /**
    * PostGIS의 Polygon을 사용하여 검색후 중심좌표 기준 정렬
    * - 폴리곤을 사용한 경우 더 정확한 거리데이터가 도출된다고 한다.
    * @param getDto
    */
   findManyByPolygon(getDto: GetFeedsRequestDTO): Promise<PureFeed[]>;
+  findManyByUserId(userId: number): Promise<PureFeed[]>;
 
   existOneByUserId(feedId: number, userId: number): Promise<boolean>;
   findOneByGeoMarkId(geoMarkId: number): Promise<Feed | null>;
@@ -47,25 +47,6 @@ export class FeedRepositoryImpl
   ) {
     super(FeedEntity, manager);
     this.polygonInfoRepo = manager.getRepository(PolygonInfoEntity);
-  }
-
-  async findMany(option: OffsetPaginationDTO): Promise<Feed[]> {
-    const { page, pageSize, sort } = option;
-    const qb = this.createQueryBuilder('feed');
-    qb.select();
-    qb.innerJoin('feed.user', 'user') //
-      .addSelect(['user.id', 'user.mbtiType', 'user.nickname']);
-    qb.innerJoin('feed.geoMark', 'mark') //
-      .addSelect(['mark.id']);
-    qb.leftJoinAndSelect('feed.reportHistories', 'report'); //
-
-    qb.orderBy('feed.id', sort);
-
-    if (page && pageSize) {
-      qb.offset((page - 1) * pageSize).limit(pageSize);
-    }
-    const feeds = await qb.distinct(true).getMany();
-    return FeedEntityMapper.toDomain(feeds);
   }
 
   async findManyByPolygon(getDto: GetFeedsRequestDTO): Promise<PureFeed[]> {
@@ -97,6 +78,21 @@ export class FeedRepositoryImpl
     qb.orderBy('feed.recommendCount', 'DESC');
     qb.addOrderBy(`ST_Distance(mark.point, ${centerPoint})`, 'DESC');
     qb.addOrderBy('feed.activationAt', 'DESC');
+
+    const feeds = await qb.getMany();
+    return FeedEntityMapper.toDomain(feeds);
+  }
+
+  async findManyByUserId(userId: number): Promise<PureFeed[]> {
+    const qb = this.createQueryBuilder('feed');
+    qb.select();
+    qb.innerJoin('feed.user', 'user') //
+      .addSelect(['user.id', 'user.mbtiType', 'user.nickname']);
+    qb.innerJoin('feed.geoMark', 'mark') //
+      .addSelect(['mark.id', 'mark.region']);
+
+    qb.where('feed."userId" =:userId', { userId });
+    qb.orderBy('feed.id', 'DESC');
 
     const feeds = await qb.getMany();
     return FeedEntityMapper.toDomain(feeds);

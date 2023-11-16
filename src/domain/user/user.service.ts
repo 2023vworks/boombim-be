@@ -5,11 +5,13 @@ import { DataSource } from 'typeorm';
 import { Util, errorMessage } from '@app/common';
 import { AuthService } from '../auth/auth.service';
 import {
+  GetUserFeedsResponseDTO,
   GetUserResponseDTO,
   PostUsersRequestDTO,
   PostUsersResponseDTO,
 } from './dto';
 import { UserRepository, UserRepositoryToken } from './user.repository';
+import { FeedRepository, FeedRepositoryToken } from '../feed/repository';
 
 export const UserServiceToken = Symbol('UserServiceToken');
 export interface UserService {
@@ -19,6 +21,7 @@ export interface UserService {
     oldId: number,
   ): Promise<PostUsersResponseDTO>;
   getUser(userId: number): Promise<GetUserResponseDTO>;
+  getUserFeeds(userId: number): Promise<GetUserFeedsResponseDTO[]>;
 }
 
 @Injectable()
@@ -28,8 +31,15 @@ export class UserServiceImpl implements UserService {
     private readonly dataSource: DataSource,
     @Inject(UserRepositoryToken)
     private readonly userRepository: UserRepository,
+    @Inject(FeedRepositoryToken)
+    private readonly feedRepository: FeedRepository,
     private readonly authService: AuthService,
   ) {}
+
+  async getUserFeeds(userId: number): Promise<GetUserFeedsResponseDTO[]> {
+    const feeds = await this.feedRepository.findManyByUserId(userId);
+    return Util.toInstance(GetUserFeedsResponseDTO, feeds);
+  }
 
   async createUser(
     postDto: PostUsersRequestDTO,

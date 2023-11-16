@@ -2,6 +2,7 @@ import { applyDecorators } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
+  ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
 
@@ -11,7 +12,11 @@ import {
   errorMessage,
   successMessage,
 } from '@app/common';
-import { GetUserResponseDTO, PostUsersResponseDTO } from '../dto';
+import {
+  GetUserFeedsResponseDTO,
+  GetUserResponseDTO,
+  PostUsersResponseDTO,
+} from '../dto';
 import { UserController } from '../user.controller';
 
 type API_DOC_TYPE = keyof UserController;
@@ -31,9 +36,18 @@ const decorators: Record<API_DOC_TYPE, Function> = {
     applyDecorators(
       ApiAuthDocument(USER_ACCESS_TOKEN),
       ApiOperation({ summary: '유저 정보 조회' }),
-      ApiCreatedResponse({
+      ApiOkResponse({
         description: successMessage.S200_USER_001,
         type: GetUserResponseDTO,
+      }),
+    ),
+  getUserFeeds: () =>
+    applyDecorators(
+      ApiAuthDocument(USER_ACCESS_TOKEN),
+      ApiOperation({ summary: '유저가 작성한 피드 리스트 조회' }),
+      ApiOkResponse({
+        description: successMessage.S200_USER_002,
+        type: [GetUserFeedsResponseDTO],
       }),
     ),
   postUserRenew: () =>
