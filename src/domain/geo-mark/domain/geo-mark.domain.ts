@@ -1,6 +1,6 @@
 import { OmitType } from '@nestjs/swagger';
 
-import { CoordType, GeoMarkEntity } from '@app/entity';
+import { CoordType, GeoMarkEntity, RegionType } from '@app/entity';
 import { BaseDomain } from 'src/domain/base.domain';
 import { RegionInfo } from './region-info.domain';
 import { Address } from './address.domain';
@@ -45,6 +45,18 @@ export class GeoMark extends BaseDomain<GeoMarkProps> {
    */
   get type(): CoordType {
     return this.props.type;
+  }
+
+  /** H(행정동) 또는 B(법정동) */
+  get regionType(): RegionType {
+    return this.props.regionType;
+  }
+
+  /** 마커가 속하는 지역 주소
+   * regionType(행정동 or 법정동)에 따른 지역 명칭
+   */
+  get region(): string {
+    return this.props.region;
   }
 
   /**

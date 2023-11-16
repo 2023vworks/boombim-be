@@ -1,13 +1,13 @@
-import { IntValidator, defaultResponseProperties } from '@app/common';
+import { IntValidator } from '@app/common';
 import { GeoMarkEntity } from '@app/entity';
-import { ApiProperty, PickType } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 
-export class GetGeoMarksResponseDTO extends PickType(GeoMarkEntity, [
-  ...defaultResponseProperties,
-  'x',
-  'y',
-  'type',
+export class GetGeoMarksResponseDTO extends OmitType(GeoMarkEntity, [
+  'feed',
+  'regionInfo',
+  'address',
+  'roadAddress',
 ]) {
   @ApiProperty({
     description: '피드 활성도',

@@ -3,6 +3,7 @@ import { ApiProperty, PickType } from '@nestjs/swagger';
 import {
   InstanceValidator,
   IntValidator,
+  StringValidator,
   defaultResponseProperties,
 } from '@app/common';
 import { FeedEntity, UserEntity } from '@app/entity';
@@ -42,4 +43,12 @@ export class GetFeedsResponseDTO extends PickType(FeedEntity, [
   @IntValidator()
   @Expose()
   geoMarkId: number;
+
+  @ApiProperty({
+    description: '지도 마커가 속한 지역정보(행정동)',
+    type: String,
+  })
+  @StringValidator()
+  @Expose()
+  geoMarkRegion: string;
 }

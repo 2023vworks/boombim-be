@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { EntityManager, MoreThanOrEqual } from 'typeorm';
+import { EntityManager, MoreThanOrEqual, Repository } from 'typeorm';
 
 import { CustomRepository, DateUtil, OffsetPaginationDTO } from '@app/common';
-import { FeedEntity } from '@app/entity';
+import { FeedEntity, PolygonInfoEntity, RegionType } from '@app/entity';
 import { Feed, FeedEntityMapper } from '../domain';
 import { GetFeedsRequestDTO, PostFeedRequestDTO } from '../dto';
 
@@ -13,11 +13,6 @@ export const FeedRepositoryToken = Symbol('FeedRepositoryToken');
 
 export interface FeedRepository extends CustomRepository<FeedEntity> {
   findMany(option: OffsetPaginationDTO): Promise<Feed[]>;
-  /**
-   * 좌표를 사용하여 검색후 중심좌표 기준 정렬
-   * @param getDto
-   */
-  findByCoordinates(getDto: GetFeedsRequestDTO): Promise<FeedOmitGeomark[]>;
   /**
    * PostGIS의 Polygon을 사용하여 검색후 중심좌표 기준 정렬
    * - 폴리곤을 사용한 경우 더 정확한 거리데이터가 도출된다고 한다.
@@ -41,11 +36,14 @@ export class FeedRepositoryImpl
   extends CustomRepository<FeedEntity>
   implements FeedRepository
 {
+  private readonly polygonInfoRepo: Repository<PolygonInfoEntity>;
+
   constructor(
     @InjectEntityManager()
     manager: EntityManager,
   ) {
     super(FeedEntity, manager);
+    this.polygonInfoRepo = manager.getRepository(PolygonInfoEntity);
   }
 
   async findMany(option: OffsetPaginationDTO): Promise<Feed[]> {
@@ -67,51 +65,26 @@ export class FeedRepositoryImpl
     return FeedEntityMapper.toDomain(feeds);
   }
 
-  async findByCoordinates(getDto: GetFeedsRequestDTO): Promise<Feed[]> {
-    const { minX, minY, maxX, maxY, page, pageSize } = getDto;
-    const qb = this.createQueryBuilder('feed');
-    const centerPoint = this.makeCenterPoint(minX, minY, maxX, maxY);
-
-    qb.select();
-    qb.innerJoin('feed.user', 'user') //
-      .addSelect(['user.id', 'user.mbtiType', 'user.nickname']);
-    qb.innerJoin('feed.geoMark', 'mark') //
-      .addSelect(['mark.id']);
-
-    qb.where('feed."activationAt" >= now()');
-    qb.andWhere('mark.x BETWEEN :minX AND :maxX', { minX, maxX });
-    qb.andWhere('mark.y BETWEEN :minY AND :maxY', { minY, maxY });
-
-    if (page && pageSize) {
-      qb.offset((page - 1) * pageSize).limit(pageSize);
-    }
-    /* 1. 추천이 많은 순 > 2. 중심좌표 기준 가까운 거리 > 3. 남은 잔여시간이 많은 순 */
-    qb.orderBy('feed.recommendCount', 'DESC');
-    qb.addOrderBy(`ST_Distance(mark.point, ${centerPoint})`, 'DESC');
-    qb.addOrderBy('feed.activationAt', 'DESC');
-
-    const feeds = await qb.getMany();
-    return FeedEntityMapper.toDomain(feeds);
-  }
-
   async findByPolygon(getDto: GetFeedsRequestDTO): Promise<Feed[]> {
-    const { minX, minY, maxX, maxY, page, pageSize } = getDto;
+    const { centerX, centerY, dongs, page, pageSize } = getDto;
     const qb = this.createQueryBuilder('feed');
-    const centerPoint = this.makeCenterPoint(minX, minY, maxX, maxY);
+    const centerPoint = this.makeCenterPoint(centerX, centerY);
 
     qb.select();
     qb.innerJoin('feed.user', 'user') //
       .addSelect(['user.id', 'user.mbtiType', 'user.nickname']);
     qb.innerJoin('feed.geoMark', 'mark') //
-      .addSelect(['mark.id']);
+      .addSelect(['mark.id', 'mark.region']);
 
     qb.where('feed."activationAt" >= now()');
+    // Note: polygon_info가 가진 행정동 경계 정보를 사용, 행정동에 포함된 피드만 조회
     qb.andWhere(
-      `ST_Contains(
-          ST_MakeEnvelope(:minX, :minY, :maxX, :maxY, 4326),
-          mark.point
-        )`,
-      { minX, minY, maxX, maxY },
+      `EXISTS(
+        SELECT 1 FROM polygon_info pol
+        WHERE pol.dong IN (:...dongs)
+        AND ST_Contains(pol."polygon", mark.point)
+    )`,
+      { dongs },
     );
 
     if (page && pageSize) {
@@ -164,7 +137,7 @@ export class FeedRepositoryImpl
     const feed = await this.findOne({
       select: {
         user: { id: true, nickname: true, mbtiType: true },
-        geoMark: { id: true },
+        geoMark: { id: true, region: true },
       },
       where: { id: feedId, activationAt: MoreThanOrEqual(new Date()) },
       relations: { user: true, geoMark: true },
@@ -174,11 +147,14 @@ export class FeedRepositoryImpl
 
   async createOne(userId: number, postDto: PostFeedRequestDTO): Promise<Feed> {
     const { x, y } = postDto.geoMark;
+
     const feed = this.create({
       ...postDto,
       activationAt: DateUtil.addHours(6),
       geoMark: {
         ...postDto.geoMark,
+        region: await this.getRegion(x, y),
+        regionType: RegionType.H,
         point: {
           type: 'Point',
           coordinates: [x, y],
@@ -214,6 +190,24 @@ export class FeedRepositoryImpl
     return arguments.length === 2
       ? `ST_SetSRID(ST_MakePoint(${a}, ${b}), 4326)`
       : `ST_SetSRID(ST_MakePoint(${(a + b) / 2}, ${(c + d) / 2}), 4326)`;
+  }
+
+  /**
+   * PostGIS를 사용하여 x, y가 속하는 폴리곤(지역)을 찾는다.
+   * @param x
+   * @param y
+   * @returns
+   */
+  async getRegion(x: number, y: number) {
+    const qb = this.polygonInfoRepo.createQueryBuilder('pol');
+    qb.select('pol.dong');
+    qb.where(`
+      ST_Contains(
+        pol."polygon", 
+        ST_GeomFromText('POINT (${x} ${y})', 4326))
+    `);
+    const { dong } = await qb.getOne();
+    return dong;
   }
 
   private getRelationsByFeed() {
