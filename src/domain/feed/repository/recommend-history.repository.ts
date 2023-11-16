@@ -17,6 +17,9 @@ export interface RecommendHistoryRepository
     feedId: number,
     type: RecommendType,
   ): Promise<boolean>;
+
+  findManyByFeedId(feedId: number): Promise<RecommendHistory[]>;
+
   createOne(
     userId: number,
     feedId: number,
@@ -47,6 +50,15 @@ export class RecommendHistoryRepositoryImpl
     qb.andWhere('history.type = :type', { type });
     const count = await qb.getCount();
     return !!count;
+  }
+
+  async findManyByFeedId(feedId: number): Promise<RecommendHistory[]> {
+    const recommendHistories = await this.find({
+      select: { user: { id: true } },
+      where: { feed: { id: feedId } },
+      relations: { user: true },
+    });
+    return RecommendHistoryEntityMapper.toDomain(recommendHistories);
   }
 
   async createOne(

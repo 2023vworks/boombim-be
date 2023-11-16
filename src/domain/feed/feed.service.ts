@@ -14,7 +14,6 @@ import { SlackAlertOptions, SlackConfig } from '@app/config';
 import { RecommendType } from '@app/entity';
 import { UserRepository, UserRepositoryToken } from '../user/user.repository';
 import { UploadService, UploadServiceToken } from './upload/upload.service';
-import { Feed } from './domain';
 import {
   GetFeedActivationTimeResponseDTO,
   GetFeedCommentsRequestDTO,
@@ -38,6 +37,7 @@ import {
   ReportHistoryRepository,
   ReportHistoryRepositoryToken,
 } from './repository';
+import type { PureFeed } from './repository';
 
 export const FeedServiceToken = Symbol('FeedServiceToken');
 export interface FeedService {
@@ -106,7 +106,7 @@ export class FeedServiceImpl implements FeedService {
   }
 
   async getFeeds(getDto: GetFeedsRequestDTO): Promise<GetFeedsResponseDTO[]> {
-    const feeds = await this.feedRepo.findByPolygon(getDto);
+    const feeds = await this.feedRepo.findManyByPolygon(getDto);
     return Util.toInstance(GetFeedsResponseDTO, feeds);
   }
 
@@ -181,11 +181,17 @@ export class FeedServiceImpl implements FeedService {
   async getFeed(feedId: number): Promise<GetFeedResponseDTO> {
     const feed = await this.feedRepo.findOneByPK(feedId);
     if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
+    const recommendHistories = await this.recommnedRepo.findManyByFeedId(
+      feed.id,
+    );
 
     await this.feedRepo.updateProperty(feedId, {
       viewCount: feed.addViewCount().viewCount,
     });
-    return Util.toInstance(GetFeedResponseDTO, feed);
+    return Util.toInstance(GetFeedResponseDTO, {
+      ...feed.props,
+      recommendHistories,
+    });
   }
 
   async getFeedActivationTime(
@@ -333,7 +339,7 @@ export class FeedServiceImpl implements FeedService {
     }
   }
 
-  private async feedReportAlert(feed: Feed, reason: string) {
+  private async feedReportAlert(feed: PureFeed, reason: string) {
     const { viewerUrl } = this.reportAlartConfig;
     const message = SlackTemplate.reportAlertTemplate({
       header: '피드 신고 알림',

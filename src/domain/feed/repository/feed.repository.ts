@@ -7,7 +7,7 @@ import { FeedEntity, PolygonInfoEntity, RegionType } from '@app/entity';
 import { Feed, FeedEntityMapper } from '../domain';
 import { GetFeedsRequestDTO, PostFeedRequestDTO } from '../dto';
 
-type FeedOmitGeomark = Omit<Feed, 'geoMark'>;
+export type PureFeed = Omit<Feed, 'geoMark'>;
 
 export const FeedRepositoryToken = Symbol('FeedRepositoryToken');
 
@@ -18,12 +18,15 @@ export interface FeedRepository extends CustomRepository<FeedEntity> {
    * - 폴리곤을 사용한 경우 더 정확한 거리데이터가 도출된다고 한다.
    * @param getDto
    */
-  findByPolygon(getDto: GetFeedsRequestDTO): Promise<FeedOmitGeomark[]>;
+  findManyByPolygon(getDto: GetFeedsRequestDTO): Promise<PureFeed[]>;
 
   existOneByUserId(feedId: number, userId: number): Promise<boolean>;
   findOneByGeoMarkId(geoMarkId: number): Promise<Feed | null>;
+
   findOneByPK(geoMarkId: number): Promise<Feed | null>;
-  findOnePure(feedId: number): Promise<Feed | null>;
+
+  findOnePure(feedId: number): Promise<PureFeed | null>;
+
   createOne(userId: number, postDto: PostFeedRequestDTO): Promise<Feed | null>;
   updateProperty(
     feedId: number,
@@ -65,7 +68,7 @@ export class FeedRepositoryImpl
     return FeedEntityMapper.toDomain(feeds);
   }
 
-  async findByPolygon(getDto: GetFeedsRequestDTO): Promise<Feed[]> {
+  async findManyByPolygon(getDto: GetFeedsRequestDTO): Promise<PureFeed[]> {
     const { centerX, centerY, dongs, page, pageSize } = getDto;
     const qb = this.createQueryBuilder('feed');
     const centerPoint = this.makeCenterPoint(centerX, centerY);
@@ -133,7 +136,7 @@ export class FeedRepositoryImpl
     return feed ? FeedEntityMapper.toDomain(feed) : null;
   }
 
-  async findOnePure(feedId: number): Promise<Feed | null> {
+  async findOnePure(feedId: number): Promise<PureFeed | null> {
     const feed = await this.findOne({
       select: {
         user: { id: true, nickname: true, mbtiType: true },

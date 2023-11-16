@@ -6,7 +6,9 @@ import { BaseDomain } from 'src/domain/base.domain';
 export class RecommendHistoryProps extends OmitType(RecommendHistoryEntity, [
   'feed',
   'user',
-]) {}
+]) {
+  userId: number;
+}
 
 export class RecommendHistory extends BaseDomain<RecommendHistoryProps> {
   constructor(readonly props: RecommendHistoryProps) {
@@ -19,5 +21,9 @@ export class RecommendHistory extends BaseDomain<RecommendHistoryProps> {
    */
   get type(): RecommendType {
     return this.props.type;
+  }
+
+  get userId(): number {
+    return this.props.userId;
   }
 }

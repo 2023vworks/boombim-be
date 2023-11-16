@@ -11,6 +11,7 @@ export class RecommendHistoryEntityMapper {
       ? entity.map((e) => this.toDomain(e))
       : new RecommendHistory({
           ...entity,
+          userId: entity.user.id,
         }).setBase(entity.id, entity.createdAt, entity.updatedAt);
   }
 }

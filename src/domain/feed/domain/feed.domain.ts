@@ -143,6 +143,10 @@ export class Feed extends BaseDomain<FeedProps> {
     return this.props.activationAt >= new Date();
   }
 
+  /**
+   * 용어 변경 예정
+   * - 잠금 대상이라는 의미로 변경되어야 한다.
+   */
   get isLockFeed(): boolean {
     return this.props.reportCount >= 5;
   }
