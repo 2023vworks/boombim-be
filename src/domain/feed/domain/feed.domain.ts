@@ -4,6 +4,7 @@ import { FeedEntity, RecommendType } from '@app/entity';
 import { BaseDomain } from 'src/domain/base.domain';
 import { GeoMark } from 'src/domain/geo-mark/domain';
 import { User } from 'src/domain/user/domain';
+import { RecommendHistory } from './recommend-history.domain';
 
 type FeedWriter = Pick<User, 'id' | 'nickname' | 'mbtiType'>;
 
@@ -18,6 +19,7 @@ export class FeedProps extends OmitType(FeedEntity, [
   geoMarkId: number;
   geoMarkRegion: string;
   geoMark?: GeoMark | null;
+  recommendHistories?: RecommendHistory[] | [];
 }
 
 export class Feed extends BaseDomain<FeedProps> {
@@ -129,6 +131,10 @@ export class Feed extends BaseDomain<FeedProps> {
     return this.props.geoMark;
   }
 
+  get recommendHistories(): RecommendHistory[] | [] {
+    return this.props.recommendHistories;
+  }
+
   /* ========== custom ========== */
 
   get hasGeoMark(): boolean {
@@ -143,6 +149,10 @@ export class Feed extends BaseDomain<FeedProps> {
     return this.props.activationAt >= new Date();
   }
 
+  /**
+   * 용어 변경 예정
+   * - 잠금 대상이라는 의미로 변경되어야 한다.
+   */
   get isLockFeed(): boolean {
     return this.props.reportCount >= 5;
   }

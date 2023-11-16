@@ -14,7 +14,6 @@ import { SlackAlertOptions, SlackConfig } from '@app/config';
 import { RecommendType } from '@app/entity';
 import { UserRepository, UserRepositoryToken } from '../user/user.repository';
 import { UploadService, UploadServiceToken } from './upload/upload.service';
-import { Feed } from './domain';
 import {
   GetFeedActivationTimeResponseDTO,
   GetFeedCommentsRequestDTO,
@@ -38,6 +37,7 @@ import {
   ReportHistoryRepository,
   ReportHistoryRepositoryToken,
 } from './repository';
+import type { PureFeed } from './repository';
 
 export const FeedServiceToken = Symbol('FeedServiceToken');
 export interface FeedService {
@@ -333,7 +333,7 @@ export class FeedServiceImpl implements FeedService {
     }
   }
 
-  private async feedReportAlert(feed: Feed, reason: string) {
+  private async feedReportAlert(feed: PureFeed, reason: string) {
     const { viewerUrl } = this.reportAlartConfig;
     const message = SlackTemplate.reportAlertTemplate({
       header: '피드 신고 알림',
