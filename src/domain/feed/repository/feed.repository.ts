@@ -55,7 +55,7 @@ export class FeedRepositoryImpl
     const centerPoint = this.makeCenterPoint(centerX, centerY);
 
     qb.select();
-    qb.innerJoin('feed.user', 'user') //
+    qb.leftJoin('feed.user', 'user') //
       .addSelect(['user.id', 'user.mbtiType', 'user.nickname']);
     qb.innerJoin('feed.geoMark', 'mark') //
       .addSelect(['mark.id', 'mark.region']);
@@ -86,7 +86,7 @@ export class FeedRepositoryImpl
   async findManyByUserId(userId: number): Promise<PureFeed[]> {
     const qb = this.createQueryBuilder('feed');
     qb.select();
-    qb.innerJoin('feed.user', 'user') //
+    qb.leftJoin('feed.user', 'user') //
       .addSelect(['user.id', 'user.mbtiType', 'user.nickname']);
     qb.innerJoin('feed.geoMark', 'mark') //
       .addSelect(['mark.id', 'mark.region']);

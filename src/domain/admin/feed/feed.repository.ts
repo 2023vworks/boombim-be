@@ -45,7 +45,7 @@ export class FeedRepositoryImpl
     const { page, pageSize, sort, filter } = option;
     const qb = this.createQueryBuilder('feed');
     qb.select();
-    qb.innerJoin('feed.user', 'user') //
+    qb.leftJoin('feed.user', 'user') //
       .addSelect(['user.id', 'user.mbtiType', 'user.nickname']);
 
     qb.where('1 = 1');

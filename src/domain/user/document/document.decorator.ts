@@ -2,6 +2,7 @@ import { applyDecorators } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
+  ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
@@ -32,7 +33,7 @@ const decorators: Record<API_DOC_TYPE, Function> = {
       }),
       ApiBadRequestResponse({ description: errorMessage.E400_APP_001 }),
     ),
-  getUserMe: () =>
+  getUser: () =>
     applyDecorators(
       ApiAuthDocument(USER_ACCESS_TOKEN),
       ApiOperation({ summary: '유저 정보 조회' }),
@@ -48,6 +49,14 @@ const decorators: Record<API_DOC_TYPE, Function> = {
       ApiOkResponse({
         description: successMessage.S200_USER_002,
         type: [GetUserFeedsResponseDTO],
+      }),
+    ),
+  deleteUser: () =>
+    applyDecorators(
+      ApiAuthDocument(USER_ACCESS_TOKEN),
+      ApiOperation({ summary: '유저 제거' }),
+      ApiNoContentResponse({
+        description: successMessage.S204_USER_001,
       }),
     ),
   postUserRenew: () =>
