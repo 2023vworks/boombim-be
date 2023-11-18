@@ -21,8 +21,8 @@ export class FeedProps extends OmitType(FeedEntity, [
 }
 
 export class Feed extends BaseDomain<FeedProps> {
-  private readonly ADDITIONAL_MINUTES = 30;
-  private readonly DEDUCTED_MINUTES = 15;
+  private readonly ADDITIONAL_MINUTES = 10;
+  private readonly DEDUCTED_MINUTES = 10;
 
   constructor(readonly props: FeedProps) {
     super({ ...props });
@@ -72,7 +72,7 @@ export class Feed extends BaseDomain<FeedProps> {
 
   /**
    * 피드 활성화 시간
-   * - 피드 활성화 시간 = 생성된 시간 + (추천수 * 30) - (비추천 * 15)
+   * - 피드 활성화 시간 = 생성된 시간 + (추천수 * 10) - (비추천 * 10)
    */
   get activationAt(): Date {
     return this.props.activationAt;
@@ -192,7 +192,7 @@ export class Feed extends BaseDomain<FeedProps> {
 
   /**
    * 피드 활성화 시간 갱신(activationAt)
-   * - 피드 활성화 시간 = 생성된 시간 + (추천수 * 30) - (비추천 * 15)
+   * - 피드 활성화 시간 = 생성된 시간 + (추천수 * 10) - (비추천 * 10)
    * @returns
    */
   private renewActivationAt(type: RecommendType) {
