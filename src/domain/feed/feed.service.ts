@@ -113,11 +113,16 @@ export class FeedServiceImpl implements FeedService {
   async getFeedsByGeoMarkId(geoMarkId: number): Promise<GetFeedResponseDTO[]> {
     const feed = await this.feedRepo.findOneByGeoMarkId(geoMarkId);
     if (!feed) return [];
+    const recommendHistories = await this.recommnedRepo.findManyByFeedId(
+      feed.id,
+    );
 
     await this.feedRepo.updateProperty(feed.id, {
       viewCount: feed.addViewCount().viewCount,
     });
-    return Util.toInstance(GetFeedResponseDTO, [feed]);
+    return Util.toInstance(GetFeedResponseDTO, [
+      { ...feed.props, recommendHistories },
+    ]);
   }
 
   async createFeed(
