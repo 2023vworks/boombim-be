@@ -109,6 +109,11 @@ export class UserEntity extends BaseEntity {
   })
   feedWritingCountRechargeStartAt: Date;
 
+  @ApiHideProperty()
+  @Expose()
+  @Column('boolean', { comment: '약관 동의', default: false })
+  agreementTerms: true;
+
   /* ========== 단순 연관관계 - 역방향 x ==========*/
   /**
    * 유저가 작성한 피드 내역
