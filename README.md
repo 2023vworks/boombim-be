@@ -28,6 +28,8 @@ Project Boombim REST API Repository
   - `$ db:migrate:up` 
 5. Run pre start
   - `$ npm run pre-start`
+6. Run Project Start
+  - `$ npm run start:dev`
 
 ## API
 - API URL: http://localhost:3000/api
