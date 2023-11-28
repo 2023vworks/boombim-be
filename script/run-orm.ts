@@ -16,11 +16,17 @@ const OrmDataSource = new DataSource({
 });
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export const runOrm = (callback: Function) =>
+export const runOrm = (callback: Function | Function[]) =>
   OrmDataSource.initialize()
     .then(async (dataSource) => {
       console.log('Data Source has been initialized!');
-      await callback(dataSource);
+
+      const manager = dataSource.createEntityManager();
+      await manager.transaction(async (txManager) => {
+        return Array.isArray(callback)
+          ? await Promise.all(callback.map((c) => c(txManager)))
+          : await callback(txManager);
+      });
     })
     .catch((err) => {
       console.error('Error during Data Source initialization', err);
