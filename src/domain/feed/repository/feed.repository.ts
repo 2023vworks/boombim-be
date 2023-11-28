@@ -36,6 +36,7 @@ export interface FeedRepository extends CustomRepository<FeedEntity> {
     feedId: number,
     properties: Partial<FeedEntity>,
   ): Promise<void>;
+  softDeleteByUserId(userId: number): Promise<void>;
 }
 
 @Injectable()
@@ -177,6 +178,13 @@ export class FeedRepositoryImpl
     properties: Partial<FeedEntity>,
   ): Promise<void> {
     await this.update(feedId, { ...properties });
+  }
+
+  async softDeleteByUserId(userId: number): Promise<void> {
+    await this.createQueryBuilder()
+      .where('feed."userId" = :userId', { userId })
+      .softDelete()
+      .execute();
   }
 
   /* ======================== private ======================== */
