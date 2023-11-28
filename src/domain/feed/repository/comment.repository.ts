@@ -19,6 +19,7 @@ export interface CommentRepository extends CustomRepository<CommentEntity> {
     feedId: number,
     postDto: PostFeedCommentRequestDTO,
   ): Promise<Comment>;
+  softDeleteByUserId(userId: number): Promise<void>;
 }
 
 @Injectable()
@@ -69,5 +70,12 @@ export class CommentRepositoryImpl
     });
     await this.save(comment);
     return CommentEntityMapper.toDomain(comment);
+  }
+
+  async softDeleteByUserId(userId: number): Promise<void> {
+    await this.createQueryBuilder()
+      .where('comment."userId" = :userId', { userId })
+      .softDelete()
+      .execute();
   }
 }

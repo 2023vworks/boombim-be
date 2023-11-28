@@ -55,6 +55,6 @@ const repositories = [
     },
     ...repositories,
   ],
-  exports: [FeedRepositoryToken],
+  exports: [FeedRepositoryToken, CommentRepositoryToken],
 })
 export class FeedModule {}

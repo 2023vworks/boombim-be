@@ -59,15 +59,6 @@ const decorators: Record<API_DOC_TYPE, Function> = {
         description: successMessage.S204_USER_001,
       }),
     ),
-  postUserRenew: () =>
-    applyDecorators(
-      ApiAuthDocument(USER_ACCESS_TOKEN),
-      ApiOperation({ summary: '(MVP 전용)유저 재등록' }),
-      ApiCreatedResponse({
-        description: successMessage.S201_USER_002,
-        type: PostUsersResponseDTO,
-      }),
-    ),
 };
 
 export const DocumentHelper = (docType: API_DOC_TYPE) => {

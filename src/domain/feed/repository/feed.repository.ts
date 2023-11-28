@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager, MoreThanOrEqual, Repository } from 'typeorm';
 
-import { CustomRepository, DateUtil } from '@app/common';
+import { CustomRepository, DateUtil, errorMessage } from '@app/common';
 import { FeedEntity, PolygonInfoEntity, RegionType } from '@app/entity';
 import { Feed, FeedEntityMapper } from '../domain';
 import { GetFeedsRequestDTO, PostFeedRequestDTO } from '../dto';
@@ -18,6 +18,10 @@ export interface FeedRepository extends CustomRepository<FeedEntity> {
    * @param getDto
    */
   findManyByPolygon(getDto: GetFeedsRequestDTO): Promise<PureFeed[]>;
+  /**
+   * 피드 활성화 시간에 상관없이 조회.
+   * @param userId
+   */
   findManyByUserId(userId: number): Promise<PureFeed[]>;
 
   existOneByUserId(feedId: number, userId: number): Promise<boolean>;
@@ -32,6 +36,7 @@ export interface FeedRepository extends CustomRepository<FeedEntity> {
     feedId: number,
     properties: Partial<FeedEntity>,
   ): Promise<void>;
+  softDeleteByUserId(userId: number): Promise<void>;
 }
 
 @Injectable()
@@ -55,7 +60,7 @@ export class FeedRepositoryImpl
     const centerPoint = this.makeCenterPoint(centerX, centerY);
 
     qb.select();
-    qb.leftJoin('feed.user', 'user') //
+    qb.innerJoin('feed.user', 'user') //
       .addSelect(['user.id', 'user.mbtiType', 'user.nickname']);
     qb.innerJoin('feed.geoMark', 'mark') //
       .addSelect(['mark.id', 'mark.region']);
@@ -86,7 +91,7 @@ export class FeedRepositoryImpl
   async findManyByUserId(userId: number): Promise<PureFeed[]> {
     const qb = this.createQueryBuilder('feed');
     qb.select();
-    qb.leftJoin('feed.user', 'user') //
+    qb.innerJoin('feed.user', 'user') //
       .addSelect(['user.id', 'user.mbtiType', 'user.nickname']);
     qb.innerJoin('feed.geoMark', 'mark') //
       .addSelect(['mark.id', 'mark.region']);
@@ -147,12 +152,15 @@ export class FeedRepositoryImpl
   async createOne(userId: number, postDto: PostFeedRequestDTO): Promise<Feed> {
     const { x, y } = postDto.geoMark;
 
+    const region = await this.findRegion(x, y);
+    if (!region) throw new ConflictException(errorMessage.E409_FEED_004);
+
     const feed = this.create({
       ...postDto,
       activationAt: DateUtil.addHours(6),
       geoMark: {
         ...postDto.geoMark,
-        region: await this.getRegion(x, y),
+        region,
         regionType: RegionType.H,
         point: {
           type: 'Point',
@@ -170,6 +178,13 @@ export class FeedRepositoryImpl
     properties: Partial<FeedEntity>,
   ): Promise<void> {
     await this.update(feedId, { ...properties });
+  }
+
+  async softDeleteByUserId(userId: number): Promise<void> {
+    await this.createQueryBuilder()
+      .where('feed."userId" = :userId', { userId })
+      .softDelete()
+      .execute();
   }
 
   /* ======================== private ======================== */
@@ -197,7 +212,7 @@ export class FeedRepositoryImpl
    * @param y
    * @returns
    */
-  async getRegion(x: number, y: number) {
+  private async findRegion(x: number, y: number): Promise<string | null> {
     const qb = this.polygonInfoRepo.createQueryBuilder('pol');
     qb.select('pol.dong');
     qb.where(`
@@ -205,8 +220,8 @@ export class FeedRepositoryImpl
         pol."polygon", 
         ST_GeomFromText('POINT (${x} ${y})', 4326))
     `);
-    const { dong } = await qb.getOne();
-    return dong;
+    const result = await qb.getOne();
+    return result ? result.dong : null;
   }
 
   private getRelationsByFeed() {

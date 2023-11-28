@@ -67,16 +67,6 @@ export class UserController {
   @Delete('/me')
   @HttpCode(204)
   async deleteUser(@GetUserInfoDecorator('id') userId: number): Promise<void> {
-    await this.userService.sofeDeleteUser(userId);
-  }
-
-  @DocumentHelper('postUserRenew')
-  @UseGuards(JwtGuard)
-  @Post('/renew')
-  async postUserRenew(
-    @GetUserInfoDecorator('id') userId: number,
-    @Body() postDto: PostUsersRequestDTO,
-  ): Promise<PostUsersResponseDTO> {
-    return this.userService.createUser(postDto, userId);
+    await this.userService.softRemoveUser(userId);
   }
 }

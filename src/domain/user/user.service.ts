@@ -11,20 +11,25 @@ import {
   PostUsersResponseDTO,
 } from './dto';
 import { UserRepository, UserRepositoryToken } from './user.repository';
-import { FeedRepository, FeedRepositoryToken } from '../feed/repository';
+import {
+  CommentRepository,
+  CommentRepositoryToken,
+  FeedRepository,
+  FeedRepositoryToken,
+} from '../feed/repository';
 
 export const UserServiceToken = Symbol('UserServiceToken');
 export interface UserService {
   getUser(userId: number): Promise<GetUserResponseDTO>;
   getUserFeeds(userId: number): Promise<GetUserFeedsResponseDTO[]>;
-
   createUser(postDto: PostUsersRequestDTO): Promise<PostUsersResponseDTO>;
-  createUser(
-    postDto: PostUsersRequestDTO,
-    oldId: number,
-  ): Promise<PostUsersResponseDTO>;
-
-  sofeDeleteUser(userId: number): Promise<void>;
+  /**
+   * 유저가 Soft Delete 되는 경우 자식인 feed와 comment를 같이 Soft Delete 한다.
+   * @param userId
+   * @version v0.0.3
+   * @todo - RecommendHistory, ReportHistory도 Soft Delete 해야 하는가?
+   */
+  softRemoveUser(userId: number): Promise<void>;
 }
 
 @Injectable()
@@ -33,14 +38,16 @@ export class UserServiceImpl implements UserService {
     @InjectDataSource()
     private readonly dataSource: DataSource,
     @Inject(UserRepositoryToken)
-    private readonly userRepository: UserRepository,
+    private readonly userRepo: UserRepository,
     @Inject(FeedRepositoryToken)
-    private readonly feedRepository: FeedRepository,
+    private readonly feedRepo: FeedRepository,
+    @Inject(CommentRepositoryToken)
+    private readonly commentRepo: CommentRepository,
     private readonly authService: AuthService,
   ) {}
 
   async getUser(userId: number): Promise<GetUserResponseDTO> {
-    const user = await this.userRepository.findOneByPK(userId);
+    const user = await this.userRepo.findOneByPK(userId);
     if (!user) throw new NotFoundException(errorMessage.E404_APP_001);
     if (user.isMaxFeedWritingCount) {
       return Util.toInstance(GetUserResponseDTO, { ...user.props });
@@ -48,7 +55,7 @@ export class UserServiceImpl implements UserService {
 
     const isRenewed = user.renewFeedWritingCount().isRenewedFeedWritingCount;
     isRenewed &&
-      (await this.userRepository.updateProperty(user.id, {
+      (await this.userRepo.updateProperty(user.id, {
         feedWritingCount: user.feedWritingCount,
         feedWritingCountRechargeStartAt: user.feedWritingCountRechargeStartAt,
       }));
@@ -59,30 +66,24 @@ export class UserServiceImpl implements UserService {
   }
 
   async getUserFeeds(userId: number): Promise<GetUserFeedsResponseDTO[]> {
-    const feeds = await this.feedRepository.findManyByUserId(userId);
+    const feeds = await this.feedRepo.findManyByUserId(userId);
     return Util.toInstance(GetUserFeedsResponseDTO, feeds);
   }
 
   async createUser(
     postDto: PostUsersRequestDTO,
-    oldId?: number,
   ): Promise<PostUsersResponseDTO> {
     const queryRunner = this.dataSource.createQueryRunner();
     const manager = queryRunner.manager;
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const userRepository = this.userRepository.createTransactionRepo(manager);
-      const newUser = await userRepository.createUser(postDto);
+      const txUserRepo = this.userRepo.createTransactionRepo(manager);
+      const newUser = await txUserRepo.createUser(postDto);
+
       const token = this.authService.issueToken({ id: newUser.id });
       const nickname = newUser.generateNickname().nickname;
-
-      const updateProperty = oldId
-        ? { token, nickname, oldId }
-        : { token, nickname };
-      oldId && (await userRepository.softDelete(oldId));
-
-      await userRepository.updateProperty(newUser.id, updateProperty);
+      await txUserRepo.updateProperty(newUser.id, { token, nickname });
 
       await queryRunner.commitTransaction();
       return { mbtiType: postDto.mbtiType, nickname, token };
@@ -94,9 +95,29 @@ export class UserServiceImpl implements UserService {
     }
   }
 
-  async sofeDeleteUser(userId: number): Promise<void> {
-    const user = await this.userRepository.findOneByPK(userId);
+  async softRemoveUser(userId: number): Promise<void> {
+    const user = await this.userRepo.findOneByPK(userId);
     if (!user) throw new NotFoundException(errorMessage.E404_APP_001);
-    await this.userRepository.softDelete(user.id);
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    const manager = queryRunner.manager;
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const txUserRepo = this.userRepo.createTransactionRepo(manager);
+      const txFeedRepo = this.feedRepo.createTransactionRepo(manager);
+      const txCommentRepo = this.commentRepo.createTransactionRepo(manager);
+      await txUserRepo.softDelete(user.id);
+      await txFeedRepo.softDeleteByUserId(user.id);
+      await txCommentRepo.softDeleteByUserId(user.id);
+
+      await queryRunner.commitTransaction();
+      return;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
