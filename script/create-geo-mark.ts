@@ -10,26 +10,21 @@ import {
   MbtiType,
   UserEntity,
 } from '@app/entity';
-import {
-  KakaoGeoAddress,
-  KakaoGeoRegionCode,
-  KakaoGeoRoadAddress,
-} from './geo/kakao-instance';
+
 import { runOrm } from './run-orm';
 import { DataSource } from 'typeorm';
-
-type KakaoGeoAddresses = {
-  address: KakaoGeoAddress;
-  road_address?: KakaoGeoRoadAddress;
-};
+import {
+  GeoCoord2addressResponseDocument,
+  GeoCoord2regioncodeResponseDocument,
+} from 'kakao-local-rest-api-sdk';
 
 const filePathRegion = path.join(__dirname, 'geo/mark-region-code.json');
 const filePathAddress = path.join(__dirname, 'geo/mark-address.json');
 
-const regionInfo: KakaoGeoRegionCode[] = JSON.parse(
+const regionInfo: GeoCoord2regioncodeResponseDocument[] = JSON.parse(
   fs.readFileSync(filePathRegion, 'utf-8'),
 );
-const address: KakaoGeoAddresses[] = JSON.parse(
+const address: GeoCoord2addressResponseDocument[] = JSON.parse(
   fs.readFileSync(filePathAddress, 'utf-8'),
 );
 
@@ -70,8 +65,8 @@ runOrm(async (dataSource: DataSource) => {
 });
 
 function createGeoMark(
-  regionInfo: KakaoGeoRegionCode,
-  addresses: KakaoGeoAddresses,
+  regionInfo: GeoCoord2regioncodeResponseDocument,
+  addresses: GeoCoord2addressResponseDocument,
 ): GeoMarkEntity {
   const { address, road_address } = addresses;
 
