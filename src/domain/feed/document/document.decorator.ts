@@ -55,7 +55,12 @@ const decorators: Record<API_DOC_TYPE, Function> = {
       }),
       ApiAuthDocument(USER_ACCESS_TOKEN),
       ApiBadRequestResponse({ description: errorMessage.E400_APP_001 }),
-      ApiConflictResponse({ description: errorMessage.E409_FEED_001 }),
+      ApiConflictResponse({
+        description: `409 Error Messages:\n
+      - ${errorMessage.E409_FEED_001}
+      - ${errorMessage.E409_FEED_004}
+      `,
+      }),
     ),
   getFeed: () =>
     applyDecorators(
