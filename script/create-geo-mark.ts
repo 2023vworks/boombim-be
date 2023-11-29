@@ -11,12 +11,12 @@ import {
   UserEntity,
 } from '@app/entity';
 
-import { runOrm } from './run-orm';
-import { DataSource } from 'typeorm';
 import {
   GeoCoord2addressResponseDocument,
   GeoCoord2regioncodeResponseDocument,
 } from 'kakao-local-rest-api-sdk';
+import { EntityManager } from 'typeorm';
+import { runOrm } from './run-orm';
 
 const filePathRegion = path.join(__dirname, 'geo/mark-region-code.json');
 const filePathAddress = path.join(__dirname, 'geo/mark-address.json');
@@ -28,9 +28,9 @@ const address: GeoCoord2addressResponseDocument[] = JSON.parse(
   fs.readFileSync(filePathAddress, 'utf-8'),
 );
 
-runOrm(async (dataSource: DataSource) => {
-  const feedRepo = dataSource.getRepository(FeedEntity);
-  const useRepo = dataSource.getRepository(UserEntity);
+runOrm(async (txManager: EntityManager) => {
+  const feedRepo = txManager.getRepository(FeedEntity);
+  const useRepo = txManager.getRepository(UserEntity);
   const user = useRepo.create({
     nickname: 'test',
     mbtiType: MbtiType.ENFJ,

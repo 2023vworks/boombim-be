@@ -1,16 +1,19 @@
-import { DataSource } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import * as fs from 'fs';
 import * as path from 'path';
-import { runOrm } from './run-orm';
-import { Geo } from './polygon/geo.type';
 import { PolygonInfoEntity, RegionType } from '@app/entity';
+import { Geo } from './polygon/geo.type';
 
-runOrm(async (dataSource: DataSource) => {
+//runOrm(createPolyGonInfo);
+
+export async function createPolyGonInfo(
+  txManager: EntityManager,
+): Promise<void> {
   // 테스트 데이터 준비
   const seoulGeoDatas = getSeoulGeoDatas('seoul-city.geo-35%.geo.json');
 
   // polygon entity 생성
-  const polygonRepo = dataSource.getRepository(PolygonInfoEntity);
+  const polygonRepo = txManager.getRepository(PolygonInfoEntity);
   const polygons = seoulGeoDatas.map(({ properties, geometry }) => {
     return polygonRepo.create({
       addressPart: properties.adm_nm,
@@ -27,7 +30,7 @@ runOrm(async (dataSource: DataSource) => {
   await polygonRepo.save(polygons);
   // NOTE: DBMS가 폴리곤이 저장된 테이블에 통계 수집하게 하여 쿼리 최적화를 수행한다.
   await polygonRepo.query('ANALYZE polygon_info;');
-});
+}
 
 function readJsonFile(filename: string) {
   const jsonFillPath = path.join(__dirname, 'polygon', filename);

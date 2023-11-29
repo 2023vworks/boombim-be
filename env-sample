@@ -1,0 +1,59 @@
+## 따운표 금지
+NODE_ENV=
+
+## app
+TZ=Asia/Seoul
+PORT=3000
+CORS_ORIGIN=http://localhost:4200,http://localhost:3000
+APP_NAME=Boombim
+UPLOAD_IMAGE_TYPE=^image\/(jpeg|jpg|png|gif)$
+
+## jwt
+JWT_SECRET=
+JWT_EXPIRES_IN=
+JWT_ISSUER=Boombim
+JWT_SUBJECT=
+
+## aws
+AWS_ACCESS_KEY=
+AWS_ACCESS_SECRET=
+AWS_REGION=
+AWS_IMAGE_S3=
+
+## TypeORM
+DATABASE_TYPE=postgres
+DATABASE_HOST=
+DATABASE_PORT=15432
+DATABASE_NAME=
+DATABASE_USER=
+DATABASE_PASSWORD=
+DATABASE_LOG=all
+#DATABASE_LOG=query,info,warn,error
+
+## (optional) connection custom setting
+DATABASE_MAX_QUERY_EXECUTION_TIME=10000   # 지연 로그 출력 시간(ms), ex) 10000 = 10초 이상 쿼리 로그 출력
+DATABASE_CONNECT_TIMEOUT=60000            # 쿼리 강제 취소 시간(ms), ex) 60000 = 1분 이상 쿼리 강제 취소
+DATABASE_POOL_MIN_SIZE=5                  # 최소 커넥션, ex) 5 = 커넥션 풀에 최소 5개 커넥션 유지
+DATABASE_POOL_MAX_SIZE=10                 # 최대 커넥션(기본 10개), ex) 30 = 커넥션 풀에 최대 30개 커넥션 유지
+
+## swagger
+SWAGGER_APIS_TITLE=Boombim-API
+SWAGGER_APIS_DESCRIPTION=Nestjs-API
+SWAGGER_APIS_VERSION=v1.0.0
+
+## sentry
+SENTRY_DSN=
+SENTRY_TRACES_SAMPLE_RATE=0.7
+
+## Slack - Server Error
+SLACK_WEB_HOOK_URI_BY_SERVER_ERROR_ALERT=                                 # 슬렉 WEB HOOK 주소
+SLACK_CHANNEL_NAME_BY_SERVER_ERROR_ALERT=vw-dev-error-alaram
+SLACK_DESCRIPTION_BY_SERVER_ERROR_ALERT=server-error-alaram-channel        
+SLACK_VIEWER_URL_BY_SERVER_ERROR_ALERT=                                   # (optional) 모니터링 또는 뷰어 주소
+
+## Slack - 피드 신고
+SLACK_WEB_HOOK_URI_BY_FEED_REPORT_ALERT=                                  # 슬렉 WEB HOOK 주소
+SLACK_CHANNEL_NAME_BY_FEED_REPORT_ALERT=vw-feed-report-alaram
+SLACK_DESCRIPTION_BY_FEED_REPORT_ALERT=feed-report-alaram             
+SLACK_VIEWER_URL_BY_FEED_REPORT_ALERT=                                    # (optional) 모니터링 또는 뷰어 주소
+
