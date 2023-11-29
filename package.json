@@ -1,10 +1,13 @@
 {
-  "name": "boilerplate-nestjs-v10",
-  "version": "0.0.1",
+  "name": "boombim-be",
+  "version": "0.0.3",
   "description": "",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",

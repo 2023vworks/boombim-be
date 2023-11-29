@@ -22,7 +22,7 @@ Project Boombim REST API Repository
 2. make env dir
   - `$ mkdir env`
 3. setting env/local.env
-  - `$ cp env-sample env/local.env`
+  - `$ cp .env.sample env/local.env`
   - update `env/local.env`
 4. Create Database Table
   - `$ db:migrate:up` 
