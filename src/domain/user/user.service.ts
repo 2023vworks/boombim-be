@@ -10,7 +10,7 @@ import {
   PostUsersRequestDTO,
   PostUsersResponseDTO,
 } from './dto';
-import { UserRepository, UserRepositoryToken } from './user.repository';
+import { BaseUserRepository } from './user.repository';
 import {
   CommentRepository,
   CommentRepositoryToken,
@@ -18,33 +18,35 @@ import {
   FeedRepositoryToken,
 } from '../feed/repository';
 
-export const UserServiceToken = Symbol('UserServiceToken');
-export interface UserService {
-  getUser(userId: number): Promise<GetUserResponseDTO>;
-  getUserFeeds(userId: number): Promise<GetUserFeedsResponseDTO[]>;
-  createUser(postDto: PostUsersRequestDTO): Promise<PostUsersResponseDTO>;
+export abstract class UserServiceUseCase {
+  abstract getUser(userId: number): Promise<GetUserResponseDTO>;
+  abstract getUserFeeds(userId: number): Promise<GetUserFeedsResponseDTO[]>;
+  abstract createUser(
+    postDto: PostUsersRequestDTO,
+  ): Promise<PostUsersResponseDTO>;
   /**
    * 유저가 Soft Delete 되는 경우 자식인 feed와 comment를 같이 Soft Delete 한다.
    * @param userId
    * @version v0.0.3
    * @todo - RecommendHistory, ReportHistory도 Soft Delete 해야 하는가?
    */
-  softRemoveUser(userId: number): Promise<void>;
+  abstract softRemoveUser(userId: number): Promise<void>;
 }
 
 @Injectable()
-export class UserServiceImpl implements UserService {
+export class UserService extends UserServiceUseCase {
   constructor(
     @InjectDataSource()
     private readonly dataSource: DataSource,
-    @Inject(UserRepositoryToken)
-    private readonly userRepo: UserRepository,
+    private readonly userRepo: BaseUserRepository,
     @Inject(FeedRepositoryToken)
     private readonly feedRepo: FeedRepository,
     @Inject(CommentRepositoryToken)
     private readonly commentRepo: CommentRepository,
     private readonly authService: AuthService,
-  ) {}
+  ) {
+    super();
+  }
 
   async getUser(userId: number): Promise<GetUserResponseDTO> {
     const user = await this.userRepo.findOneByPK(userId);

@@ -12,7 +12,7 @@ import { DataSource } from 'typeorm';
 import { SlackTemplate, Util, errorMessage } from '@app/common';
 import { SlackAlertOptions, SlackConfig } from '@app/config';
 import { RecommendType } from '@app/entity';
-import { UserRepository, UserRepositoryToken } from '../user/user.repository';
+import { BaseUserRepository } from '../user/user.repository';
 import { UploadService, UploadServiceToken } from './upload/upload.service';
 import {
   GetFeedActivationTimeResponseDTO,
@@ -91,7 +91,7 @@ export class FeedServiceImpl implements FeedService {
   constructor(
     @InjectDataSource() private readonly dataSource: DataSource,
     @Inject(FeedRepositoryToken) private readonly feedRepo: FeedRepository,
-    @Inject(UserRepositoryToken) private readonly userRepo: UserRepository,
+    private readonly userRepo: BaseUserRepository,
     @Inject(UploadServiceToken) private readonly uploadService: UploadService,
     @Inject(CommentRepositoryToken)
     private readonly commentRepo: CommentRepository,

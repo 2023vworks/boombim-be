@@ -8,7 +8,7 @@ import {
   AdminRepository,
   AdminRepositoryToken,
 } from '../admin/admin.repository';
-import { UserRepository, UserRepositoryToken } from '../user/user.repository';
+import { BaseUserRepository } from '../user/user.repository';
 
 type JwtPayload = Pick<UserInfo, 'id'>;
 
@@ -18,8 +18,7 @@ export class AuthService {
 
   constructor(
     private readonly jwtService: JwtService,
-    @Inject(UserRepositoryToken)
-    private readonly userRepository: UserRepository,
+    private readonly userRepository: BaseUserRepository,
     @Inject(AdminRepositoryToken)
     private readonly adminRepository: AdminRepository,
     config: ConfigService,

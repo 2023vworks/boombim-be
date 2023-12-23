@@ -7,18 +7,17 @@ import { InjectEntityManager } from '@nestjs/typeorm';
 import { PostUsersRequestDTO } from './dto';
 import { User, UserEntityMapper } from './domain';
 
-export const UserRepositoryToken = Symbol('UserRepositoryToken');
-export interface UserRepository extends CustomRepository<UserEntity> {
-  createUser(postDto: PostUsersRequestDTO): Promise<User>;
-  updateProperty(id: number, properties: Partial<UserEntity>): Promise<void>;
-  findOneByPK(id: number): Promise<User | null>;
+export abstract class BaseUserRepository extends CustomRepository<UserEntity> {
+  abstract createUser(postDto: PostUsersRequestDTO): Promise<User>;
+  abstract updateProperty(
+    id: number,
+    properties: Partial<UserEntity>,
+  ): Promise<void>;
+  abstract findOneByPK(id: number): Promise<User | null>;
 }
 
 @Injectable()
-export class UserRepositoryImpl
-  extends CustomRepository<UserEntity>
-  implements UserRepository
-{
+export class UserRepository extends BaseUserRepository {
   constructor(
     @InjectEntityManager()
     manager: EntityManager,
