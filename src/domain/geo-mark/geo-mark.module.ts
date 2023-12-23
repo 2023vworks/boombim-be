@@ -3,10 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { GeoMarkEntity } from '@app/entity';
 import { GeoMarkController } from './geo-mark.controller';
-import { GeoMarkServiceImpl, GeoMarkServiceToken } from './geo-mark.service';
+import { GeoMarkServiceUseCase, GeoMarkService } from './geo-mark.service';
 import {
-  GeoMarkRepositoryImpl,
-  GeoMarkRepositoryToken,
+  BaseGeoMarkRepository,
+  GeoMarkRepository,
 } from './geo-mark.repository';
 
 @Module({
@@ -14,12 +14,12 @@ import {
   controllers: [GeoMarkController],
   providers: [
     {
-      useClass: GeoMarkServiceImpl,
-      provide: GeoMarkServiceToken,
+      provide: GeoMarkServiceUseCase,
+      useClass: GeoMarkService,
     },
     {
-      useClass: GeoMarkRepositoryImpl,
-      provide: GeoMarkRepositoryToken,
+      provide: BaseGeoMarkRepository,
+      useClass: GeoMarkRepository,
     },
   ],
 })

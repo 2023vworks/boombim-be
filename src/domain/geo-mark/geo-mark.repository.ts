@@ -6,26 +6,22 @@ import { FeedEntity, GeoMarkEntity } from '@app/entity';
 import { GeoMark, GeoMarkEntityMapper } from './domain';
 import { GetGeoMarksRequestDTO } from './dto';
 
-export const GeoMarkRepositoryToken = Symbol('GeoMarkRepositoryToken');
-export interface GeoMarkRepository extends CustomRepository<GeoMarkEntity> {
+export abstract class BaseGeoMarkRepository extends CustomRepository<GeoMarkEntity> {
   /**
    * 좌표를 사용하여 단순 검색
    * - Limit  (cost=167.56..1435.06 rows=1000 width=108) (actual time=2.328..4.116 rows=1000 loops=1)
    * @param getDto
    */
-  findByCoordinates(getDto: GetGeoMarksRequestDTO): Promise<GeoMark[]>;
+  abstract findByCoordinates(getDto: GetGeoMarksRequestDTO): Promise<GeoMark[]>;
   /**
    * PostGIS의 Polygon을 사용하여 검색
    * - Limit  (cost=0.56..26545.45 rows=1000 width=108) (actual time=0.043..4.919 rows=1000 loops=1)
    * @param getDto
    */
-  findByPolygon(getDto: GetGeoMarksRequestDTO): Promise<GeoMark[]>;
+  abstract findByPolygon(getDto: GetGeoMarksRequestDTO): Promise<GeoMark[]>;
 }
 
-export class GeoMarkRepositoryImpl
-  extends CustomRepository<GeoMarkEntity>
-  implements GeoMarkRepository
-{
+export class GeoMarkRepository extends BaseGeoMarkRepository {
   constructor(
     @InjectEntityManager()
     readonly manager: EntityManager,
