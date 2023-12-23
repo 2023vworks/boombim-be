@@ -7,17 +7,16 @@ import { InjectEntityManager } from '@nestjs/typeorm';
 import { AdminEntityMapper } from './domain/admin-entity-mapper';
 import { Admin } from './domain/admin.domain';
 
-export const AdminRepositoryToken = Symbol('AdminRepositoryToken');
-export interface AdminRepository extends CustomRepository<AdminEntity> {
-  findOneByPK(id: number): Promise<Admin | null>;
-  updateProperty(id: number, properties: Partial<AdminEntity>): Promise<void>;
+export abstract class BaseAdminRepository extends CustomRepository<AdminEntity> {
+  abstract findOneByPK(id: number): Promise<Admin | null>;
+  abstract updateProperty(
+    id: number,
+    properties: Partial<AdminEntity>,
+  ): Promise<void>;
 }
 
 @Injectable()
-export class AdminRepositoryImpl
-  extends CustomRepository<AdminEntity>
-  implements AdminRepository
-{
+export class AdminRepository extends BaseAdminRepository {
   constructor(
     @InjectEntityManager()
     manager: EntityManager,

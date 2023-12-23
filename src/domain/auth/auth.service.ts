@@ -1,13 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
 import { UserInfo } from '@app/common';
 import { JwtConfig } from '@app/config';
-import {
-  AdminRepository,
-  AdminRepositoryToken,
-} from '../admin/admin.repository';
+import { BaseAdminRepository } from '../admin/admin.repository';
 import { BaseUserRepository } from '../user/user.repository';
 
 type JwtPayload = Pick<UserInfo, 'id'>;
@@ -19,8 +16,7 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly userRepository: BaseUserRepository,
-    @Inject(AdminRepositoryToken)
-    private readonly adminRepository: AdminRepository,
+    private readonly adminRepository: BaseAdminRepository,
     config: ConfigService,
   ) {
     this.jwtConfig = config.get<JwtConfig>('jwt');
