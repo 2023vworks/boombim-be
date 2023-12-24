@@ -4,8 +4,8 @@ import { JwtService } from '@nestjs/jwt';
 
 import { UserInfo } from '@app/common';
 import { JwtConfig } from '@app/config';
-import { BaseAdminRepository } from '../admin/admin.repository';
-import { BaseUserRepository } from '../user/user.repository';
+import { AdminRepositoryPort } from '../admin/admin.repository';
+import { UserRepositoryPort } from '../user/user.repository';
 
 type JwtPayload = Pick<UserInfo, 'id'>;
 
@@ -15,8 +15,8 @@ export class AuthService {
 
   constructor(
     private readonly jwtService: JwtService,
-    private readonly userRepository: BaseUserRepository,
-    private readonly adminRepository: BaseAdminRepository,
+    private readonly userRepository: UserRepositoryPort,
+    private readonly adminRepository: AdminRepositoryPort,
     config: ConfigService,
   ) {
     this.jwtConfig = config.get<JwtConfig>('jwt');

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { BaseAdminRepository, AdminRepository } from './admin.repository';
+import { AdminRepositoryPort, AdminRepository } from './admin.repository';
 import { FeedModule } from './feed/feed.module';
 import { SlackModule } from './slack/slack.module';
 
@@ -7,10 +7,10 @@ import { SlackModule } from './slack/slack.module';
   imports: [FeedModule, SlackModule],
   providers: [
     {
-      provide: BaseAdminRepository,
+      provide: AdminRepositoryPort,
       useClass: AdminRepository,
     },
   ],
-  exports: [BaseAdminRepository],
+  exports: [AdminRepositoryPort],
 })
 export class AdminModule {}

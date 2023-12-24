@@ -10,7 +10,7 @@ import {
   PostUsersRequestDTO,
   PostUsersResponseDTO,
 } from './dto';
-import { BaseUserRepository } from './user.repository';
+import { UserRepositoryPort } from './user.repository';
 import {
   CommentRepository,
   CommentRepositoryToken,
@@ -38,7 +38,7 @@ export class UserService extends UserServiceUseCase {
   constructor(
     @InjectDataSource()
     private readonly dataSource: DataSource,
-    private readonly userRepo: BaseUserRepository,
+    private readonly userRepo: UserRepositoryPort,
     @Inject(FeedRepositoryToken)
     private readonly feedRepo: FeedRepository,
     @Inject(CommentRepositoryToken)
