@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AdminRepositoryPort, AdminRepository } from './admin.repository';
-import { FeedModule } from './feed/feed.module';
-import { SlackModule } from './slack/slack.module';
+import { AdminFeedModule } from './feed/admin-feed.module';
+import { AdminSlackModule } from './slack/admin-slack.module';
 
 @Module({
-  imports: [FeedModule, SlackModule],
+  imports: [AdminFeedModule, AdminSlackModule],
   providers: [
     {
       provide: AdminRepositoryPort,

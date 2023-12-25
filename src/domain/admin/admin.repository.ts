@@ -24,12 +24,12 @@ export class AdminRepository extends AdminRepositoryPort {
     super(AdminEntity, manager);
   }
 
-  async findOneByPK(id: number): Promise<Admin | null> {
+  override async findOneByPK(id: number): Promise<Admin | null> {
     const admin = await this.findOneBy({ id });
     return admin && AdminEntityMapper.toDomain(admin);
   }
 
-  async updateProperty(
+  override async updateProperty(
     id: number,
     properties: Partial<AdminEntity>,
   ): Promise<void> {

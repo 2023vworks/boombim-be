@@ -1,6 +1,5 @@
 import {
   ConflictException,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -17,51 +16,51 @@ import {
   AdminGetFeedsWithCountResponseDTO,
   AdminPatchFeedActivationRequestDTO,
 } from './dto';
-import { FeedRepository, FeedRepositoryToken } from './feed.repository';
+import { AdminFeedRepositoryPort } from './admin-feed.repository';
 
-export const FeedServiceToken = Symbol('FeedServiceToken');
-export interface FeedService {
-  getFeeds(
+export abstract class AdminFeedServiceUseCase {
+  abstract getFeeds(
     getDto: AdminGetFeedsRequestDTO,
   ): Promise<AdminGetFeedsWithCountResponseDTO>;
-  getFeed(feedId: number): Promise<AdminGetFeedResponseDTO>;
+  abstract getFeed(feedId: number): Promise<AdminGetFeedResponseDTO>;
 
-  patchFeedActivation(
+  abstract patchFeedActivation(
     feedId: number,
     patchDto: AdminPatchFeedActivationRequestDTO,
   ): Promise<void>;
 
-  expireFeed(feedId: number): Promise<void>;
+  abstract expireFeed(feedId: number): Promise<void>;
 }
 
 @Injectable()
-export class FeedServiceImpl implements FeedService {
+export class AdminFeedService extends AdminFeedServiceUseCase {
   private readonly reportAlartConfig: SlackAlertOptions;
   private readonly webhook: IncomingWebhook;
 
   constructor(
     @InjectDataSource() private readonly dataSource: DataSource,
-    @Inject(FeedRepositoryToken) private readonly feedRepo: FeedRepository,
+    private readonly feedRepo: AdminFeedRepositoryPort,
     config: ConfigService,
   ) {
+    super();
     this.reportAlartConfig = config.get<SlackConfig>('slack').feedReportAlert;
     this.webhook = new IncomingWebhook(this.reportAlartConfig.webHooklUrl);
   }
 
-  async getFeeds(
+  override async getFeeds(
     getDto: AdminGetFeedsRequestDTO,
   ): Promise<AdminGetFeedsWithCountResponseDTO> {
     const result = await this.feedRepo.findMany(getDto);
     return Util.toInstance(AdminGetFeedsWithCountResponseDTO, result);
   }
 
-  async getFeed(feedId: number): Promise<AdminGetFeedResponseDTO> {
+  override async getFeed(feedId: number): Promise<AdminGetFeedResponseDTO> {
     const feed = await this.feedRepo.findOneByPK(feedId);
     if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
     return Util.toInstance(AdminGetFeedResponseDTO, feed);
   }
 
-  async patchFeedActivation(
+  override async patchFeedActivation(
     feedId: number,
     patchDto: AdminPatchFeedActivationRequestDTO,
   ): Promise<void> {
@@ -74,7 +73,7 @@ export class FeedServiceImpl implements FeedService {
     });
   }
 
-  async expireFeed(feedId: number): Promise<void> {
+  override async expireFeed(feedId: number): Promise<void> {
     const feed = await this.feedRepo.findOneByPK(feedId);
     if (!feed) {
       await this.webhook.send(`${feedId}번 ${errorMessage.E404_FEED_001}`);

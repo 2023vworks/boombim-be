@@ -4,7 +4,6 @@ import {
   ClassSerializerInterceptor,
   Controller,
   HttpCode,
-  Inject,
   Post,
   UseInterceptors,
 } from '@nestjs/common';
@@ -15,17 +14,14 @@ import {
   SlackActionType,
   errorMessage,
 } from '@app/common';
-import { FeedService, FeedServiceToken } from '../feed/feed.service';
+import { AdminFeedServiceUseCase } from '../feed/admin-feed.service';
 import { DocumentHelper } from './document';
 
 @ApiControllerDocument(`[${DEFALUT_APP_NAME}] Admin - slack API`)
 @Controller('/admin/slack')
 @UseInterceptors(ClassSerializerInterceptor)
-export class SlackController {
-  constructor(
-    @Inject(FeedServiceToken)
-    private readonly feedService: FeedService,
-  ) {}
+export class AdminSlackController {
+  constructor(private readonly feedService: AdminFeedServiceUseCase) {}
 
   @DocumentHelper('postAction')
   @Post('/action')

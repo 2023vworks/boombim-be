@@ -5,7 +5,6 @@ import {
   Controller,
   Get,
   HttpCode,
-  Inject,
   Param,
   ParseIntPipe,
   Patch,
@@ -22,17 +21,14 @@ import {
   AdminGetFeedsWithCountResponseDTO,
   AdminPatchFeedActivationRequestDTO,
 } from './dto';
-import { FeedService, FeedServiceToken } from './feed.service';
+import { AdminFeedServiceUseCase } from './admin-feed.service';
 
 @ApiControllerDocument(`[${DEFALUT_APP_NAME}] Admin - feeds API`)
 @UseGuards(AdminJwtGuard)
 @Controller('/admin/feeds')
 @UseInterceptors(ClassSerializerInterceptor)
-export class FeedController {
-  constructor(
-    @Inject(FeedServiceToken)
-    private readonly feedService: FeedService,
-  ) {}
+export class AdminFeedController {
+  constructor(private readonly feedService: AdminFeedServiceUseCase) {}
 
   @AdminDocumentHelper('getFeeds')
   @Get()

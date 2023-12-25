@@ -6,9 +6,9 @@ import {
   ApiNoContentResponse,
   ApiOperation,
 } from '@nestjs/swagger';
-import { SlackController } from '../slack.controller';
+import { AdminSlackController } from '../admin-slack.controller';
 
-type API_DOC_TYPE = keyof SlackController;
+type API_DOC_TYPE = keyof AdminSlackController;
 
 const getPostActionApiDecorators = () =>
   [

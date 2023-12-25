@@ -7,33 +7,30 @@ import { FeedEntity } from '@app/entity';
 import { AdminFeed, AdminFeedEntityMapper } from './domain';
 import { AdminGetFeedsRequestDTO, Filter, Sort } from './dto';
 
-type FeedOmitReportHistories = Omit<AdminFeed, 'reportHistories'>;
+type AdminFeedOmitReportHistories = Omit<AdminFeed, 'reportHistories'>;
 
 type AdminFeedWithCount = {
-  feeds: FeedOmitReportHistories[];
+  feeds: AdminFeedOmitReportHistories[];
   totalCount: number;
 };
 
-export const FeedRepositoryToken = Symbol('FeedRepositoryToken');
-
-export interface FeedRepository extends CustomRepository<FeedEntity> {
-  findMany(option: AdminGetFeedsRequestDTO): Promise<AdminFeedWithCount>;
-  findOneByPK(feedId: number): Promise<AdminFeed | null>;
+export abstract class AdminFeedRepositoryPort extends CustomRepository<FeedEntity> {
+  abstract findMany(
+    option: AdminGetFeedsRequestDTO,
+  ): Promise<AdminFeedWithCount>;
+  abstract findOneByPK(feedId: number): Promise<AdminFeed | null>;
   /**
    * 좌표를 사용하여 검색후 중심좌표 기준 정렬
    * @param getDto
    */
-  updateProperty(
+  abstract updateProperty(
     feedId: number,
     properties: Partial<FeedEntity>,
   ): Promise<void>;
 }
 
 @Injectable()
-export class FeedRepositoryImpl
-  extends CustomRepository<FeedEntity>
-  implements FeedRepository
-{
+export class AdminFeedRepository extends AdminFeedRepositoryPort {
   constructor(
     @InjectEntityManager()
     manager: EntityManager,
