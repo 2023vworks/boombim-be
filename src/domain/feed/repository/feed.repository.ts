@@ -2,14 +2,14 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager, MoreThanOrEqual, Repository } from 'typeorm';
 
-import { CustomRepository, DateUtil, errorMessage } from '@app/common';
+import { BaseRepository, DateUtil, errorMessage } from '@app/common';
 import { FeedEntity, PolygonInfoEntity, RegionType } from '@app/entity';
 import { Feed, FeedEntityMapper } from '../domain';
 import { GetFeedsRequestDTO, PostFeedRequestDTO } from '../dto';
 
 export type PureFeed = Omit<Feed, 'geoMark'>;
 
-export abstract class FeedRepositoryPort extends CustomRepository<FeedEntity> {
+export abstract class FeedRepositoryPort extends BaseRepository<FeedEntity> {
   /**
    * PostGIS의 Polygon을 사용하여 검색후 중심좌표 기준 정렬
    * - 폴리곤을 사용한 경우 더 정확한 거리데이터가 도출된다고 한다.

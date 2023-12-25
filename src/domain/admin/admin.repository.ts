@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from 'typeorm';
 
-import { CustomRepository } from '@app/common';
+import { BaseRepository } from '@app/common';
 import { AdminEntity } from '@app/entity';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { AdminEntityMapper } from './domain/admin-entity-mapper';
 import { Admin } from './domain/admin.domain';
 
-export abstract class AdminRepositoryPort extends CustomRepository<AdminEntity> {
+export abstract class AdminRepositoryPort extends BaseRepository<AdminEntity> {
   abstract findOneByPK(id: number): Promise<Admin | null>;
   abstract updateProperty(
     id: number,

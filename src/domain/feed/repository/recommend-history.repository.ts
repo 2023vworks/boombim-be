@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 
-import { CustomRepository } from '@app/common';
+import { BaseRepository } from '@app/common';
 import { RecommendHistoryEntity, RecommendType } from '@app/entity';
 import { RecommendHistory, RecommendHistoryEntityMapper } from '../domain';
 
-export abstract class RecommendHistoryRepositoryPort extends CustomRepository<RecommendHistoryEntity> {
+export abstract class RecommendHistoryRepositoryPort extends BaseRepository<RecommendHistoryEntity> {
   abstract existOne(
     userId: number,
     feedId: number,

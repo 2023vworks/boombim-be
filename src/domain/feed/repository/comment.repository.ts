@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 
-import { CustomRepository, Util } from '@app/common';
+import { BaseRepository, Util } from '@app/common';
 import { CommentEntity } from '@app/entity';
 import { Comment, CommentEntityMapper } from '../domain';
 import { GetFeedCommentsRequestDTO, PostFeedCommentRequestDTO } from '../dto';
 
-export abstract class CommentRepositoryPort extends CustomRepository<CommentEntity> {
+export abstract class CommentRepositoryPort extends BaseRepository<CommentEntity> {
   abstract findByFeedId(
     feedId: number,
     getDto: GetFeedCommentsRequestDTO,

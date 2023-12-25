@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 
-import { CustomRepository } from '@app/common';
+import { BaseRepository } from '@app/common';
 import { ReportHistoryEntity } from '@app/entity';
 import { PostFeedReportRequestDTO } from '../dto';
 import { ReportHistory } from '../domain';
 import { ReportHistoryEntityMapper } from '../domain/mapper/report-history-entity-mapper';
 
-export abstract class ReportHistoryRepositoryPort extends CustomRepository<ReportHistoryEntity> {
+export abstract class ReportHistoryRepositoryPort extends BaseRepository<ReportHistoryEntity> {
   abstract existOne(userId: number, feedId: number): Promise<boolean>;
   abstract createOne(
     userId: number,
