@@ -5,12 +5,12 @@ import {
 } from '@nestjs/common';
 
 import { UserRequest, errorMessage } from '@app/common';
-import { AuthService } from '../auth.service';
+import { AuthServiceUseCase } from '../auth.service';
 import { BaseJwtGuard } from './base-jwt.guard';
 
 @Injectable()
 export class AdminJwtGuard extends BaseJwtGuard {
-  constructor(private readonly authService: AuthService) {
+  constructor(private readonly authService: AuthServiceUseCase) {
     super();
   }
 

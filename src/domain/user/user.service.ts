@@ -3,7 +3,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
 import { Util, errorMessage } from '@app/common';
-import { AuthService } from '../auth/auth.service';
+import { AuthServiceUseCase } from '../auth/auth.service';
 import { CommentRepositoryPort, FeedRepositoryPort } from '../feed/repository';
 import {
   GetUserFeedsResponseDTO,
@@ -36,7 +36,7 @@ export class UserService extends UserServiceUseCase {
     private readonly userRepo: UserRepositoryPort,
     private readonly feedRepo: FeedRepositoryPort,
     private readonly commentRepo: CommentRepositoryPort,
-    private readonly authService: AuthService,
+    private readonly authService: AuthServiceUseCase,
   ) {
     super();
   }

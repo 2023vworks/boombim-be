@@ -3,12 +3,12 @@ import { JwtModule } from '@nestjs/jwt';
 
 import { AdminModule } from '../admin/admin.module';
 import { UserModule } from '../user/user.module';
-import { AuthService } from './auth.service';
+import { AuthService, AuthServiceUseCase } from './auth.service';
 
 @Global()
 @Module({
   imports: [JwtModule, UserModule, AdminModule],
-  providers: [AuthService],
-  exports: [AuthService],
+  providers: [{ provide: AuthServiceUseCase, useClass: AuthService }],
+  exports: [AuthServiceUseCase],
 })
 export class AuthModule {}

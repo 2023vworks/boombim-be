@@ -9,8 +9,15 @@ import { UserRepositoryPort } from '../user/user.repository';
 
 type JwtPayload = Pick<UserInfo, 'id'>;
 
+export abstract class AuthServiceUseCase {
+  abstract decodeToken(token: string): JwtPayload | null;
+  abstract issueToken(payload: JwtPayload): string;
+  abstract isValidUser(userInfo: UserInfo): Promise<boolean>;
+  abstract isValidAdmin(adminInfo: UserInfo): Promise<boolean>;
+}
+
 @Injectable()
-export class AuthService {
+export class AuthService extends AuthServiceUseCase {
   private readonly jwtConfig: JwtConfig;
 
   constructor(
@@ -19,6 +26,7 @@ export class AuthService {
     private readonly adminRepository: AdminRepositoryPort,
     config: ConfigService,
   ) {
+    super();
     this.jwtConfig = config.get<JwtConfig>('jwt');
   }
 
