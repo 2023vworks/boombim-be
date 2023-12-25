@@ -1,6 +1,6 @@
 import { EntityManager, EntityTarget, Repository } from 'typeorm';
 
-export class CustomRepository<Entity> extends Repository<Entity> {
+export class BaseRepository<Entity> extends Repository<Entity> {
   constructor(
     readonly targetEntity: EntityTarget<Entity>,
     readonly manager: EntityManager,
@@ -17,8 +17,8 @@ export class CustomRepository<Entity> extends Repository<Entity> {
     if (!manager.queryRunner) {
       throw new Error('EntityManager does not have queryRunner.');
     }
-    if (constructor.name === 'CustomRepository') {
-      throw new Error('Instance is not CustomRepository child.');
+    if (constructor.name === 'BaseRepository') {
+      throw new Error('Instance is not BaseRepository child.');
     }
     return new (constructor as any)(manager);
   }

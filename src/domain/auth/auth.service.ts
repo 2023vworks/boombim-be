@@ -1,29 +1,32 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
 import { UserInfo } from '@app/common';
 import { JwtConfig } from '@app/config';
-import {
-  AdminRepository,
-  AdminRepositoryToken,
-} from '../admin/admin.repository';
-import { UserRepository, UserRepositoryToken } from '../user/user.repository';
+import { AdminRepositoryPort } from '../admin/admin.repository';
+import { UserRepositoryPort } from '../user/user.repository';
 
 type JwtPayload = Pick<UserInfo, 'id'>;
 
+export abstract class AuthServiceUseCase {
+  abstract decodeToken(token: string): JwtPayload | null;
+  abstract issueToken(payload: JwtPayload): string;
+  abstract isValidUser(userInfo: UserInfo): Promise<boolean>;
+  abstract isValidAdmin(adminInfo: UserInfo): Promise<boolean>;
+}
+
 @Injectable()
-export class AuthService {
+export class AuthService extends AuthServiceUseCase {
   private readonly jwtConfig: JwtConfig;
 
   constructor(
     private readonly jwtService: JwtService,
-    @Inject(UserRepositoryToken)
-    private readonly userRepository: UserRepository,
-    @Inject(AdminRepositoryToken)
-    private readonly adminRepository: AdminRepository,
+    private readonly userRepository: UserRepositoryPort,
+    private readonly adminRepository: AdminRepositoryPort,
     config: ConfigService,
   ) {
+    super();
     this.jwtConfig = config.get<JwtConfig>('jwt');
   }
 

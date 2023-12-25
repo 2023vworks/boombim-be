@@ -2,48 +2,46 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager, MoreThanOrEqual, Repository } from 'typeorm';
 
-import { CustomRepository, DateUtil, errorMessage } from '@app/common';
+import { BaseRepository, DateUtil, errorMessage } from '@app/common';
 import { FeedEntity, PolygonInfoEntity, RegionType } from '@app/entity';
 import { Feed, FeedEntityMapper } from '../domain';
 import { GetFeedsRequestDTO, PostFeedRequestDTO } from '../dto';
 
 export type PureFeed = Omit<Feed, 'geoMark'>;
 
-export const FeedRepositoryToken = Symbol('FeedRepositoryToken');
-
-export interface FeedRepository extends CustomRepository<FeedEntity> {
+export abstract class FeedRepositoryPort extends BaseRepository<FeedEntity> {
   /**
    * PostGIS의 Polygon을 사용하여 검색후 중심좌표 기준 정렬
    * - 폴리곤을 사용한 경우 더 정확한 거리데이터가 도출된다고 한다.
    * @param getDto
    */
-  findManyByPolygon(getDto: GetFeedsRequestDTO): Promise<PureFeed[]>;
+  abstract findManyByPolygon(getDto: GetFeedsRequestDTO): Promise<PureFeed[]>;
   /**
    * 피드 활성화 시간에 상관없이 조회.
    * @param userId
    */
-  findManyByUserId(userId: number): Promise<PureFeed[]>;
+  abstract findManyByUserId(userId: number): Promise<PureFeed[]>;
 
-  existOneByUserId(feedId: number, userId: number): Promise<boolean>;
-  findOneByGeoMarkId(geoMarkId: number): Promise<Feed | null>;
+  abstract existOneByUserId(feedId: number, userId: number): Promise<boolean>;
+  abstract findOneByGeoMarkId(geoMarkId: number): Promise<Feed | null>;
 
-  findOneByPK(geoMarkId: number): Promise<Feed | null>;
+  abstract findOneByPK(geoMarkId: number): Promise<Feed | null>;
 
-  findOnePure(feedId: number): Promise<PureFeed | null>;
+  abstract findOnePure(feedId: number): Promise<PureFeed | null>;
 
-  createOne(userId: number, postDto: PostFeedRequestDTO): Promise<Feed | null>;
-  updateProperty(
+  abstract createOne(
+    userId: number,
+    postDto: PostFeedRequestDTO,
+  ): Promise<Feed | null>;
+  abstract updateProperty(
     feedId: number,
     properties: Partial<FeedEntity>,
   ): Promise<void>;
-  softDeleteByUserId(userId: number): Promise<void>;
+  abstract softDeleteByUserId(userId: number): Promise<void>;
 }
 
 @Injectable()
-export class FeedRepositoryImpl
-  extends CustomRepository<FeedEntity>
-  implements FeedRepository
-{
+export class FeedRepository extends FeedRepositoryPort {
   private readonly polygonInfoRepo: Repository<PolygonInfoEntity>;
 
   constructor(
@@ -54,7 +52,9 @@ export class FeedRepositoryImpl
     this.polygonInfoRepo = manager.getRepository(PolygonInfoEntity);
   }
 
-  async findManyByPolygon(getDto: GetFeedsRequestDTO): Promise<PureFeed[]> {
+  override async findManyByPolygon(
+    getDto: GetFeedsRequestDTO,
+  ): Promise<PureFeed[]> {
     const { centerX, centerY, dongs, page, pageSize } = getDto;
     const qb = this.createQueryBuilder('feed');
     const centerPoint = this.makeCenterPoint(centerX, centerY);
@@ -88,7 +88,7 @@ export class FeedRepositoryImpl
     return FeedEntityMapper.toDomain(feeds);
   }
 
-  async findManyByUserId(userId: number): Promise<PureFeed[]> {
+  override async findManyByUserId(userId: number): Promise<PureFeed[]> {
     const qb = this.createQueryBuilder('feed');
     qb.select();
     qb.innerJoin('feed.user', 'user') //
@@ -103,7 +103,10 @@ export class FeedRepositoryImpl
     return FeedEntityMapper.toDomain(feeds);
   }
 
-  async existOneByUserId(feedId: number, userId: number): Promise<boolean> {
+  override async existOneByUserId(
+    feedId: number,
+    userId: number,
+  ): Promise<boolean> {
     const count = await this.createQueryBuilder('feed')
       .where('feed.id = :feedId', { feedId })
       .andWhere('feed.user = :userId', { userId })
@@ -111,7 +114,7 @@ export class FeedRepositoryImpl
     return !!count;
   }
 
-  async findOneByGeoMarkId(geoMarkId: number): Promise<Feed | null> {
+  override async findOneByGeoMarkId(geoMarkId: number): Promise<Feed | null> {
     const feed = await this.findOne({
       select: {
         user: { id: true, nickname: true, mbtiType: true },
@@ -126,7 +129,7 @@ export class FeedRepositoryImpl
     return feed ? FeedEntityMapper.toDomain(feed) : null;
   }
 
-  async findOneByPK(feedId: number): Promise<Feed | null> {
+  override async findOneByPK(feedId: number): Promise<Feed | null> {
     const feed = await this.findOne({
       select: {
         user: { id: true, nickname: true, mbtiType: true },
@@ -137,7 +140,7 @@ export class FeedRepositoryImpl
     return feed ? FeedEntityMapper.toDomain(feed) : null;
   }
 
-  async findOnePure(feedId: number): Promise<PureFeed | null> {
+  override async findOnePure(feedId: number): Promise<PureFeed | null> {
     const feed = await this.findOne({
       select: {
         user: { id: true, nickname: true, mbtiType: true },
@@ -149,7 +152,10 @@ export class FeedRepositoryImpl
     return feed ? FeedEntityMapper.toDomain(feed) : null;
   }
 
-  async createOne(userId: number, postDto: PostFeedRequestDTO): Promise<Feed> {
+  override async createOne(
+    userId: number,
+    postDto: PostFeedRequestDTO,
+  ): Promise<Feed> {
     const { x, y } = postDto.geoMark;
 
     const region = await this.findRegion(x, y);
@@ -173,14 +179,14 @@ export class FeedRepositoryImpl
     return FeedEntityMapper.toDomain(feed);
   }
 
-  async updateProperty(
+  override async updateProperty(
     feedId: number,
     properties: Partial<FeedEntity>,
   ): Promise<void> {
     await this.update(feedId, { ...properties });
   }
 
-  async softDeleteByUserId(userId: number): Promise<void> {
+  override async softDeleteByUserId(userId: number): Promise<void> {
     await this.createQueryBuilder()
       .where('feed."userId" = :userId', { userId })
       .softDelete()

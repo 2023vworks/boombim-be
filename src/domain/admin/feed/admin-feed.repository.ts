@@ -2,38 +2,35 @@ import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager, SelectQueryBuilder } from 'typeorm';
 
-import { CustomRepository } from '@app/common';
+import { BaseRepository } from '@app/common';
 import { FeedEntity } from '@app/entity';
 import { AdminFeed, AdminFeedEntityMapper } from './domain';
 import { AdminGetFeedsRequestDTO, Filter, Sort } from './dto';
 
-type FeedOmitReportHistories = Omit<AdminFeed, 'reportHistories'>;
+type AdminFeedOmitReportHistories = Omit<AdminFeed, 'reportHistories'>;
 
 type AdminFeedWithCount = {
-  feeds: FeedOmitReportHistories[];
+  feeds: AdminFeedOmitReportHistories[];
   totalCount: number;
 };
 
-export const FeedRepositoryToken = Symbol('FeedRepositoryToken');
-
-export interface FeedRepository extends CustomRepository<FeedEntity> {
-  findMany(option: AdminGetFeedsRequestDTO): Promise<AdminFeedWithCount>;
-  findOneByPK(feedId: number): Promise<AdminFeed | null>;
+export abstract class AdminFeedRepositoryPort extends BaseRepository<FeedEntity> {
+  abstract findMany(
+    option: AdminGetFeedsRequestDTO,
+  ): Promise<AdminFeedWithCount>;
+  abstract findOneByPK(feedId: number): Promise<AdminFeed | null>;
   /**
    * 좌표를 사용하여 검색후 중심좌표 기준 정렬
    * @param getDto
    */
-  updateProperty(
+  abstract updateProperty(
     feedId: number,
     properties: Partial<FeedEntity>,
   ): Promise<void>;
 }
 
 @Injectable()
-export class FeedRepositoryImpl
-  extends CustomRepository<FeedEntity>
-  implements FeedRepository
-{
+export class AdminFeedRepository extends AdminFeedRepositoryPort {
   constructor(
     @InjectEntityManager()
     manager: EntityManager,
@@ -41,7 +38,9 @@ export class FeedRepositoryImpl
     super(FeedEntity, manager);
   }
 
-  async findMany(option: AdminGetFeedsRequestDTO): Promise<AdminFeedWithCount> {
+  override async findMany(
+    option: AdminGetFeedsRequestDTO,
+  ): Promise<AdminFeedWithCount> {
     const { page, pageSize, sort, filter } = option;
     const qb = this.createQueryBuilder('feed');
     qb.select();
@@ -62,7 +61,7 @@ export class FeedRepositoryImpl
     };
   }
 
-  async findOneByPK(feedId: number): Promise<AdminFeed | null> {
+  override async findOneByPK(feedId: number): Promise<AdminFeed | null> {
     const feed = await this.findOne({
       select: { user: { id: true, nickname: true, mbtiType: true } },
       where: { id: feedId },
@@ -71,7 +70,7 @@ export class FeedRepositoryImpl
     return feed ? AdminFeedEntityMapper.toDomain(feed) : null;
   }
 
-  async updateProperty(
+  override async updateProperty(
     feedId: number,
     properties: Partial<FeedEntity>,
   ): Promise<void> {

@@ -5,7 +5,6 @@ import {
   Delete,
   Get,
   HttpCode,
-  Inject,
   Post,
   UseGuards,
   UseInterceptors,
@@ -23,17 +22,14 @@ import {
   PostUsersRequestDTO,
   PostUsersResponseDTO,
 } from './dto';
-import { UserService, UserServiceToken } from './user.service';
+import { UserServiceUseCase } from './user.service';
 import { JwtGuard } from '../auth/guard';
 
 @ApiControllerDocument(`[${DEFALUT_APP_NAME}] users API`)
 @Controller('/users')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
-  constructor(
-    @Inject(UserServiceToken)
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly userService: UserServiceUseCase) {}
 
   @DocumentHelper('postUsers')
   @Post()

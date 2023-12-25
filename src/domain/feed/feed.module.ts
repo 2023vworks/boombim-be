@@ -9,16 +9,16 @@ import {
 } from '@app/entity';
 import { UserModule } from '../user/user.module';
 import { FeedController } from './feed.controller';
-import { FeedServiceImpl, FeedServiceToken } from './feed.service';
+import { FeedService, FeedServiceUseCase } from './feed.service';
 import {
-  CommentRepositoryImpl,
-  CommentRepositoryToken,
-  FeedRepositoryImpl,
-  FeedRepositoryToken,
-  RecommendHistoryRepositoryImpl,
-  RecommendHistoryRepositoryToken,
-  ReportHistoryRepositoryImpl,
-  ReportHistoryRepositoryToken,
+  CommentRepository,
+  CommentRepositoryPort,
+  FeedRepository,
+  FeedRepositoryPort,
+  RecommendHistoryRepository,
+  RecommendHistoryRepositoryPort,
+  ReportHistoryRepository,
+  ReportHistoryRepositoryPort,
 } from './repository';
 import { UploadModule } from './upload/upload.module';
 
@@ -27,18 +27,6 @@ const entities = [
   CommentEntity,
   RecommendHistoryEntity,
   ReportHistoryEntity,
-];
-const repositories = [
-  { provide: FeedRepositoryToken, useClass: FeedRepositoryImpl },
-  { provide: CommentRepositoryToken, useClass: CommentRepositoryImpl },
-  {
-    provide: RecommendHistoryRepositoryToken,
-    useClass: RecommendHistoryRepositoryImpl,
-  },
-  {
-    provide: ReportHistoryRepositoryToken,
-    useClass: ReportHistoryRepositoryImpl,
-  },
 ];
 
 @Module({
@@ -50,11 +38,21 @@ const repositories = [
   controllers: [FeedController],
   providers: [
     {
-      provide: FeedServiceToken,
-      useClass: FeedServiceImpl,
+      provide: FeedServiceUseCase,
+      useClass: FeedService,
     },
-    ...repositories,
+    // Repository providers
+    { provide: FeedRepositoryPort, useClass: FeedRepository },
+    { provide: CommentRepositoryPort, useClass: CommentRepository },
+    {
+      provide: RecommendHistoryRepositoryPort,
+      useClass: RecommendHistoryRepository,
+    },
+    {
+      provide: ReportHistoryRepositoryPort,
+      useClass: ReportHistoryRepository,
+    },
   ],
-  exports: [FeedRepositoryToken, CommentRepositoryToken],
+  exports: [FeedRepositoryPort, CommentRepositoryPort],
 })
 export class FeedModule {}

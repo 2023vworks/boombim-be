@@ -1,23 +1,20 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { Util } from '@app/common';
 import { GetGeoMarksRequestDTO, GetGeoMarksResponseDTO } from './dto';
-import {
-  GeoMarkRepository,
-  GeoMarkRepositoryToken,
-} from './geo-mark.repository';
+import { BaseGeoMarkRepository } from './geo-mark.repository';
 
-export const GeoMarkServiceToken = Symbol('GeoMarkServiceToken');
-export interface GeoMarkService {
-  getMarks(getDto: GetGeoMarksRequestDTO): Promise<GetGeoMarksResponseDTO[]>;
+export abstract class GeoMarkServiceUseCase {
+  abstract getMarks(
+    getDto: GetGeoMarksRequestDTO,
+  ): Promise<GetGeoMarksResponseDTO[]>;
 }
 
 @Injectable()
-export class GeoMarkServiceImpl implements GeoMarkService {
-  constructor(
-    @Inject(GeoMarkRepositoryToken)
-    private readonly geoMarkRepo: GeoMarkRepository,
-  ) {}
+export class GeoMarkService extends GeoMarkServiceUseCase {
+  constructor(private readonly geoMarkRepo: BaseGeoMarkRepository) {
+    super();
+  }
 
   async getMarks(
     getDto: GetGeoMarksRequestDTO,

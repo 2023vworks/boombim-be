@@ -17,9 +17,9 @@ import {
   AdminGetFeedResponseDTO,
   AdminGetFeedsWithCountResponseDTO,
 } from '../dto';
-import { FeedController } from '../feed.controller';
+import { AdminFeedController } from '../admin-feed.controller';
 
-type API_DOC_TYPE = keyof FeedController;
+type API_DOC_TYPE = keyof AdminFeedController;
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 const decorators: Record<API_DOC_TYPE, Function> = {

@@ -1,6 +1,5 @@
 import {
   ConflictException,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -12,8 +11,7 @@ import { DataSource } from 'typeorm';
 import { SlackTemplate, Util, errorMessage } from '@app/common';
 import { SlackAlertOptions, SlackConfig } from '@app/config';
 import { RecommendType } from '@app/entity';
-import { UserRepository, UserRepositoryToken } from '../user/user.repository';
-import { UploadService, UploadServiceToken } from './upload/upload.service';
+import { UserRepositoryPort } from '../user/user.repository';
 import {
   GetFeedActivationTimeResponseDTO,
   GetFeedCommentsRequestDTO,
@@ -28,55 +26,53 @@ import {
   PostFeedResponseDTO,
 } from './dto';
 import {
-  FeedRepository,
-  FeedRepositoryToken,
-  CommentRepository,
-  CommentRepositoryToken,
-  RecommendHistoryRepository,
-  RecommendHistoryRepositoryToken,
-  ReportHistoryRepository,
-  ReportHistoryRepositoryToken,
+  CommentRepositoryPort,
+  FeedRepositoryPort,
+  RecommendHistoryRepositoryPort,
+  ReportHistoryRepositoryPort,
+  type PureFeed,
 } from './repository';
-import type { PureFeed } from './repository';
+import { UploadServiceUseCase } from './upload/upload.service';
 
-export const FeedServiceToken = Symbol('FeedServiceToken');
-export interface FeedService {
-  getFeeds(getDto: GetFeedsRequestDTO): Promise<GetFeedsResponseDTO[]>;
-  getFeedsByGeoMarkId(geoMarkId: number): Promise<GetFeedResponseDTO[]>;
-  createFeed(
+export abstract class FeedServiceUseCase {
+  abstract getFeeds(getDto: GetFeedsRequestDTO): Promise<GetFeedsResponseDTO[]>;
+  abstract getFeedsByGeoMarkId(
+    geoMarkId: number,
+  ): Promise<GetFeedResponseDTO[]>;
+  abstract createFeed(
     userId: number,
     postDto: PostFeedRequestDTO,
   ): Promise<PostFeedResponseDTO>;
 
-  createFeedImages(
+  abstract createFeedImages(
     userId: number,
     feedId: number,
     file: Express.Multer.File[],
   ): Promise<void>;
-  getFeed(feedId: number): Promise<GetFeedResponseDTO>;
-  getFeedActivationTime(
+  abstract getFeed(feedId: number): Promise<GetFeedResponseDTO>;
+  abstract getFeedActivationTime(
     feedId: number,
   ): Promise<GetFeedActivationTimeResponseDTO>;
 
-  getComments(
+  abstract getComments(
     feedId: number,
     getDto: GetFeedCommentsRequestDTO,
   ): Promise<GetFeedCommentsResponseDTO[]>;
-  createComment(
+  abstract createComment(
     userId: number,
     feedId: number,
     postDto: PostFeedCommentRequestDTO,
   ): Promise<PostFeedCommentResponseDTO>;
 
-  feedRecommend(
+  abstract feedRecommend(
     userId: number,
     feedId: number,
   ): Promise<GetFeedActivationTimeResponseDTO>;
-  feedUnrecommend(
+  abstract feedUnrecommend(
     userId: number,
     feedId: number,
   ): Promise<GetFeedActivationTimeResponseDTO>;
-  feedReport(
+  abstract feedReport(
     userId: number,
     feedId: number,
     postDto: PostFeedReportRequestDTO,
@@ -84,23 +80,21 @@ export interface FeedService {
 }
 
 @Injectable()
-export class FeedServiceImpl implements FeedService {
+export class FeedService extends FeedServiceUseCase {
   private readonly reportAlartConfig: SlackAlertOptions;
   private readonly webhook: IncomingWebhook;
 
   constructor(
     @InjectDataSource() private readonly dataSource: DataSource,
-    @Inject(FeedRepositoryToken) private readonly feedRepo: FeedRepository,
-    @Inject(UserRepositoryToken) private readonly userRepo: UserRepository,
-    @Inject(UploadServiceToken) private readonly uploadService: UploadService,
-    @Inject(CommentRepositoryToken)
-    private readonly commentRepo: CommentRepository,
-    @Inject(RecommendHistoryRepositoryToken)
-    private readonly recommnedRepo: RecommendHistoryRepository,
-    @Inject(ReportHistoryRepositoryToken)
-    private readonly reportRepo: ReportHistoryRepository,
+    private readonly feedRepo: FeedRepositoryPort,
+    private readonly userRepo: UserRepositoryPort,
+    private readonly commentRepo: CommentRepositoryPort,
+    private readonly recommnedRepo: RecommendHistoryRepositoryPort,
+    private readonly reportRepo: ReportHistoryRepositoryPort,
+    private readonly uploadService: UploadServiceUseCase,
     config: ConfigService,
   ) {
+    super();
     this.reportAlartConfig = config.get<SlackConfig>('slack').feedReportAlert;
     this.webhook = new IncomingWebhook(this.reportAlartConfig.webHooklUrl);
   }

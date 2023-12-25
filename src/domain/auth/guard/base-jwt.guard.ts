@@ -1,8 +1,7 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext } from '@nestjs/common';
 
 import { UserRequest } from '@app/common';
 
-@Injectable()
 export class BaseJwtGuard implements CanActivate {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async canActivate(context: ExecutionContext): Promise<boolean> {

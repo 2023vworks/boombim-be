@@ -1,31 +1,27 @@
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 
-import { CustomRepository, Util } from '@app/common';
+import { BaseRepository, Util } from '@app/common';
 import { FeedEntity, GeoMarkEntity } from '@app/entity';
 import { GeoMark, GeoMarkEntityMapper } from './domain';
 import { GetGeoMarksRequestDTO } from './dto';
 
-export const GeoMarkRepositoryToken = Symbol('GeoMarkRepositoryToken');
-export interface GeoMarkRepository extends CustomRepository<GeoMarkEntity> {
+export abstract class BaseGeoMarkRepository extends BaseRepository<GeoMarkEntity> {
   /**
    * 좌표를 사용하여 단순 검색
    * - Limit  (cost=167.56..1435.06 rows=1000 width=108) (actual time=2.328..4.116 rows=1000 loops=1)
    * @param getDto
    */
-  findByCoordinates(getDto: GetGeoMarksRequestDTO): Promise<GeoMark[]>;
+  abstract findByCoordinates(getDto: GetGeoMarksRequestDTO): Promise<GeoMark[]>;
   /**
    * PostGIS의 Polygon을 사용하여 검색
    * - Limit  (cost=0.56..26545.45 rows=1000 width=108) (actual time=0.043..4.919 rows=1000 loops=1)
    * @param getDto
    */
-  findByPolygon(getDto: GetGeoMarksRequestDTO): Promise<GeoMark[]>;
+  abstract findByPolygon(getDto: GetGeoMarksRequestDTO): Promise<GeoMark[]>;
 }
 
-export class GeoMarkRepositoryImpl
-  extends CustomRepository<GeoMarkEntity>
-  implements GeoMarkRepository
-{
+export class GeoMarkRepository extends BaseGeoMarkRepository {
   constructor(
     @InjectEntityManager()
     readonly manager: EntityManager,
@@ -33,7 +29,9 @@ export class GeoMarkRepositoryImpl
     super(GeoMarkEntity, manager);
   }
 
-  async findByCoordinates(getDto: GetGeoMarksRequestDTO): Promise<GeoMark[]> {
+  override async findByCoordinates(
+    getDto: GetGeoMarksRequestDTO,
+  ): Promise<GeoMark[]> {
     const { minX, minY, maxX, maxY, nextCursor, size, sort } = getDto;
     const feedRepo = this.manager.getRepository(FeedEntity);
     const qb = feedRepo.createQueryBuilder('feed');
@@ -60,7 +58,9 @@ export class GeoMarkRepositoryImpl
     );
   }
 
-  async findByPolygon(getDto: GetGeoMarksRequestDTO): Promise<GeoMark[]> {
+  override async findByPolygon(
+    getDto: GetGeoMarksRequestDTO,
+  ): Promise<GeoMark[]> {
     const { minX, minY, maxX, maxY, nextCursor, size, sort } = getDto;
     const feedRepo = this.manager.getRepository(FeedEntity);
     const qb = feedRepo.createQueryBuilder('feed');
@@ -90,12 +90,3 @@ export class GeoMarkRepositoryImpl
     );
   }
 }
-
-/*
-SELECT *
-FROM geo_data
-WHERE ST_Contains(
-    ST_MakeEnvelope(127.10646933077587, 37.51273616606448, 127.11595361763263, 37.516466400555935, 4326),
-    coordinates
-);
-*/

@@ -1,23 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from 'typeorm';
 
-import { CustomRepository } from '@app/common';
+import { BaseRepository } from '@app/common';
 import { AdminEntity } from '@app/entity';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { AdminEntityMapper } from './domain/admin-entity-mapper';
 import { Admin } from './domain/admin.domain';
 
-export const AdminRepositoryToken = Symbol('AdminRepositoryToken');
-export interface AdminRepository extends CustomRepository<AdminEntity> {
-  findOneByPK(id: number): Promise<Admin | null>;
-  updateProperty(id: number, properties: Partial<AdminEntity>): Promise<void>;
+export abstract class AdminRepositoryPort extends BaseRepository<AdminEntity> {
+  abstract findOneByPK(id: number): Promise<Admin | null>;
+  abstract updateProperty(
+    id: number,
+    properties: Partial<AdminEntity>,
+  ): Promise<void>;
 }
 
 @Injectable()
-export class AdminRepositoryImpl
-  extends CustomRepository<AdminEntity>
-  implements AdminRepository
-{
+export class AdminRepository extends AdminRepositoryPort {
   constructor(
     @InjectEntityManager()
     manager: EntityManager,
@@ -25,12 +24,12 @@ export class AdminRepositoryImpl
     super(AdminEntity, manager);
   }
 
-  async findOneByPK(id: number): Promise<Admin | null> {
+  override async findOneByPK(id: number): Promise<Admin | null> {
     const admin = await this.findOneBy({ id });
     return admin && AdminEntityMapper.toDomain(admin);
   }
 
-  async updateProperty(
+  override async updateProperty(
     id: number,
     properties: Partial<AdminEntity>,
   ): Promise<void> {

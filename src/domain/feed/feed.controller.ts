@@ -4,7 +4,6 @@ import {
   Controller,
   Get,
   HttpCode,
-  Inject,
   Param,
   ParseIntPipe,
   Post,
@@ -16,9 +15,9 @@ import {
 import {
   ApiControllerDocument,
   DEFALUT_APP_NAME,
-  UploadedFiles,
   GetUserInfoDecorator,
   UPLOAD_FILES_NAME,
+  UploadedFiles,
 } from '@app/common';
 import { FilesUploadInterceptor } from '@app/custom';
 
@@ -38,16 +37,13 @@ import {
   PostFeedRequestDTO,
   PostFeedResponseDTO,
 } from './dto';
-import { FeedService, FeedServiceToken } from './feed.service';
+import { FeedServiceUseCase } from './feed.service';
 
 @ApiControllerDocument(`[${DEFALUT_APP_NAME}] feeds API`)
 @Controller('/feeds')
 @UseInterceptors(ClassSerializerInterceptor)
 export class FeedController {
-  constructor(
-    @Inject(FeedServiceToken)
-    private readonly feedService: FeedService,
-  ) {}
+  constructor(private readonly feedService: FeedServiceUseCase) {}
 
   @DocumentHelper('getFeeds')
   @Get()
