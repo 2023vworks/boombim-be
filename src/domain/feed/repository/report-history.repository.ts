@@ -8,14 +8,9 @@ import { PostFeedReportRequestDTO } from '../dto';
 import { ReportHistory } from '../domain';
 import { ReportHistoryEntityMapper } from '../domain/mapper/report-history-entity-mapper';
 
-export const ReportHistoryRepositoryToken = Symbol(
-  'ReportHistoryRepositoryToken',
-);
-
-export interface ReportHistoryRepository
-  extends CustomRepository<ReportHistoryEntity> {
-  existOne(userId: number, feedId: number): Promise<boolean>;
-  createOne(
+export abstract class ReportHistoryRepositoryPort extends CustomRepository<ReportHistoryEntity> {
+  abstract existOne(userId: number, feedId: number): Promise<boolean>;
+  abstract createOne(
     userId: number,
     feedId: number,
     postDto: PostFeedReportRequestDTO,
@@ -23,10 +18,7 @@ export interface ReportHistoryRepository
 }
 
 @Injectable()
-export class ReportHistoryRepositoryImpl
-  extends CustomRepository<ReportHistoryEntity>
-  implements ReportHistoryRepository
-{
+export class ReportHistoryRepository extends ReportHistoryRepositoryPort {
   constructor(
     @InjectEntityManager()
     manager: EntityManager,
@@ -34,7 +26,7 @@ export class ReportHistoryRepositoryImpl
     super(ReportHistoryEntity, manager);
   }
 
-  async existOne(userId: number, feedId: number): Promise<boolean> {
+  override async existOne(userId: number, feedId: number): Promise<boolean> {
     const qb = this.createQueryBuilder('history');
     qb.where('history.user = :userId', { userId });
     qb.andWhere('history.feed = :feedId', { feedId });
@@ -42,7 +34,7 @@ export class ReportHistoryRepositoryImpl
     return !!count;
   }
 
-  async createOne(
+  override async createOne(
     userId: number,
     feedId: number,
     postDto: PostFeedReportRequestDTO,

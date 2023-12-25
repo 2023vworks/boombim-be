@@ -6,21 +6,16 @@ import { CustomRepository } from '@app/common';
 import { RecommendHistoryEntity, RecommendType } from '@app/entity';
 import { RecommendHistory, RecommendHistoryEntityMapper } from '../domain';
 
-export const RecommendHistoryRepositoryToken = Symbol(
-  'RecommendHistoryRepositoryToken',
-);
-
-export interface RecommendHistoryRepository
-  extends CustomRepository<RecommendHistoryEntity> {
-  existOne(
+export abstract class RecommendHistoryRepositoryPort extends CustomRepository<RecommendHistoryEntity> {
+  abstract existOne(
     userId: number,
     feedId: number,
     type: RecommendType,
   ): Promise<boolean>;
 
-  findManyByFeedId(feedId: number): Promise<RecommendHistory[]>;
+  abstract findManyByFeedId(feedId: number): Promise<RecommendHistory[]>;
 
-  createOne(
+  abstract createOne(
     userId: number,
     feedId: number,
     type: RecommendType,
@@ -28,10 +23,7 @@ export interface RecommendHistoryRepository
 }
 
 @Injectable()
-export class RecommendHistoryRepositoryImpl
-  extends CustomRepository<RecommendHistoryEntity>
-  implements RecommendHistoryRepository
-{
+export class RecommendHistoryRepository extends RecommendHistoryRepositoryPort {
   constructor(
     @InjectEntityManager()
     manager: EntityManager,
@@ -39,7 +31,7 @@ export class RecommendHistoryRepositoryImpl
     super(RecommendHistoryEntity, manager);
   }
 
-  async existOne(
+  override async existOne(
     userId: number,
     feedId: number,
     type: RecommendType,
@@ -52,7 +44,7 @@ export class RecommendHistoryRepositoryImpl
     return !!count;
   }
 
-  async findManyByFeedId(feedId: number): Promise<RecommendHistory[]> {
+  override async findManyByFeedId(feedId: number): Promise<RecommendHistory[]> {
     const recommendHistories = await this.find({
       select: { user: { id: true } },
       where: { feed: { id: feedId } },
@@ -61,7 +53,7 @@ export class RecommendHistoryRepositoryImpl
     return RecommendHistoryEntityMapper.toDomain(recommendHistories);
   }
 
-  async createOne(
+  override async createOne(
     userId: number,
     feedId: number,
     type: RecommendType,

@@ -1,9 +1,10 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
 import { Util, errorMessage } from '@app/common';
 import { AuthService } from '../auth/auth.service';
+import { CommentRepositoryPort, FeedRepositoryPort } from '../feed/repository';
 import {
   GetUserFeedsResponseDTO,
   GetUserResponseDTO,
@@ -11,12 +12,6 @@ import {
   PostUsersResponseDTO,
 } from './dto';
 import { UserRepositoryPort } from './user.repository';
-import {
-  CommentRepository,
-  CommentRepositoryToken,
-  FeedRepository,
-  FeedRepositoryToken,
-} from '../feed/repository';
 
 export abstract class UserServiceUseCase {
   abstract getUser(userId: number): Promise<GetUserResponseDTO>;
@@ -39,10 +34,8 @@ export class UserService extends UserServiceUseCase {
     @InjectDataSource()
     private readonly dataSource: DataSource,
     private readonly userRepo: UserRepositoryPort,
-    @Inject(FeedRepositoryToken)
-    private readonly feedRepo: FeedRepository,
-    @Inject(CommentRepositoryToken)
-    private readonly commentRepo: CommentRepository,
+    private readonly feedRepo: FeedRepositoryPort,
+    private readonly commentRepo: CommentRepositoryPort,
     private readonly authService: AuthService,
   ) {
     super();

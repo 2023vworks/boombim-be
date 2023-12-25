@@ -7,26 +7,21 @@ import { CommentEntity } from '@app/entity';
 import { Comment, CommentEntityMapper } from '../domain';
 import { GetFeedCommentsRequestDTO, PostFeedCommentRequestDTO } from '../dto';
 
-export const CommentRepositoryToken = Symbol('CommentRepositoryToken');
-
-export interface CommentRepository extends CustomRepository<CommentEntity> {
-  findByFeedId(
+export abstract class CommentRepositoryPort extends CustomRepository<CommentEntity> {
+  abstract findByFeedId(
     feedId: number,
     getDto: GetFeedCommentsRequestDTO,
   ): Promise<Comment[]>;
-  createOne(
+  abstract createOne(
     userId: number,
     feedId: number,
     postDto: PostFeedCommentRequestDTO,
   ): Promise<Comment>;
-  softDeleteByUserId(userId: number): Promise<void>;
+  abstract softDeleteByUserId(userId: number): Promise<void>;
 }
 
 @Injectable()
-export class CommentRepositoryImpl
-  extends CustomRepository<CommentEntity>
-  implements CommentRepository
-{
+export class CommentRepository extends CommentRepositoryPort {
   constructor(
     @InjectEntityManager()
     manager: EntityManager,
@@ -34,7 +29,7 @@ export class CommentRepositoryImpl
     super(CommentEntity, manager);
   }
 
-  async findByFeedId(
+  override async findByFeedId(
     feedId: number,
     getDto: GetFeedCommentsRequestDTO,
   ): Promise<Comment[]> {
@@ -58,7 +53,7 @@ export class CommentRepositoryImpl
     return CommentEntityMapper.toDomain(comments);
   }
 
-  async createOne(
+  override async createOne(
     userId: number,
     feedId: number,
     postDto: PostFeedCommentRequestDTO,
@@ -72,7 +67,7 @@ export class CommentRepositoryImpl
     return CommentEntityMapper.toDomain(comment);
   }
 
-  async softDeleteByUserId(userId: number): Promise<void> {
+  override async softDeleteByUserId(userId: number): Promise<void> {
     await this.createQueryBuilder()
       .where('comment."userId" = :userId', { userId })
       .softDelete()

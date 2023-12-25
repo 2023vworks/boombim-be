@@ -5,9 +5,8 @@ import * as crypto from 'crypto';
 
 import { AwsConfig } from '@app/config';
 
-export const UploadServiceToken = Symbol('UploadServiceToken');
-export interface UploadService {
-  feedFilesUpload(
+export abstract class UploadServiceUseCase {
+  abstract feedFilesUpload(
     userId: number,
     feedId: number,
     files: Express.Multer.File[],
@@ -15,11 +14,12 @@ export interface UploadService {
 }
 
 @Injectable()
-export class UploadServiceImpl implements UploadService {
+export class UploadService extends UploadServiceUseCase {
   private readonly client: S3Client;
   private readonly bucket: string;
 
   constructor(private readonly config: ConfigService) {
+    super();
     const aws = this.config.get<AwsConfig>('aws');
     this.bucket = aws.bucketName;
     this.client = new S3Client({
@@ -28,7 +28,7 @@ export class UploadServiceImpl implements UploadService {
     });
   }
 
-  async feedFilesUpload(
+  override async feedFilesUpload(
     userId: number,
     feedId: number,
     files: Express.Multer.File[],
