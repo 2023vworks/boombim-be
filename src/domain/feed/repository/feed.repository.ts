@@ -22,6 +22,13 @@ export abstract class FeedRepositoryPort extends BaseRepository<FeedEntity> {
    */
   abstract findManyByUserId(userId: number): Promise<PureFeed[]>;
 
+  abstract existManyByUserIds(userIds: number[]): Promise<boolean>;
+
+  /**
+   * 피드 활성화 시간에 상관없이 조회.
+   * @param feedId
+   * @param userId
+   */
   abstract existOneByUserId(feedId: number, userId: number): Promise<boolean>;
   abstract findOneByGeoMarkId(geoMarkId: number): Promise<Feed | null>;
 
@@ -101,6 +108,14 @@ export class FeedRepository extends FeedRepositoryPort {
 
     const feeds = await qb.getMany();
     return FeedEntityMapper.toDomain(feeds);
+  }
+
+  override async existManyByUserIds(userIds: number[]): Promise<boolean> {
+    const count = await this.createQueryBuilder('feed')
+      .where('feed."activationAt" >= now()')
+      .andWhere('feed."userId" IN (:...userIds)', { userIds })
+      .getCount();
+    return !!count;
   }
 
   override async existOneByUserId(

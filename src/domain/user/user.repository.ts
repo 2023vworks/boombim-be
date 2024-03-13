@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { EntityManager } from 'typeorm';
+import { EntityManager, Like } from 'typeorm';
 
 import { BaseRepository } from '@app/common';
 import { UserEntity } from '@app/entity';
@@ -13,6 +13,8 @@ export abstract class UserRepositoryPort extends BaseRepository<UserEntity> {
     id: number,
     properties: Partial<UserEntity>,
   ): Promise<void>;
+
+  abstract findManyByNickname(nickname: string): Promise<User[]>;
   abstract findOneByPK(id: number): Promise<User | null>;
 }
 
@@ -41,5 +43,10 @@ export class UserRepository extends UserRepositoryPort {
   override async findOneByPK(id: number): Promise<User | null> {
     const user = await this.findOneBy({ id });
     return !!user ? UserEntityMapper.toDomain(user) : null;
+  }
+
+  override async findManyByNickname(nickname: string): Promise<User[]> {
+    const users = await this.findBy({ nickname: Like(`${nickname}%`) });
+    return UserEntityMapper.toDomain(users);
   }
 }
