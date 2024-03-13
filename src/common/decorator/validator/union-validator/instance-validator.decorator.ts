@@ -12,11 +12,11 @@ import {
 import { Util } from '../../../util';
 import { UnionValidatorDefaultOptions } from './type';
 
-type Options = UnionValidatorDefaultOptions;
+type InstanceValidatorOptions = UnionValidatorDefaultOptions;
 
 export function InstanceValidator(
   entity: Type,
-  options: Options = {},
+  options: InstanceValidatorOptions = {},
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return applyDecorators(
@@ -26,7 +26,7 @@ export function InstanceValidator(
 
 export function InstanceValidatorOptional(
   entity: Type,
-  options: Options = {},
+  options: InstanceValidatorOptions = {},
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return applyDecorators(
@@ -36,13 +36,13 @@ export function InstanceValidatorOptional(
 
 const createDecorators = (
   entity: Type,
-  options: Options = {},
+  options: InstanceValidatorOptions = {},
   validationOptions: ValidationOptions = {},
   appendDecorators: PropertyDecorator[],
 ): PropertyDecorator[] => {
   const { arrayMaxSize, arrayMinSize } = options;
   const isEach = validationOptions?.each;
-  return Util.filterNotNil([
+  return Util.filterFalsy([
     ...appendDecorators,
     ToType(() => entity),
     ValidateNested(validationOptions),
