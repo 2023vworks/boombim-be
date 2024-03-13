@@ -11,11 +11,11 @@ import {
 import { Util } from '../../../util';
 import { UnionValidatorDefaultOptions } from './type';
 
-type Options = UnionValidatorDefaultOptions;
+type EnumValidatorOption = UnionValidatorDefaultOptions;
 
 export function EnumValidator(
   enumType: object,
-  options: Options = {},
+  options: EnumValidatorOption = {},
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return applyDecorators(
@@ -25,7 +25,7 @@ export function EnumValidator(
 
 export function EnumValidatorOptional(
   enumType: object,
-  options: Options = {},
+  options: EnumValidatorOption = {},
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return applyDecorators(
@@ -35,13 +35,13 @@ export function EnumValidatorOptional(
 
 const createDecorators = (
   enumType: object,
-  options: Options = {},
+  options: EnumValidatorOption = {},
   validationOptions: ValidationOptions = {},
   appendDecorators: PropertyDecorator[],
 ): PropertyDecorator[] => {
   const { arrayMaxSize, arrayMinSize } = options;
   const isEach = validationOptions?.each;
-  return Util.filterNotNil([
+  return Util.filterFalsy([
     ...appendDecorators,
     IsEnum(enumType, validationOptions),
     isEach && arrayMaxSize && ArrayMaxSize(arrayMaxSize),

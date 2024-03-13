@@ -3,3 +3,4 @@ export * from './env-util';
 export * from './date-util';
 export * from './util';
 export * from './slack';
+export * from './winston-util';
