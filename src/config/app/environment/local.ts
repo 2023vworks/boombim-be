@@ -86,7 +86,7 @@ export const LocalConfig: AppConfig = {
 
   sentry: {
     dsn: process.env.SENTRY_DSN,
-    tracesSampleRate: +(process.env.TRACES_SAMPLE_RATE ?? 1),
+    tracesSampleRate: +(process.env.SENTRY_TRACES_SAMPLE_RATE ?? 1),
   },
   slack: {
     serverErrorAlert: {
