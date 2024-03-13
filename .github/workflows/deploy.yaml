@@ -66,6 +66,9 @@ jobs:
     strategy:
       matrix:
         node-version: [v18.14.2]
+    env:
+      HOST_WORK_DIR: 'boombim'
+      HOST_APP_PORT: '3000'
 
     steps:
       - name: Checkout actions Repository
@@ -90,18 +93,18 @@ jobs:
       # Note: (v0.0.1-beta.3) ec2 사양(t2.micro) 이슈로, 기존 node app을 kill하고 빌드가 수행되도록 순서 변경
       - name: Stop old server (ignore error)
         run: |
-          killall -9 node || true
+          lsof -t -i:${{ env.HOST_APP_PORT }} | xargs kill -9 || true
 
       - name: Run Build App
         run: npm run build
 
-      - name: Remove old server in ~/boombim (ignore error)
+      - name: Remove old server in ~/${{ env.HOST_WORK_DIR }} (ignore error)
         run: |
-          rm -rf ~/boombim || true
-      - name: Copy new server to ~/boombim
+          rm -rf ~/${{ env.HOST_WORK_DIR }} || true
+      - name: Copy new server to ~/${{ env.HOST_WORK_DIR }}
         run: |
-          mkdir -p ~/boombim
-          cp -R ./ ~/boombim
+          mkdir -p ~/${{ env.HOST_WORK_DIR }}
+          cp -R ./ ~/${{ env.HOST_WORK_DIR }}
       # 용량을 줄이기 위해 원본 소스는 제거한다.
       - name: Remove github.workspace (working directory)
         ## deploy.yaml은 없으면 안되기 때문에 지우지 않는다.
@@ -119,11 +122,11 @@ jobs:
           ## [참고](https://www.praetorian.com/blog/self-hosted-github-runners-are-backdoors/)
           RUNNER_TRACKING_ID: 0 # or ''
         run: |
-          cd ~/boombim
+          cd ~/${{ env.HOST_WORK_DIR }}
           PRODUCTION_ENV=${{ secrets.PRODUCTION_ENV }}
           echo $PRODUCTION_ENV | base64 --decode > .env
           export $(grep -E "^[^#]+=" .env) && rm .env
           # 로그 임시로 ~/boombim 폴더에 저장
-          #nohup node dist/src/main.js >> ~/boombim/app.log 2>&1 & echo $! > node_pid
-          nohup node dist/src/main.js >> /dev/null 2>&1 & echo $! > node_pid
+          nohup node dist/src/main.js >> ~/${{ env.HOST_WORK_DIR }}/app.log 2>&1 & echo $! > node_pid
+          #nohup node dist/src/main.js >> /dev/null 2>&1 & echo $! > node_pid
           disown $(cat node_pid)
