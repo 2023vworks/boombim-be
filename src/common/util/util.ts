@@ -23,6 +23,12 @@ interface Util {
    */
   isNil(value: any): boolean;
   isNil(value: any[]): boolean;
+
+  isTruthy(value: any): boolean;
+  isTruthy(value: any[]): boolean;
+  isFalsy(value: any): boolean;
+  isFalsy(value: any[]): boolean;
+
   /**
    * 빈배열을 판별하는 함수
    * - array && array.length === 0;
@@ -37,15 +43,21 @@ interface Util {
   isNotEmpty(array: any[]): boolean;
 
   /**
+   * 배열에서 null 제거한 신규 배열을 리턴
+   * @param array
+   */
+  filterNull<T>(array: T[]): T[];
+  /**
    * 배열에서 null, undefined 제거한 신규 배열을 리턴
    * @param array
    */
-  filterNotNull<T>(array: T[]): T[];
+  filterNil<T>(array: T[]): T[];
+
   /**
    * !!연산시 false로 판별되는 값을 제거한 신규 배열을 리턴
    * @param array
    */
-  filterNotNil<T>(array: T[]): T[];
+  filterFalsy<T>(array: T[]): T[];
 
   /**
    * plainToInstance를 사용하여 인스턴스를 생성한다.
@@ -107,20 +119,24 @@ export const Util: Util = {
     const isNil = (val: unknown) => !!val === false;
     return Array.isArray(value) ? value.every(isNil) : isNil(value);
   },
-  isEmpty(array: any[]): boolean {
-    return array && array.length === 0;
+  isTruthy(value: any | any[]): boolean {
+    const isTruthy = (val: unknown) => !!val === true;
+    return Array.isArray(value) ? value.every(isTruthy) : isTruthy(value);
   },
-  isNotEmpty(array: any[]): boolean {
-    return array && array.length > 0;
+  isFalsy(value: any | any[]): boolean {
+    return !this.isTruthy(value);
   },
+  isEmpty: (array: any[]): boolean => array && array.length === 0,
+  isNotEmpty: (array: any[]): boolean => array && array.length > 0,
 
-  filterNotNull<T>(array: T[]): T[] {
-    return this.isNotEmpty(array)
-      ? array.filter((item) => !this.isNull(item))
-      : [];
+  filterNull<T>(arr: T[]): T[] {
+    return !this.isEmpty(arr) ? arr.filter((item) => !this.isNull(item)) : [];
   },
-  filterNotNil<T>(array: T[]): T[] {
-    return this.isNotEmpty(array) ? array.filter((item) => !!item) : [];
+  filterNil<T>(arr: T[]): T[] {
+    return !this.isEmpty(arr) ? arr.filter((item) => !this.isNil(item)) : [];
+  },
+  filterFalsy<T>(arr: T[]): T[] {
+    return !this.isEmpty(arr) ? arr.filter((item) => !this.isFalsy(item)) : [];
   },
 
   toInstance<T, V>(

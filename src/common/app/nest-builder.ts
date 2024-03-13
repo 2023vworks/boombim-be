@@ -1,69 +1,111 @@
-import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
+import {
+  INestApplication,
+  Logger,
+  NestApplicationOptions,
+  Type,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import * as Sentry from '@sentry/node';
-import { json, urlencoded } from 'express';
-import helmet from 'helmet';
-import { WinstonModule } from 'nest-winston';
+import { json } from 'express';
+import helmet, { HelmetOptions } from 'helmet';
 
+import { CorsConfig, SentryConfig } from '@app/config';
 import { httpLogger } from '@app/custom';
-import { CorsConfig } from '../../config/cors';
-import { SentryConfig } from '../../config/monitor';
-import { Winston } from '../../config/winston';
-import { defaultValidationPipeOptions } from '../constant';
-import { EnvUtil } from '../util';
+import { defaultGlobalValidationPipeOptions } from '../constant';
+import { buildSwagger } from '../swagger';
 
-type SwaggerBuilder = (basePath: string, app: INestApplication) => void;
+type AppCreateOption = {
+  appModule: Type<any>;
+} & Pick<NestApplicationOptions, 'logger'>;
+type BuildSwaggerType = typeof buildSwagger;
+type SetMiddlewareOptions = { httpLogging?: boolean; globalPrefix?: string };
+type SetSwaggerOptions = { docsPath: string };
 
 export class NestBuilder {
-  private app: INestApplication;
-  private configService: ConfigService;
+  private _isRunning: boolean;
 
-  setApp(app: INestApplication): this {
-    this.configService = app.get(ConfigService);
-    this.app = app;
+  private constructor(
+    private readonly _app: INestApplication,
+    private readonly _configService: ConfigService,
+  ) {
+    this._isRunning = false;
+  }
+
+  /**
+   * AppModule 주입받아 Nest APP을 생성한다.
+   * - 이 시점에 주입 받은 AppModule class가 생성되어 DI된다.
+   * @param options
+   * @param {Object} options.appModule - AppModule: Nest 최상위 모듈
+   * @param {Object} options.logger
+   * @returns
+   */
+  static async createApp(options: AppCreateOption): Promise<NestBuilder> {
+    const { appModule, logger } = options;
+    const app = await NestFactory.create<INestApplication>(appModule, {
+      logger,
+    });
+
+    return new NestBuilder(app, app.get(ConfigService));
+  }
+
+  async runServer(): Promise<INestApplication> {
+    await this._app //
+      .useGlobalPipes(new ValidationPipe(defaultGlobalValidationPipeOptions))
+      .listen(this._configService.get('port'));
+
+    this._isRunning = true;
+    return this._app;
+  }
+
+  setSwagger(builder: BuildSwaggerType, options: SetSwaggerOptions): this {
+    this.throwErrorIfRunning();
+
+    builder(options.docsPath, this._app);
     return this;
   }
 
-  async createNestApp(
-    appModule: any,
-    appName: string,
-  ): Promise<INestApplication> {
-    const app = await NestFactory.create<INestApplication>(appModule, {
-      logger: WinstonModule.createLogger(
-        EnvUtil.isProd()
-          ? Winston.getProductionConfig(appName)
-          : Winston.getDevelopmentConfig(appName),
-      ),
-    });
-    this.app = app;
-    this.configService = app.get(ConfigService);
-    return app;
+  /**
+   * 보안 설정(helmet) 설정
+   * - swagger-ui를 http 배포환경에서 사용하려면 swagger ui 빌드 후에 선언되어야 한다.
+   * @param options
+   * @returns
+   * @see https://github.com/scottie1984/swagger-ui-express/issues/212#issuecomment-825803088
+   */
+  setSecurity(options?: Readonly<HelmetOptions>) {
+    this._app.use(helmet(options));
+    return this;
   }
 
-  preInitServer(options: { globalPrifix: string }): this {
-    const { origin, ...other } = this.configService.get<CorsConfig>('cors');
-    const logger = this.app.get(Logger);
+  /**
+   * Express middleware 셋팅
+   * @param options
+   * @param options.globalPrifix - 사용하는 경우 반드시 Swagger 설정인 setDocs보다 먼저 셋팅되어야 한다.
+   * @param options.httpLogging - http 요청에 대한 로깅 설정
+   * @returns
+   */
+  setMiddleware(options: SetMiddlewareOptions = {}): this {
+    this.throwErrorIfRunning();
 
-    this.app.enableCors({
+    if (!!options.httpLogging) {
+      const logger = this._app.get(Logger);
+      this._app.use(httpLogger(logger));
+    }
+    if (!!options.globalPrefix) {
+      this._app.setGlobalPrefix(options.globalPrefix); // Note: Swagger 빌드전에 적용해야 docs에 적용된다.
+    }
+    const { origin, ...other } = this._configService.get<CorsConfig>('cors');
+    this._app.enableCors({
       ...other,
       origin: typeof origin === 'string' ? origin.split(',') : origin,
     });
-    this.app.use(json({ limit: '50mb' }));
-    this.app.use(urlencoded({ extended: true, limit: '50mb' }));
-    this.app.use(httpLogger(logger));
-    this.app.use(helmet());
-    this.app.setGlobalPrefix(options.globalPrifix); // Note: Swagger 빌드전에 적용해야 docs에 적용된다.
+    this._app.use(json({ limit: '50mb' }));
     return this;
   }
 
-  setDocs(builder: SwaggerBuilder, options: { basePatch: string }): this {
-    builder(options.basePatch, this.app);
-    return this;
-  }
-
-  setSentry(): this {
-    const sentryConfig = this.configService.get<SentryConfig>('sentry');
+  initSentry(): this {
+    const sentryConfig = this._configService.get<SentryConfig>('sentry');
     Sentry.init({
       ...sentryConfig,
       integrations: [new Sentry.Integrations.Http({ tracing: true })],
@@ -71,11 +113,11 @@ export class NestBuilder {
     return this;
   }
 
-  async initServer(): Promise<INestApplication> {
-    await this.app //
-      .useGlobalPipes(new ValidationPipe(defaultValidationPipeOptions))
-      .listen(this.configService.get('port'));
-
-    return this.app;
+  private throwErrorIfRunning() {
+    try {
+      if (this._isRunning) throw new Error('Cannot set up the app after Run');
+    } catch (error) {
+      this._app.get(Logger).error(error);
+    }
   }
 }

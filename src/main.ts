@@ -1,22 +1,29 @@
-import { NestBuilder, DEFALUT_APP_NAME } from '@app/common';
+import { EnvUtil, NestBuilder, WinstonUtil, buildSwagger } from '@app/common';
+import { WinstonModule } from 'nest-winston';
 import { AppModule } from './app.module';
-import { swaggerbuilder } from './swagger';
 
 async function bootstrap() {
-  const builder = new NestBuilder();
-  const AppName = process.env.APP_NAME ?? DEFALUT_APP_NAME;
-  await builder.createNestApp(AppModule, AppName);
+  const winstonOption = WinstonUtil.getConfig({
+    env: process.env.NODE_ENV,
+    appName: process.env.APP_NAME,
+  });
 
-  return process.env.NODE_ENV === 'production'
+  const builder = await NestBuilder.createApp({
+    appModule: AppModule,
+    logger: WinstonModule.createLogger(winstonOption),
+  });
+
+  return EnvUtil.isProd()
     ? await builder //
-        .preInitServer({ globalPrifix: '/api' })
-        .setDocs(swaggerbuilder, { basePatch: '/docs' })
-        .setSentry()
-        .initServer()
+        .setMiddleware({ globalPrefix: '/api', httpLogging: false })
+        .setSecurity()
+        .initSentry()
+        .runServer()
     : await builder
-        .preInitServer({ globalPrifix: '/api' })
-        .setDocs(swaggerbuilder, { basePatch: '/docs' })
-        .initServer();
+        .setMiddleware({ globalPrefix: '/api', httpLogging: true })
+        .setSwagger(buildSwagger, { docsPath: '/docs' })
+        .setSecurity()
+        .runServer();
 }
 
 bootstrap();
