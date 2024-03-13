@@ -77,6 +77,8 @@ export abstract class FeedServiceUseCase {
     feedId: number,
     postDto: PostFeedReportRequestDTO,
   ): Promise<void>;
+
+  abstract createMockFeeds(feedsDto: PostFeedRequestDTO[]): Promise<void>;
 }
 
 @Injectable()
@@ -99,12 +101,16 @@ export class FeedService extends FeedServiceUseCase {
     this.webhook = new IncomingWebhook(this.reportAlartConfig.webHooklUrl);
   }
 
-  async getFeeds(getDto: GetFeedsRequestDTO): Promise<GetFeedsResponseDTO[]> {
+  override async getFeeds(
+    getDto: GetFeedsRequestDTO,
+  ): Promise<GetFeedsResponseDTO[]> {
     const feeds = await this.feedRepo.findManyByPolygon(getDto);
     return Util.toInstance(GetFeedsResponseDTO, feeds);
   }
 
-  async getFeedsByGeoMarkId(geoMarkId: number): Promise<GetFeedResponseDTO[]> {
+  override async getFeedsByGeoMarkId(
+    geoMarkId: number,
+  ): Promise<GetFeedResponseDTO[]> {
     const feed = await this.feedRepo.findOneByGeoMarkId(geoMarkId);
     if (!feed) return [];
     const recommendHistories = await this.recommnedRepo.findManyByFeedId(
@@ -119,7 +125,7 @@ export class FeedService extends FeedServiceUseCase {
     ]);
   }
 
-  async createFeed(
+  override async createFeed(
     userId: number,
     postDto: PostFeedRequestDTO,
   ): Promise<PostFeedResponseDTO> {
@@ -159,7 +165,7 @@ export class FeedService extends FeedServiceUseCase {
     }
   }
 
-  async createFeedImages(
+  override async createFeedImages(
     userId: number,
     feedId: number,
     file: Express.Multer.File[],
@@ -177,7 +183,7 @@ export class FeedService extends FeedServiceUseCase {
     });
   }
 
-  async getFeed(feedId: number): Promise<GetFeedResponseDTO> {
+  override async getFeed(feedId: number): Promise<GetFeedResponseDTO> {
     const feed = await this.feedRepo.findOneByPK(feedId);
     if (!feed) throw new NotFoundException(errorMessage.E404_FEED_001);
     const recommendHistories = await this.recommnedRepo.findManyByFeedId(
@@ -193,7 +199,7 @@ export class FeedService extends FeedServiceUseCase {
     });
   }
 
-  async getFeedActivationTime(
+  override async getFeedActivationTime(
     feedId: number,
   ): Promise<GetFeedActivationTimeResponseDTO> {
     const feed = await this.feedRepo.findOnePure(feedId);
@@ -205,7 +211,7 @@ export class FeedService extends FeedServiceUseCase {
     });
   }
 
-  async getComments(
+  override async getComments(
     feedId: number,
     getDto: GetFeedCommentsRequestDTO,
   ): Promise<GetFeedCommentsResponseDTO[]> {
@@ -216,7 +222,7 @@ export class FeedService extends FeedServiceUseCase {
     return Util.toInstance(GetFeedCommentsResponseDTO, comments);
   }
 
-  async createComment(
+  override async createComment(
     userId: number,
     feedId: number,
     postDto: PostFeedCommentRequestDTO,
@@ -246,21 +252,21 @@ export class FeedService extends FeedServiceUseCase {
     }
   }
 
-  async feedRecommend(
+  override async feedRecommend(
     userId: number,
     feedId: number,
   ): Promise<GetFeedActivationTimeResponseDTO> {
     return this.createRecommend(userId, feedId, RecommendType.RECOMMEND);
   }
 
-  async feedUnrecommend(
+  override async feedUnrecommend(
     userId: number,
     feedId: number,
   ): Promise<GetFeedActivationTimeResponseDTO> {
     return this.createRecommend(userId, feedId, RecommendType.UNRECOMMEND);
   }
 
-  async feedReport(
+  override async feedReport(
     userId: number,
     feedId: number,
     postDto: PostFeedReportRequestDTO,
@@ -285,6 +291,41 @@ export class FeedService extends FeedServiceUseCase {
 
       feed.isLockFeed && (await this.feedReportAlert(feed, postDto.reason));
       await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  override async createMockFeeds(
+    feedsDto: PostFeedRequestDTO[],
+  ): Promise<void> {
+    const mockUsers = await this.userRepo.findManyByNickname('mock');
+    if (mockUsers.length === 0) return;
+
+    const userIds = Util.getValues(mockUsers, 'id');
+    const isExistFeeds = await this.feedRepo.existManyByUserIds(userIds);
+    if (isExistFeeds) return;
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    const manager = queryRunner.manager;
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const txFeedRepo = this.feedRepo.createTransactionRepo(manager);
+
+      await Promise.all(
+        feedsDto.map((feedDto) => {
+          const index = Math.floor(Math.random() * userIds.length);
+          const userId = userIds[index];
+          return txFeedRepo.createOne(userId, feedDto);
+        }),
+      );
+
+      await queryRunner.commitTransaction();
+      return;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;

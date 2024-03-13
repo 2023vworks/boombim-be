@@ -21,6 +21,7 @@ import {
   ReportHistoryRepositoryPort,
 } from './repository';
 import { UploadModule } from './upload/upload.module';
+import { FeedScheduler } from './scheduler/feed.scheduler';
 
 const entities = [
   FeedEntity,
@@ -52,6 +53,7 @@ const entities = [
       provide: ReportHistoryRepositoryPort,
       useClass: ReportHistoryRepository,
     },
+    FeedScheduler,
   ],
   exports: [FeedRepositoryPort, CommentRepositoryPort],
 })

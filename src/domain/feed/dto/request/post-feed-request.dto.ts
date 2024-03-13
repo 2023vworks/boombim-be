@@ -19,18 +19,21 @@ class PostFeedWithRegionInfoRequestDTO extends OmitType(RegionInfoEntity, [
   'id',
   'createdAt',
   'updatedAt',
+  'deletedAt',
   'geoMark',
 ]) {}
 class PostFeedWithAddressRequestDTO extends OmitType(AddressEntity, [
   'id',
   'createdAt',
   'updatedAt',
+  'deletedAt',
   'geoMark',
 ]) {}
 class PostFeedWithRoadAddressRequestDTO extends OmitType(RoadAddressEntity, [
   'id',
   'createdAt',
   'updatedAt',
+  'deletedAt',
   'geoMark',
 ]) {}
 
@@ -63,7 +66,7 @@ class PostFeedWithGeoMarkRequestDTO extends PickType(GeoMarkEntity, [
   })
   @Expose()
   @InstanceValidatorOptional(PostFeedWithRoadAddressRequestDTO)
-  roadAddress: PostFeedWithRoadAddressRequestDTO;
+  roadAddress?: PostFeedWithRoadAddressRequestDTO;
 }
 
 export class PostFeedRequestDTO extends PickType(FeedEntity, [
